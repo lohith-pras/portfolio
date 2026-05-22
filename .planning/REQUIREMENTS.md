@@ -53,24 +53,28 @@
 
 - [x] **TRANS-01**: Page transitions between `/`, `/life`, and `/projects/[slug]` use Framer Motion `AnimatePresence` — dark panel slides in from right, retracts to reveal destination
 
-## v1.1 Requirements (Active Milestone)
+## v1.1 Requirements (Complete)
 
 ### Internationalisation (Content)
 
 - [x] **I18N-V2-01**: MDX project body content translated to German under `src/content/projects/de/[slug].mdx` (v1 shipped EN-only MDX content, v1.1 translates all project bodies to German)
 
-## v2 Requirements (Deferred)
+## v2.0 Requirements (Active Milestone)
 
-### About — Spline
+### About — Spline 3D
 
-- [ ] **ABOUT-V2-01**: Spline 3D character built in spline.design (stylized, greeting animation triggers once on section scroll-in via IntersectionObserver, returns to idle loop)
-- [ ] **ABOUT-V2-02**: Spline scene lazy-loaded via `next/dynamic({ssr: false})` inside `'use client'` wrapper, rendered desktop-only (≥768px)
-- [ ] **ABOUT-V2-03**: Static illustration matches Spline character style — designed in parallel with Spline scene
+- [ ] **ABOUT-V2-01**: Spline 3D character built in spline.design — stylized, greeting animation triggers once on section scroll-in via GSAP ScrollTrigger (`once: true`), returns to idle loop
+- [ ] **ABOUT-V2-02**: Spline scene lazy-loaded via `next/dynamic({ ssr: false })` inside `'use client'` wrapper component (`SplineAbout.tsx`), rendered desktop-only (≥768px) via conditional render — not CSS `hidden`
+- [ ] **ABOUT-V2-03**: Static illustration (`StaticIllustrationFallback.tsx`) matches Spline character style and serves as the mobile fallback — designed in parallel with the Spline scene
 
-### Projects — Content depth
+### Projects — Content Depth
 
-- [ ] **PROJ-V2-01**: Project pages include "What I'd do differently" honest reflection section
-- [ ] **PROJ-V2-02**: Project pages include code snippets with syntax highlighting (rehype-pretty-code) and repo link
+- [ ] **PROJ-V2-01**: Each project deep-dive page includes a "What I'd Do Differently" section — 3–5 specific technical bullets, first-person and honest, placed at the end of the page in both EN and DE MDX files
+- [ ] **PROJ-V2-02**: Project pages include code snippet blocks with `rehype-pretty-code` syntax highlighting (single dark theme, e.g. `vesper`) and a GitHub repo link per project — applied to all 3 projects in both EN and DE
+
+## v3 Requirements (Deferred)
+
+*(None identified yet — deferred items from v2 planning will be logged here if scope is cut during execution.)*
 
 ## Out of Scope
 
@@ -78,18 +82,18 @@
 |---------|--------|
 | Custom cursor | Decided against — distraction from content |
 | Log page | Removed — phase notes live inside project pages |
-| Contact form | Email link only — no form needed |
 | OAuth / any auth | Public portfolio, no login |
+| Contact form | Email link only — no form needed |
+| Video posts | Not in scope |
 | Dark/light mode toggle | Dark-only is the brand |
-| Video posts | Not relevant to this project |
-| Glassmorphism / gradients (outside hero shader) / shadows | Design decision — flat, edge-to-edge, no decoration |
-| Typewriter loops / particle backgrounds / skills bars | Anti-patterns for serious engineer portfolios |
-| Cookie banner / analytics | No tracking tools planned for v1 |
-| OG image generation per project | Defer — high-ROI but outside ASAP timeline |
+| OG image per project | Deferred — `generateMetadata` stub in place, real images → v3 |
+| ScrollSmoother | Skipped v1 — fights iOS scroll on mobile, desktop-only adds complexity without enough payoff |
+| `next-mdx-remote` for local files | Archived/wrong tool — use `@next/mdx` |
+| CSS-in-JS runtimes | RSC-hostile, redundant with Tailwind |
 
 ## Traceability
 
-Updated during milestone v1.1 planning — 2026-05-22.
+Updated during v2.0 roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
@@ -118,12 +122,17 @@ Updated during milestone v1.1 planning — 2026-05-22.
 | LIFE-04 | Phase 7 | Complete |
 | TRANS-01 | Phase 8 | Complete |
 | I18N-V2-01 | Phase 10 | Complete |
+| ABOUT-V2-01 | TBD | Pending |
+| ABOUT-V2-02 | TBD | Pending |
+| ABOUT-V2-03 | TBD | Pending |
+| PROJ-V2-01 | TBD | Pending |
+| PROJ-V2-02 | TBD | Pending |
 
 **Coverage:**
-- Active requirements: 1 total
-- Mapped to phases: 1
-- Unmapped: 0
+- v2.0 requirements: 5 total
+- Mapped to phases: 0 (roadmap pending)
+- Unmapped: 5
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after milestone v1.1 initialization*
+*Last updated: 2026-05-22 after milestone v2.0 initialization*
