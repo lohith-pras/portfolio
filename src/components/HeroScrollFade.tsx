@@ -21,22 +21,18 @@
  * Server Component benefits on page.tsx.
  */
 
-import { useEffect, useRef } from 'react'
-import { gsap, ScrollTrigger } from '@/lib/gsap'
+import { useGSAP } from '@gsap/react'
+import { ScrollTrigger } from '@/lib/gsap'
 
 export function HeroScrollFade() {
-  const triggerRef = useRef<ScrollTrigger | null>(null)
 
-  useEffect(() => {
+  useGSAP(() => {
     const canvas = document.getElementById('shader-canvas') as HTMLElement | null
     const hero = document.getElementById('hero') as HTMLElement | null
 
     if (!canvas || !hero) return
 
-    // Kill any existing trigger on re-mount (React strict mode safety)
-    triggerRef.current?.kill()
-
-    triggerRef.current = ScrollTrigger.create({
+    ScrollTrigger.create({
       trigger: hero,
       start: 'top top',
       end: 'bottom top',
@@ -59,8 +55,6 @@ export function HeroScrollFade() {
     })
 
     return () => {
-      triggerRef.current?.kill()
-      triggerRef.current = null
       // Restore canvas to visible state on unmount
       if (canvas) {
         canvas.style.opacity = '1'

@@ -1,19 +1,14 @@
 import { setRequestLocale } from 'next-intl/server'
-import dynamic from 'next/dynamic'
+
 import { type Locale } from '@/i18n/routing'
 import { NavbarDesktop } from '@/components/NavbarDesktop'
 import { NavbarMobile } from '@/components/NavbarMobile'
 import { HeroSection } from '@/components/HeroSection'
 import { AboutSection } from '@/components/AboutSection'
+import { WorkSection } from '@/components/WorkSection'
 import { HeroScrollFade } from '@/components/HeroScrollFade'
 
-// ShaderCanvas uses WebGL (canvas context) — must be client-only.
-// Dynamic import with ssr: false prevents "window is not defined" on server.
-// Lighthouse: Next.js defers loading this chunk until hydration, not during FCP.
-const ShaderCanvas = dynamic(
-  () => import('@/components/ShaderCanvas').then((mod) => mod.ShaderCanvas),
-  { ssr: false }
-)
+import { ShaderCanvasWrapper } from '@/components/ShaderCanvasWrapper'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -31,7 +26,7 @@ export default async function Home({ params }: Props) {
         ShaderCanvas: Fixed full-bleed WebGL gradient (z-0).
         Loaded dynamically to keep SSR clean. HERO-01.
       */}
-      <ShaderCanvas />
+      <ShaderCanvasWrapper />
 
       {/*
         HeroScrollFade: Client component that mounts a GSAP ScrollTrigger
@@ -50,6 +45,9 @@ export default async function Home({ params }: Props) {
 
         {/* About section follows immediately after hero. */}
         <AboutSection />
+
+        {/* Work section with waveform divider and project cards. WORK-01, WORK-02, WORK-03. */}
+        <WorkSection />
       </div>
     </main>
   )

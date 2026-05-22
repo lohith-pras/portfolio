@@ -20,12 +20,9 @@
 
 import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
-import { gsap, ScrambleTextPlugin } from '@/lib/gsap'
+import { gsap } from '@/lib/gsap'
 
-// useGSAP must be registered to run correctly with React 19
-if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrambleTextPlugin)
-}
+
 
 const FULL_NAME = 'Lohith Tarikere Prasanna'
 
