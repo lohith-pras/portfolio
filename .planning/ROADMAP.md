@@ -18,7 +18,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 4: Work Section** - Project cards, SVG waveform divider, GSAP stagger reveal
 - [x] **Phase 5: MDX Pipeline** - @next/mdx config, project pages, GSAP phase timeline component, all 3 project files
 - [x] **Phase 6: Card Expansion** - Framer Motion layoutId card-to-project expansion via intercepting routes
-- [ ] **Phase 7: Life Page** - /life with Courier Prime, seeded photo rotation, hobbies, stagger animation
+- [x] **Phase 7: Life Page** - /life with Courier Prime, seeded photo rotation, hobbies, stagger animation
 - [ ] **Phase 8: Page Transitions** - AnimatePresence panel slides between routes
 - [ ] **Phase 9: DE i18n Pass** - DeepL UI chrome translation, messages/de.json, locale switcher completion
 
@@ -148,6 +148,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 4. Work Section | 1/1 | Complete | 2026-05-22 |
 | 5. MDX Pipeline | 1/1 | Complete | 2026-05-22 |
 | 6. Card Expansion | 1/1 | Complete | 2026-05-22 |
-| 7. Life Page | 0/TBD | Not started | - |
+| 7. Life Page | 1/1 | Complete | 2026-05-22 |
 | 8. Page Transitions | 0/TBD | Not started | - |
 | 9. DE i18n Pass | 0/TBD | Not started | - |
