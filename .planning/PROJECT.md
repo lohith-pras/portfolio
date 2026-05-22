@@ -8,13 +8,14 @@ Personal portfolio website for Lohith Tarikere Prasanna — a complete rehaul of
 
 Visitors leave knowing Lohith is a builder with intent and a distinct perspective — not just a candidate with a CV.
 
-## Current Milestone: v1.1 German MDX Translation Pass
+## Current Milestone: v2.0 Depth + 3D
 
-**Goal:** Translate the project MDX bodies to German so that deep-dives render localized German content in the DE locale.
+**Goal:** Bring the About section to life with a Spline 3D character on desktop, and add genuine depth to project pages with honest reflection sections and code snippet highlights.
 
 **Target features:**
-- [ ] I18N-V2-01: Translate MDX content for the three project deep-dives into German under `src/content/projects/de/`
-- [ ] Build Verification: Verify that the Next.js static build generates valid `/de/projects/[slug]` paths without errors
+- [ ] ABOUT-V2-01/02/03: Spline 3D character (desktop-only, lazy-loaded, scroll-triggered greeting animation, matches static illustration style)
+- [ ] PROJ-V2-01: "What I'd do differently" honest reflection section on all project deep-dive pages
+- [ ] PROJ-V2-02: Code snippets with `rehype-pretty-code` syntax highlighting + repo links on project pages
 
 ## Requirements
 
@@ -24,7 +25,11 @@ All v1.0 core portfolio requirements (FOUND-01 through FOUND-04, NAV-01 through 
 
 ### Active
 
-- [ ] I18N-V2-01: MDX body DE translation (translate three project MDX files under `src/content/projects/de/` to German)
+- [ ] ABOUT-V2-01: Spline 3D character built in spline.design — stylized, greeting animation triggers once on section scroll-in via IntersectionObserver, returns to idle loop
+- [ ] ABOUT-V2-02: Spline scene lazy-loaded via `next/dynamic({ssr: false})` inside `'use client'` wrapper, rendered desktop-only (≥768px)
+- [ ] ABOUT-V2-03: Static illustration matches Spline character style — designed in parallel with Spline scene
+- [ ] PROJ-V2-01: Project pages include "What I'd do differently" honest reflection section
+- [ ] PROJ-V2-02: Project pages include code snippets with syntax highlighting (`rehype-pretty-code`) and repo link
 
 ### Out of Scope
 
@@ -85,4 +90,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-05-22 after initialization*
+*Last updated: 2026-05-22 after milestone v2.0 start*

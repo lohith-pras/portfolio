@@ -1,17 +1,16 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.1
-milestone_name: German MDX Translation Pass
-status: Defining requirements
-stopped_at: Detailed plans for Phase 2 (Static Shell), Phase 3 (Hero), and Phase 4 (Work Section) generated. Ready to proceed with Phase 1 Foundation execution.
-last_updated: "2026-05-22T11:06:09.070Z"
-last_activity: 2026-05-22 — Milestone v1.1 started
+milestone: v2.0
+milestone_name: Depth + 3D
+status: planning
+last_updated: "2026-05-22T16:29:57.637Z"
+last_activity: 2026-05-22
 progress:
-  total_phases: 10
-  completed_phases: 2
-  total_plans: 4
-  completed_plans: 5
-  percent: 20
+  total_phases: 0
+  completed_phases: 0
+  total_plans: 0
+  completed_plans: 0
+  percent: 0
 ---
 
 # Project State
@@ -28,7 +27,7 @@ See: .planning/PROJECT.md (updated 2026-05-22)
 Phase: Not started (defining requirements)
 Plan: —
 Status: Defining requirements
-Last activity: 2026-05-22 — Milestone v1.1 started
+Last activity: 2026-05-22 — Milestone v2.0 started
 
 ## Performance Metrics
 
