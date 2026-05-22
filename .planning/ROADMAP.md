@@ -140,7 +140,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. Visiting `/de/projects/mimo-ai-channel-quality-tool`, `/de/projects/vlc-v2v-communication`, and `/de/projects/iot-security-project` renders complete German body text instead of English fallbacks or empty content.
   2. Sub-components on the project pages (like the GSAP phase timeline) function correctly with localized strings.
   3. `npm run build` runs successfully and compiles static files for the new German project slugs.
-**Plans**: TBD
+**Plans**: Complete
 
 ## Progress
 
