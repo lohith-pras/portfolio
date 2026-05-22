@@ -1,420 +1,469 @@
-# Domain Pitfalls — Next.js App Router Portfolio (GSAP + Framer Motion + Spline + shader-gradient + next-intl + MDX)
+# Domain Pitfalls — v2.0 Feature Additions (Spline 3D + MDX Depth + rehype-pretty-code)
 
-**Project:** LTP Portfolio v2
+**Project:** LTP Portfolio v2 — Milestone v2.0
 **Researched:** 2026-05-22
-**Stack scope:** Next.js 15 App Router, React 19, TypeScript, Tailwind, GSAP 3.x + ScrollTrigger, Framer Motion / Motion 11.x, @splinetool/react-spline, shader-gradient, next-intl 3.x, @next/mdx, next/font
+**Scope:** Pitfalls specific to adding Spline 3D character, "What I'd do differently" MDX sections, and `rehype-pretty-code` to the *existing validated* Next.js 15 / React 19 / GSAP / next-intl codebase.
 
-> **Research conditions:** WebSearch, WebFetch, Context7 MCP, and ctx7 CLI were all unavailable / denied in this environment. Findings below are drawn from documented library behavior in training data. Each pitfall is labeled with a confidence level — **HIGH** items are well-documented official patterns, **MEDIUM** items reflect commonly reported behavior across multiple sources in training, **LOW** items are reasonable inferences that should be re-verified against current docs during the phase that addresses them. Treat this document as a checklist to validate, not as authoritative truth.
+> **Context:** All v1 phases (1–10) are complete and validated. The codebase is running `@splinetool/react-spline ^4.x` installed but no scene wired yet. `@next/mdx` is configured in `next.config.mjs` with **no rehype/remark plugins currently**. MDX content lives at `src/content/projects/{locale}/*.mdx` and is imported via dynamic `import()` in the page component. `ShaderCanvasWrapper` / `ShaderCanvas` are live with an active GSAP ScrollTrigger. This document focuses only on pitfalls introduced by the v2.0 additions — not pre-existing general portfolio risks (those are in the earlier PITFALLS.md).
+
+> **Research conditions:** WebSearch, WebFetch, ctx7 CLI, and Bash were all restricted in this run. All findings below are drawn from the codebase inspection (actual files read) and documented library behavior in training data. Confidence levels are assigned per the standard protocol: HIGH = well-documented official patterns backed by multiple sources and the codebase confirms the setup is in place; MEDIUM = commonly reported behavior that is consistent across sources; LOW = reasonable inference that should be verified during implementation.
 
 ---
 
 ## Critical Pitfalls (ship-blockers)
 
-### Pitfall 1: GSAP plugins (ScrollTrigger, MotionPathPlugin, etc.) not registered → runtime "plugin not loaded" error in production only
+### Pitfall SP-1: Spline runtime (~400–600 kB) enters the main bundle if the `dynamic()` wrapper is on the wrong component boundary
 
 **Confidence:** HIGH
 
-**What goes wrong:** Code works in dev because of module evaluation order, then breaks in production after tree-shaking / minification with "Invalid property scrollTrigger" or "plugin not registered" errors. On the App Router this is amplified because server-side bundling can drop the side-effect import.
+**What goes wrong:** The `@splinetool/runtime` package is the actual WebGL engine. It is 400–600 kB parsed JS. The bundle enters the page's initial payload if `next/dynamic(..., { ssr: false })` wraps the wrong layer. Specifically: if the component that `import`s from `@splinetool/react-spline` is a server component, or if `dynamic()` wraps a component that *re-exports* Spline rather than the one that *imports* it, Next.js still bundles the runtime in the server pass.
 
-**Why it happens:** `gsap.registerPlugin(ScrollTrigger)` must be called once on the client, but in App Router code can run on the server (RSC) where `window` does not exist, or the side-effect import gets shaken out.
+**Why it happens with this codebase:** The existing `ShaderCanvasWrapper.tsx` pattern (a `"use client"` component that holds the `dynamic()` call wrapping `ShaderCanvas`) is the correct two-layer approach — it works because `ShaderCanvas` does the actual import. The same pattern must be followed for Spline: the `dynamic()` call must be in a component that is itself a **named dynamic boundary**, not inside a server component that imports a client component that happens to use `dynamic()`.
 
-**Consequences:** Hero / Work / project deep-dive timelines all fail silently or throw.
-
-**Prevention:**
-- Create a single `lib/gsap.ts` client module that does `"use client"`, imports `gsap` + plugins, calls `gsap.registerPlugin(ScrollTrigger, useGSAP)` at top level, and re-exports `gsap`.
-- Any component that touches GSAP imports from `lib/gsap` (never directly from `"gsap"`).
-- Mark every GSAP-using component with `"use client"`.
-- Add a build-time grep in CI: `! grep -r "from 'gsap'" app/ components/` (force routing through `lib/gsap`).
-
-**Detection:** Production build → open Work section → no stagger animation. Check console for "plugin not loaded".
-
-**Phase:** Foundation / Animation Setup phase.
-
----
-
-### Pitfall 2: GSAP timelines duplicated on React 19 Strict Mode double-mount → ScrollTrigger pin glitches, duplicate animations, leaked listeners
-
-**Confidence:** HIGH
-
-**What goes wrong:** React 19 (and React 18) Strict Mode mounts → unmounts → remounts every effect in dev. Without `useGSAP` or proper cleanup, you get two ScrollTriggers per element, pin offsets stack, and the layout shifts by ~viewport-height the first scroll.
-
-**Why it happens:** Raw `useEffect(() => { gsap.to(...) }, [])` does not return a cleanup that kills the tween / ScrollTrigger, so the second mount stacks on top of the first.
+**Lighthouse impact:** Spline runtime added to initial payload: TBT +800–1500 ms on mobile, TTI +1.5–2 s. This single mistake can drop Lighthouse mobile from ~85 to ~65.
 
 **Prevention:**
-- Always use `useGSAP` from `@gsap/react` — it wraps `gsap.context()` and handles cleanup automatically.
-- Pattern: `const container = useRef(null); useGSAP(() => { /* animations */ }, { scope: container });` with `<div ref={container}>`.
-- Never call `gsap.to(".class")` without a scope — selectors will leak across components and re-fire on every mount.
-- For ScrollTrigger specifically, ensure `ScrollTrigger.refresh()` is only called after fonts load and images settle (see Pitfall 11).
-
-**Detection:** In dev, scroll once → notice double trigger fires, pinned elements jumping by 2× distance. Add `gsap.ticker.lagSmoothing(0)` temporarily and watch for duplicate timeline IDs.
-
-**Phase:** Animation Setup phase, before building any scroll-driven sections.
-
----
-
-### Pitfall 3: Spline scene SSR'd → hydration mismatch + bundle bloat on initial paint
-
-**Confidence:** HIGH
-
-**What goes wrong:** Importing `@splinetool/react-spline` directly into a server component (or even a client component without `dynamic({ ssr: false })`) causes Next.js to either (a) attempt SSR of a WebGL-dependent module and crash with `window is not defined` / `document is not defined`, or (b) bundle the entire Spline runtime (~300–500 kB) into the initial JS payload, tanking Lighthouse.
-
-**Prevention:**
-- Wrap the Spline component with `next/dynamic`:
+- Replicate the exact `ShaderCanvasWrapper` pattern:
   ```tsx
-  const Spline = dynamic(() => import('@splinetool/react-spline'), { ssr: false, loading: () => <SplineFallback /> })
+  // SplineWrapper.tsx  — "use client"
+  import dynamic from 'next/dynamic'
+  const SplineScene = dynamic(
+    () => import('./SplineScene').then(m => m.SplineScene),
+    { ssr: false, loading: () => <SplinePlaceholder /> }
+  )
+  export function SplineWrapper() { return <SplineScene /> }
   ```
-- Use `@splinetool/react-spline/next` if you want App Router's built-in suspense (verify package supports this — **MEDIUM confidence**).
-- Combine with a viewport-based mount: only mount Spline when the About section enters viewport (IntersectionObserver) — defers WebGL context creation until needed.
-- Mobile branch: `useMediaQuery('(min-width: 1024px)')` gate so Spline never even attempts to load on phones (matches PROJECT.md constraint).
+  ```tsx
+  // SplineScene.tsx — "use client"
+  import Spline from '@splinetool/react-spline'
+  // ...actual Spline usage here
+  ```
+- Gate the render on `window.matchMedia('(min-width: 768px)')` — never conditionally *hide* via CSS. Only conditionally *render*. This prevents the Spline chunk from loading on mobile at all (matches ABOUT-V2-02 requirement).
+- Verify after adding: run `next build` and check the First Load JS for the `/en` route. It should not increase by more than ~2 kB (just the wrapper). The runtime chunk should only appear in the lazy-loaded Spline chunk.
 
-**Detection:** Run `next build` and check `First Load JS` for the About route — should be < 200 kB without Spline. Open Lighthouse on the homepage in mobile mode — TBT should not include a Spline chunk.
+**Detection:** `next build` output — compare "First Load JS" before and after adding the wrapper. If it increases by >50 kB, the dynamic boundary is wrong. Open Network tab in DevTools (slow 3G throttle) and confirm the `@splinetool/runtime` chunk loads *after* initial paint, not during.
 
-**Phase:** About Section phase.
-
----
-
-### Pitfall 4: next-intl middleware conflicts with App Router static optimization → every route forced dynamic, RSC cache busted
-
-**Confidence:** HIGH
-
-**What goes wrong:** Configuring next-intl with the middleware-based routing approach (the most common one) marks all pages as dynamic by default because the middleware runs per request. Without explicit static rendering setup, you lose SSG, deploy times balloon, and Vercel function invocations spike.
-
-**Why it happens:** next-intl 3.x requires either (a) middleware that detects locale per request, or (b) the `setRequestLocale` call inside each layout/page for static rendering opt-in. Skipping (b) silently disables SSG.
-
-**Prevention:**
-- Follow the [next-intl App Router setup](https://next-intl-docs.vercel.app/docs/getting-started/app-router) exactly — file structure must be `app/[locale]/layout.tsx` + `app/[locale]/page.tsx`.
-- Add `export function generateStaticParams() { return routing.locales.map(locale => ({locale})); }` in `app/[locale]/layout.tsx`.
-- Call `unstable_setRequestLocale(locale)` (or `setRequestLocale` in newer versions) at the top of every layout/page that should be static.
-- Verify after build: `next build` output must show `○ (Static)` not `ƒ (Dynamic)` for `/en` and `/de`.
-- Middleware should match only navigable routes: `matcher: ['/((?!api|_next|.*\\..*).*)']` — avoid running middleware on static asset requests.
-
-**Detection:** `next build` → look for `ƒ` next to homepage. If you see it, static opt-in is missing. Also: Vercel function invocations > page views = dynamic rendering misconfiguration.
-
-**Phase:** i18n Setup phase (must happen early — adding next-intl after pages are built means rewriting every page).
+**Phase:** ABOUT-V2-01/02 (before writing any scene code).
 
 ---
 
-### Pitfall 5: Framer Motion `layoutId` cross-route shared-element transition does not work natively in App Router
-
-**Confidence:** MEDIUM (well-known limitation, but workarounds evolve)
-
-**What goes wrong:** PROJECT.md says "Work section with project cards … expandable via Framer Motion layoutId into project deep-dive pages." Default behavior: `layoutId` only matches between elements that exist **simultaneously** under the same `AnimatePresence`. Across route changes in the App Router (which unmounts the old route tree before mounting the new one), the source element disappears before the destination mounts — the layout animation never fires. Users see a hard cut instead of a morph.
-
-**Why it happens:** App Router's `<Link>` performs a full segment swap. Framer Motion's `LayoutGroup`/`AnimatePresence` cannot bridge two separate route trees.
-
-**Prevention (pick one):**
-1. **Modal/intercepting routes** (recommended for this design): use Next.js [parallel + intercepting routes](https://nextjs.org/docs/app/building-your-application/routing/intercepting-routes) (`@modal` slot + `(.)projects/[slug]` interceptor). The card expands into a modal overlay that shares the DOM tree with the source card, so `layoutId` works. Direct URL hit (`/projects/foo`) renders the full page; click-from-grid renders the modal.
-2. **Manual FLIP**: capture source rect with `getBoundingClientRect`, store in router state, animate destination from that rect on mount. More code, more reliable across reloads.
-3. **next-view-transitions**: use the View Transitions API via a package like `next-view-transitions` for the cross-route morph; reserve `layoutId` for in-page expansions only.
-
-**Detection:** Click a project card → if you see a hard navigation flash instead of a morph, layout animation is broken.
-
-**Phase:** Work Section phase / project deep-dive routing phase. Choose the routing pattern (intercepting routes vs full page) **before** building the card component, because the component structure differs.
-
----
-
-### Pitfall 6: shader-gradient + WebGL context leak on route change → "Too many active WebGL contexts" after navigating a few times
+### Pitfall SP-2: Spline scene + `ShaderCanvas` compete for the same WebGL context budget — gradient turns black after About section loads
 
 **Confidence:** MEDIUM
 
-**What goes wrong:** Browsers cap concurrent WebGL contexts (~8–16 depending on browser). `shader-gradient` and Spline both create a context. If contexts are not explicitly disposed when a component unmounts (Three.js renderer not `.dispose()`d, canvas not removed), navigating Home → /life → /projects/x → Home a few times exhausts the limit. The hero then renders black, or the browser warns in console and refuses new contexts.
+**What goes wrong:** The existing `ShaderCanvas` already creates a WebGL context on page load. When the About section scrolls into view and Spline creates its own context, the total climbs. Browsers cap concurrent WebGL contexts at 8–16 (Chrome: 16, Safari: 8). This codebase also has `@react-three/fiber` (from `@shadergradient/react`) running R3F's own renderer, so the actual context count per page visit is already 1 (ShaderCanvas R3F) + any other R3F usage. Adding Spline's runtime creates a second independent context.
 
-**Why it happens:** `shader-gradient` wraps Three.js / R3F; if the package's own cleanup is incomplete, the canvas + renderer + WebGL context linger. Spline has had similar reports.
+**Why it matters here specifically:** The existing `ShaderCanvas` already has a visibility-based GPU release: it sets `display: none` when the hero fades. But it does *not* explicitly destroy the WebGL context. Spline also does not destroy its context on unmount by default. After several SPA navigations (Home → /life → /projects/x → Home), the context count can exceed the limit. The shader gradient is the first to lose its context because it was created first.
 
 **Prevention:**
-- Mount the shader gradient **once at the root layout** (inside `app/[locale]/layout.tsx`) and let it persist across navigations rather than remounting per route. Use `position: fixed` and z-index it behind content.
-- If it must remount, wrap in a component that calls `gl.getExtension('WEBGL_lose_context').loseContext()` on unmount as a safety net.
-- Limit total concurrent WebGL surfaces: never have shader-gradient AND Spline rendering simultaneously. On the About section, pause the hero gradient (`visibility: hidden` is enough — browsers may keep the context but stop drawing) or unmount it.
-- Test the leak: open DevTools console, run `for (let i=0; i<10; i++) { history.pushState({}, '', '/life'); history.pushState({}, '', '/'); }` — watch context count in `chrome://gpu` or check for "Too many active WebGL contexts" warning.
+- Keep the existing `ShaderCanvas` GPU-release logic (it already sets `display: none` via ScrollTrigger). This is enough to pause rendering but does not free the context.
+- For Spline: wrap the mount in an `IntersectionObserver` gate so the Spline WebGL context is not created until the About section is at least 20% in view. This defers the context creation past the hero-paint critical path.
+- Pattern for the IntersectionObserver gate inside `SplineScene.tsx`:
+  ```tsx
+  const [shouldMount, setShouldMount] = useState(false)
+  const sectionRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) setShouldMount(true) },
+      { threshold: 0.2 }
+    )
+    if (sectionRef.current) observer.observe(sectionRef.current)
+    return () => observer.disconnect()
+  }, [])
+  // render <Spline ... /> only when shouldMount === true
+  ```
+- Do NOT use `gsap.matchMedia()` alone for this gate — it handles viewport width (mobile/desktop split) but not scroll position. You need both: `matchMedia` for the 768 px width gate + `IntersectionObserver` for the scroll-position gate.
 
-**Detection:** Console warning "Too many active WebGL contexts. Oldest context will be lost." Visual: gradient turns black after a few navigations.
+**Detection:** Open DevTools console, navigate Home → /life → /projects/x → Home four times rapidly. Watch for `WebGL: CONTEXT_LOST_WEBGL` or "Too many active WebGL contexts" warnings. Visually: shader gradient on hero renders solid black or white.
 
-**Phase:** Hero / shader gradient setup phase.
+**Phase:** ABOUT-V2-01/02.
 
 ---
 
-## Common Mistakes
+### Pitfall SP-3: React 19 Strict Mode double-mount fires Spline's `onLoad` callback twice, creating two animation subscriptions
 
-### Pitfall 7: `next/font` loading three families (Space Mono + Plus Jakarta Sans + Courier Prime) all eagerly → 200+ kB of font payload on every page
+**Confidence:** MEDIUM
 
-**Confidence:** HIGH
+**What goes wrong:** In development (Strict Mode on), React 19 mounts → unmounts → remounts every client component. Spline's `onLoad` prop receives the `splineApp` instance. If a `useEffect` or direct callback sets up GSAP ScrollTrigger bindings that drive Spline's animation state (via `splineApp.emitEvent(...)` or `splineApp.setVariable(...)`), the double-mount creates two GSAP ScrollTriggers subscribed to the same Spline instance. In production this is fine (single mount). In dev it causes the greeting animation to fire twice and the ScrollTrigger to stack.
 
-**What goes wrong:** Naively configuring all three in `app/layout.tsx` loads woff2 for all three on every route, even though Courier Prime is only used on `/life`.
+**Why it matters here specifically:** ABOUT-V2-01 requires "greeting animation triggers once on section scroll-in via IntersectionObserver, returns to idle loop." The word "once" is the trigger — you need to guard against double-fire.
 
 **Prevention:**
-- Load **Space Mono + Plus Jakarta Sans** in root layout (used everywhere).
-- Load **Courier Prime** only in `app/[locale]/life/layout.tsx` — scoped to that segment.
-- For each font: `display: 'swap'`, `preload: true` only for the body font (Plus Jakarta Sans), `preload: false` for Space Mono if it's display-only and used below the fold. Reduces blocking requests on initial paint.
-- Subset to `['latin']` (and `['latin-ext']` if DE umlauts cause issues — verify ä/ö/ü/ß render correctly in DE locale).
-- Use `variable` CSS variable mode: `const space = Space_Mono({ variable: '--font-space', ... })` and reference via Tailwind theme — avoids FOUT class swaps.
+- Store the spline app instance in a `useRef`, not `useState`. The ref survives the unmount/remount cycle in dev (it does not reset between mounts).
+- Add a `hasInitialized` ref guard:
+  ```tsx
+  const splineRef = useRef<Application | null>(null)
+  const hasInit = useRef(false)
 
-**Detection:** Network tab on `/en` homepage → count woff2 requests. Should be 2, not 3. Lighthouse "Avoid enormous network payloads" flag.
+  const onLoad = useCallback((app: Application) => {
+    splineRef.current = app
+    if (hasInit.current) return   // guard against StrictMode double-fire
+    hasInit.current = true
+    // set up IntersectionObserver → emitEvent here
+  }, [])
+  ```
+- For GSAP integration (driving Spline via ScrollTrigger), do the GSAP setup inside `useGSAP` with `{ scope: containerRef }` — `useGSAP` from `@gsap/react` already handles cleanup on unmount, so the ScrollTrigger is destroyed on the first unmount and recreated clean on the second mount.
 
-**Phase:** Design System / Foundation phase.
+**Detection:** In dev mode, console.log inside `onLoad`. If it fires twice, the guard is missing. If it fires once, you're safe.
+
+**Phase:** ABOUT-V2-01.
 
 ---
 
-### Pitfall 8: @next/mdx setup that "just works" in dev but breaks on Vercel build — missing `mdx-components.tsx`, wrong `pageExtensions`, no remark/rehype plugins
+### Pitfall SP-4: GSAP ScrollTrigger + Spline's internal RAF loop fight for scroll events on the About section
 
-**Confidence:** HIGH
+**Confidence:** MEDIUM
 
-**What goes wrong:** Common @next/mdx footguns:
-1. Forgetting `mdx-components.tsx` at the project root (required in App Router) → build error "useMDXComponents is not exported".
-2. `pageExtensions` not extended → `.mdx` files ignored.
-3. Frontmatter not parsed because `remark-frontmatter` + `remark-mdx-frontmatter` not in config → can't read title/date.
-4. Using `import` syntax inside MDX without configuring the bundler → silent failure.
-5. Code blocks with syntax highlighting require `rehype-pretty-code` or `shiki` — out-of-box has no highlighting.
+**What goes wrong:** Spline's runtime runs its own `requestAnimationFrame` loop and listens to pointer/scroll events for interactive scenes. If the Spline scene has any camera-parallax or mouse-follow behavior configured in `spline.design`, both the scene's event listeners and the GSAP ScrollTrigger that drives the greeting animation will process `scroll` events. The result is the camera drifting while GSAP expects it to be stationary, or the `onUpdate` progress values conflicting with the scene state.
+
+**Why it matters here specifically:** The Spline character is "greeting animation triggers once on section scroll-in." If the scene has any default camera interactivity (common default in new Spline scenes), it will override GSAP's control.
 
 **Prevention:**
-- Use the canonical setup:
+- In the Spline editor: explicitly **disable scroll**, **disable orbit**, and **disable zoom** on the camera in the scene settings before exporting. Only keep the named states that represent "idle" and "greeting" — the scene should not respond to any user input autonomously.
+- GSAP controls the *when* (via ScrollTrigger / IntersectionObserver). Spline controls the *what* (pre-authored animation states). These are separate channels — GSAP does not scrub Spline's timeline directly; it only fires Spline's named events.
+- GSAP pattern: `gsap.matchMedia({ '(min-width: 768px)': () => ScrollTrigger.create({ trigger: '#about', ... onEnter: () => splineRef.current?.emitEvent('keyUp', 'Character') }) })`
+- GSAP does NOT write `transform` to the Spline canvas element. GSAP and Spline own different things. If you want to animate the *container* (e.g., fade in the Spline canvas on enter), use GSAP on the `<div>` wrapping `<Spline>`, not on the canvas itself.
+
+**Detection:** Load the page in dev, scroll slowly into About — if the 3D character rotates/drifts based on pointer position *before* you've done anything, scroll interactivity is on in the Spline scene. Disable it in the editor.
+
+**Phase:** ABOUT-V2-01 (scene design phase, before wiring the React component).
+
+---
+
+### Pitfall SP-5: CORS error loading `.splinecode` file from `prod.spline.design` when served from Vercel
+
+**Confidence:** MEDIUM
+
+**What goes wrong:** Spline scenes are served as `.splinecode` files from `prod.spline.design`. This is a cross-origin fetch. In most cases it Just Works because `prod.spline.design` includes CORS headers. The gotcha is when: (a) the scene URL is copied as a draft URL (not the published URL) — draft URLs do not have `Access-Control-Allow-Origin: *`, they require authentication; or (b) a corporate network or privacy browser extension blocks the external fetch.
+
+**Why it matters here specifically:** This is a portfolio site. The Spline scene must load on the first try for any recruiter opening it. Draft URLs are a common mistake during development — they work on the developer's machine (Spline auth cookie present) and fail for everyone else.
+
+**Prevention:**
+- Always use the **published export URL** from Spline (Scene → Export → "Spline Viewer" or "Public Link"). Published URLs always have CORS headers.
+- Verify the URL in an incognito window before wiring it into the component. If it 404s or returns a 401 in incognito, it's a draft URL.
+- Optional: self-host the `.splinecode` file in `/public/scenes/character.splinecode` and serve it from the same origin. This eliminates CORS entirely and gives control over caching headers. The downside is file size (~5–20 MB for complex scenes) — set an explicit `Cache-Control: public, max-age=31536000` via Vercel's `headers()` config to amortize the cost.
+- If self-hosting: add to `next.config.mjs`:
   ```js
-  // next.config.mjs
-  import createMDX from '@next/mdx';
-  const withMDX = createMDX({ options: { remarkPlugins: [remarkFrontmatter, remarkMdxFrontmatter], rehypePlugins: [[rehypePrettyCode, { theme: 'github-dark' }]] }});
-  export default withMDX({ pageExtensions: ['ts', 'tsx', 'mdx'] });
+  headers: async () => [{ source: '/scenes/:file', headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }] }]
   ```
-- Create `mdx-components.tsx` at root with custom components (especially for `<img>` → `<Image>` swap, headings, code).
-- Project deep-dives are at `/content/projects/[slug].mdx` per PROJECT.md — note this is **content**, not routed pages. You need to: read the MDX file at request time using `next-mdx-remote` or `@content-collections/mdx`, then render in `app/[locale]/projects/[slug]/page.tsx`. **`@next/mdx` only auto-routes files inside `app/`**. This is a frequent confusion.
-- Decide upfront: `@next/mdx` (file-system routed, MDX must live in `app/`) **vs** `next-mdx-remote` (read MDX files from anywhere at build time). For `/content/projects/*.mdx`, you want `next-mdx-remote` or Contentlayer/Content Collections.
 
-**Detection:** `next build` error mentioning MDX or `useMDXComponents`. Or: page renders MDX raw with `# heading` as literal text.
+**Detection:** Open Network tab in an incognito browser (no Spline auth cookie). Filter by the `.splinecode` request. If it returns 401 or a CORS error, the URL is wrong. Check the "Access-Control-Allow-Origin" response header — it must be `*` or the portfolio domain.
 
-**Phase:** Project deep-dive content phase.
+**Phase:** ABOUT-V2-01 (scene publishing, before final integration).
 
 ---
 
-### Pitfall 9: GSAP ScrollTrigger `pin: true` on mobile causes layout shift, scroll jank, iOS Safari address bar bounce
+### Pitfall SP-6: Spline `@splinetool/react-spline` version drift between installed package and the `@splinetool/runtime` peer — `emitEvent` API removed or renamed
+
+**Confidence:** MEDIUM
+
+**What goes wrong:** The Spline event API (`spline.emitEvent(eventName, objectName)`) changed between major versions of `@splinetool/runtime`. In older versions it was `spline.emitEvent('mouseHover', 'Name')`. In newer versions `emitEvent` still exists but the event name strings changed (e.g., `'keyDown'` instead of `'mouseDown'` for animation state triggers). If `@splinetool/react-spline` and `@splinetool/runtime` diverge in version (e.g., `react-spline` 4.x expects `runtime` 4.x, but npm hoisted an older `runtime` 3.x from a lockfile), the `onLoad` callback receives an `Application` instance with the old API and `emitEvent` calls silently do nothing.
+
+**Why it matters here specifically:** The current `package.json` lists `@splinetool/react-spline` but not `@splinetool/runtime` pinned explicitly. The runtime is auto-installed as a peer dep. If the lockfile has `runtime@0.9.x` from a prior install, it may not match the current `react-spline@4.x` expectation.
+
+**Prevention:**
+- Explicitly add `@splinetool/runtime` to `dependencies` in `package.json` and pin it to the same major as `react-spline`. Check the react-spline README for the required peer range.
+- After install, verify in the browser console: `window.__splineRuntime` or inspect the `Application` instance in `onLoad` — log `Object.keys(app)` to see the available methods before assuming `emitEvent` exists.
+- Read the `CHANGELOG.md` in the installed `node_modules/@splinetool/react-spline/` (or the GitHub releases page) to find the current event API before wiring any animation triggers.
+- If `emitEvent` is not available: use `spline.setVariable(key, value)` instead — this is the more stable alternative for triggering named animation states.
+
+**Detection:** Wire `onLoad={(app) => console.log(Object.keys(app))}` first. Confirm the methods you intend to call exist before the main implementation.
+
+**Phase:** ABOUT-V2-01 (spike / proof-of-concept before building the full component).
+
+---
+
+### Pitfall SP-7: Spline canvas creates a hydration mismatch because its placeholder div has no stable dimensions
+
+**Confidence:** MEDIUM
+
+**What goes wrong:** The existing `AboutSection.tsx` renders a placeholder `<div>` with `aspect-square` and `max-w-[400px]`. When Spline mounts (client-side only), it creates a `<canvas>` inside the same container. If the container's dimensions change between server render (aspect-square div) and the canvas insertion (canvas may set its own width/height attributes), React 19 hydration can warn about attribute mismatches. More importantly, if the canvas mount causes a reflow that shifts surrounding text, CLS is incurred.
+
+**Why it matters here specifically:** The About section has a two-column grid where text is on the left and the illustration/canvas is on the right. A height change in the right column shifts the left text vertically — directly observable as a layout pop.
+
+**Prevention:**
+- The placeholder div that wraps `<SplineWrapper>` must have explicit CSS dimensions (not just `aspect-square` — `aspect-ratio` only works if one dimension is constrained):
+  ```tsx
+  <div className="w-full max-w-[400px] aspect-square relative overflow-hidden">
+    <SplineWrapper />
+  </div>
+  ```
+- Inside `SplineScene.tsx`, the `<Spline>` component must be sized to `100%` of its container:
+  ```tsx
+  <Spline scene="..." style={{ width: '100%', height: '100%' }} />
+  ```
+- The `loading` prop on `dynamic()` should return a placeholder that has **identical dimensions** to the canvas:
+  ```tsx
+  dynamic(/* ... */, { loading: () => <div className="w-full h-full bg-white/5 rounded-2xl" /> })
+  ```
+  This prevents a height change when the actual canvas replaces the skeleton.
+
+**Detection:** Lighthouse "Avoid large layout shifts" (CLS > 0.1). Visually: About text jumps vertically when Spline finishes loading. In React DevTools, watch for hydration warnings in the About section tree.
+
+**Phase:** ABOUT-V2-02.
+
+---
+
+## Critical Pitfalls — rehype-pretty-code
+
+### Pitfall MDX-1: Adding `rehype-pretty-code` to `next.config.mjs` breaks the existing MDX build — `createMDX` API changed between `@next/mdx` 15 and 16
 
 **Confidence:** HIGH
 
-**What goes wrong:** ScrollTrigger pinning works by transform-locking an element and adding spacer divs. On mobile:
-- iOS Safari's collapsing address bar changes viewport height mid-scroll → pinned section recalculates `100vh` → visible jump.
-- Touch scrolling has momentum; pin release feels rubber-bandy.
-- Pin spacer can cause Cumulative Layout Shift (CLS) penalty in Lighthouse.
+**What goes wrong:** The current `next.config.mjs` uses `createMDX({})` from `@next/mdx ^16.2.6` with no options. The correct way to pass rehype plugins to `@next/mdx` has changed between versions:
+- In `@next/mdx ^13–14`: options passed via `createMDX({ options: { rehypePlugins: [...] } })`
+- In `@next/mdx ^15`: same as above but some configs moved to the MDX loader directly
+- In `@next/mdx ^16+` (current): the options object key may be `extension` not `options` in some variants — **verify against the installed version's README, not the Next.js docs which lag the package**
+
+The failure mode is silent in dev (MDX files compile without error but `rehype-pretty-code` does not run) and only becomes visible when you check that code blocks have no syntax highlighting.
+
+**Why it matters here specifically:** The current `next.config.mjs`:
+```js
+const withMDX = createMDX({
+  // Add markdown plugins here, as desired
+})
+```
+Adding rehype plugins looks like:
+```js
+const withMDX = createMDX({
+  options: {
+    rehypePlugins: [[rehypePrettyCode, { theme: 'github-dark' }]],
+  },
+})
+```
+But confirm the exact key name (`options` vs the `@next/mdx` 16.x docs) before shipping — the comment in the file even says "as desired," which hints the slot is ready.
 
 **Prevention:**
-- Use `gsap.matchMedia()` to scope desktop-only pinning:
+- Read `node_modules/@next/mdx/readme.md` or the package's `index.js` to see what the config object accepts in the installed version before writing any plugin config.
+- Add a single remark plugin first (e.g., `remark-gfm`) and verify it works with a table in MDX before adding rehype plugins — this confirms the options key is correct.
+- Test locally with `next build` (not just `next dev`) because the MDX loader runs differently in prod. A broken rehype plugin often manifests as a build error in prod but is silently ignored in dev.
+
+**Detection:** Add a fenced code block to any MDX file and run `next build`. The rendered HTML should contain `<code class="..." data-language="...">` attributes from Shiki. If code blocks are plain `<pre><code>`, the plugin did not run.
+
+**Phase:** PROJ-V2-02 (before writing any code snippet content in MDX files).
+
+---
+
+### Pitfall MDX-2: `rehype-pretty-code` and the existing `prose-invert` Tailwind class conflict — code block backgrounds become double-inverted or invisible
+
+**Confidence:** MEDIUM
+
+**What goes wrong:** The project renders MDX content inside:
+```tsx
+<article className="flex-1 prose prose-invert max-w-none">
+  <Content />
+</article>
+```
+`prose-invert` applies Tailwind Typography's dark-mode overrides, which set `--tw-prose-pre-bg` (code block background) to a semi-transparent dark color. `rehype-pretty-code` injects its own inline CSS variables for Shiki token colors. When both systems apply backgrounds, one overrides the other: you get either transparent code blocks (Tailwind wins over Shiki) or very dark-on-dark text (both apply simultaneously).
+
+**Why it matters here specifically:** The design is dark-only (`#0A0A0A` background, no light mode toggle). The default Shiki themes (`github-dark`, `one-dark-pro`) have explicit dark backgrounds that conflict with `prose-invert`'s assumed dark background. The result is visible as a colored box inside the already-dark article — usually a slightly lighter dark box that looks unintentional.
+
+**Prevention:**
+- Use a Shiki theme that has a transparent or matching background. Candidates:
+  - `"github-dark-default"` — neutral background close to `#0A0A0A`
+  - Custom theme object: pass a Shiki `BundledTheme` or a custom JSON theme that sets `"editor.background": "transparent"` — this lets Tailwind Typography's `pre` background show through
+  - The cleanest approach for a dark-only site: use `rehype-pretty-code`'s theme as `{ dark: 'github-dark' }` (it supports a theme object for dark/light) and override the pre background in CSS:
+    ```css
+    article.prose pre { background: #111 !important; }
+    ```
+- Also: `prose-invert` overrides `code` font color to white, but Shiki spans inject their own inline `color` — the inline color wins over the prose utility, which is actually correct behavior. Don't try to fight it with `!important` on token colors.
+- Add to `globals.css` or the article component directly:
+  ```css
+  .prose pre { padding: 0 !important; } /* rehype-pretty-code wraps with its own padding */
+  .prose pre > code { background: transparent !important; } /* prevent double background */
+  ```
+
+**Detection:** Add a code block with `\`\`\`ts`, run `next dev`, inspect the rendered `<pre>` in DevTools — check what `background-color` is applied. If it differs from the article background by more than a subtle contrast step, it needs override.
+
+**Phase:** PROJ-V2-02 (during first code-block integration).
+
+---
+
+### Pitfall MDX-3: Copy button in code blocks requires `"use client"` — adding it to a server-rendered MDX article causes a hydration error
+
+**Confidence:** HIGH
+
+**What goes wrong:** `rehype-pretty-code` itself is build-time only and has no copy button. Copy button patterns from the community (e.g., the popular pattern where a `<CopyButton>` component is injected into the `<pre>` via a custom rehype plugin or via `mdx-components.tsx`) require client-side `onClick`. If the `<CopyButton>` component is not marked `"use client"`, or if it is used inside an RSC MDX render without a client island wrapper, React throws a hydration error about event handlers on server-rendered HTML.
+
+**Why it matters here specifically:** The current `mdx-components.tsx` exports a `useMDXComponents` function with `h1`, `h2`, `p` overrides. If a `pre` or `code` override is added here with click handlers, and `mdx-components.tsx` is not marked `"use client"` (it currently is not), the build will fail or hydration will error.
+
+**Prevention:**
+- Either: skip the copy button for v2.0 (code quality and syntax highlighting land value without it — defer copy UX to v2.1)
+- Or: implement the copy button as a separate `"use client"` component:
+  ```tsx
+  // components/CopyButton.tsx
+  'use client'
+  export function CopyButton({ text }: { text: string }) {
+    return <button onClick={() => navigator.clipboard.writeText(text)}>Copy</button>
+  }
+  ```
+  Then use a custom `pre` override in `mdx-components.tsx` that uses `<CopyButton>` — but `mdx-components.tsx` itself must **not** be marked `"use client"` (it is a module-level export read by the MDX compiler, not a component). Instead, the copy button is added via a **custom rehype plugin** that wraps `<pre>` with a client island.
+- The simplest working pattern: use CSS `user-select: all` on code blocks so users can triple-click to select all. No JS required, no hydration risk.
+
+**Detection:** Add a `pre` override with an `onClick` to `mdx-components.tsx` and run `next dev`. If you see "Event handlers cannot be passed to Client Component props" in the terminal, the boundary is wrong.
+
+**Phase:** PROJ-V2-02 — decide before implementing. Default recommendation: no copy button for v2.0, add in a follow-up.
+
+---
+
+### Pitfall MDX-4: Dynamic `import()` of MDX files from `src/content/projects/{locale}/*.mdx` does not include `rehype-pretty-code` transforms — syntax highlighting is blank
+
+**Confidence:** HIGH
+
+**What goes wrong:** The current `projects/[slug]/page.tsx` uses:
+```tsx
+Content = (await import(`@/content/projects/${locale}/${slug}.mdx`)).default
+```
+This uses webpack's dynamic import with the `@next/mdx` loader. The MDX loader *does* apply the rehype plugins configured in `next.config.mjs` when it processes these files — **as long as `next.config.mjs` includes the correct `pageExtensions` and the `withMDX` wrapper**. The current config already has `pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx']` and `withMDX` wrapping `nextConfig`. This is the correct setup.
+
+**However**, there is one failure mode: if rehype plugins are added as ESM-only modules (e.g., `rehype-pretty-code` uses ESM-only imports), and the config is `next.config.mjs` (already ESM), the `import` statement for the plugin must be a top-level `import`, not a `require`. Mixing `require()` and ESM in `next.config.mjs` breaks the webpack loader initialization.
+
+**Prevention:**
+- Use only top-level `import` statements in `next.config.mjs`. The current file already uses `import createNextIntlPlugin from 'next-intl/plugin'` and `import createMDX from '@next/mdx'` — maintain this pattern:
   ```js
-  ScrollTrigger.matchMedia({ '(min-width: 1024px)': () => { /* pin animations */ } });
+  import rehypePrettyCode from 'rehype-pretty-code'
+  // NOT: const rehypePrettyCode = require('rehype-pretty-code')
   ```
-- On mobile, replace pin-based reveals with **simple opacity/y-transform fade-ins** (no pin, no scrub).
-- Use `100svh` (small viewport height) instead of `100vh` for any pinned section heights to avoid iOS address bar issues.
-- Use `pinSpacing: false` only when you understand you'll layout-overlap deliberately.
-- Set `anticipatePin: 1` to reduce the visible jump when pin engages.
-- For scrub animations, use `scrub: 1` (smoothed) not `scrub: true` (instant) — feels less janky on mobile.
+- `rehype-pretty-code` is ESM-only. `remark-gfm` is ESM-only. Both are safe in the existing `.mjs` config.
+- After adding plugins, run `next build` immediately (not just `next dev`) — webpack loader errors often surface only in production builds.
 
-**Detection:** Test on real iOS Safari (not just DevTools). Watch for: pinned section "jumps" by ~60 px when address bar collapses; layout content below pin shifts when scroll engages.
+**Detection:** Add a code block in any MDX file and run `next build`. Look for loader errors in the terminal. If build passes but code blocks show no highlighting, log inside a custom rehype plugin to confirm it runs.
 
-**Phase:** Work Section / scroll-driven content phase.
+**Phase:** PROJ-V2-02 (before writing any MDX content with code blocks).
 
 ---
 
-### Pitfall 10: next-intl message catalog imported into client component → entire DE + EN catalog shipped to browser
+### Pitfall MDX-5: "What I'd do differently" section added to existing MDX files breaks DE locale pages if the DE `.mdx` files are not updated in sync
 
 **Confidence:** MEDIUM
 
-**What goes wrong:** Importing `messages.json` directly into a client component (`'use client'`) inlines it into the JS bundle. With two locales, you ship both, defeating the purpose of locale routing.
+**What goes wrong:** The 6 MDX files (3 slugs × 2 locales) were translated in Phase 10. Adding a new `## What I'd Do Differently` section to the EN files without adding the corresponding section to the DE files means the DE project pages 404 or render with only partial content. The dynamic import fallback (`notFound()`) does not help here — the DE file will still import successfully, but the section will simply be absent, making DE pages silently incomplete.
+
+**Why it matters here specifically:** The `generateStaticParams` in `projects/[slug]/page.tsx` generates all 6 combinations at build time. If a DE file builds without the new section, Vercel serves a stale cached version. Recruiters using `?locale=de` (or navigating to `/de`) see an incomplete page.
 
 **Prevention:**
-- Use `useTranslations('Namespace')` from a server component when possible — message lookup happens server-side.
-- For client components, use `NextIntlClientProvider` and pass only the **namespace** needed via `messages={pick(messages, ['Hero', 'Work'])}` (use `lodash.pick` or similar).
-- Split message files by namespace: `messages/en/hero.json`, `messages/en/work.json` — don't ship a single mega-file.
-- Verify: Network tab on `/en` → search response for a DE-only string. Should not appear.
+- Treat EN and DE MDX files as a synchronized pair. When adding the "What I'd do differently" section to any EN file, immediately add a stub in the corresponding DE file — even if the German copy is draft/TBD at first.
+- Add a build-time parity check: a script (or a custom remark plugin) that asserts all `##` headings in the EN file have a corresponding heading in the DE file. This can be a simple Node script run as part of `prebuild` in `package.json`:
+  ```json
+  "prebuild": "node scripts/check-mdx-parity.mjs"
+  ```
+- If running DeepL again for the new sections: apply the same XML tag protection for any inline code (backtick strings), filenames, and variable names inside the new section's prose — DeepL will translate `useState` to German-inflected forms if not protected.
 
-**Detection:** `next build` output → JS bundle size for `/en` includes German strings (use `next-bundle-analyzer`).
+**Detection:** After adding the section to EN files, run `next build` with `--locale de` and manually check each project page in DE locale. Watch for missing `## Was ich anders machen würde` section.
 
-**Phase:** i18n Setup phase.
+**Phase:** PROJ-V2-01 (the "What I'd do differently" content phase).
 
 ---
 
-### Pitfall 11: GSAP ScrollTrigger calculates positions before fonts load → triggers fire at wrong scroll positions
+## Integration Pitfalls — Cross-Cutting
+
+### Pitfall INT-1: ScrollTrigger `refresh()` called at wrong time after Spline loads — scroll triggers fire at old positions
 
 **Confidence:** HIGH
 
-**What goes wrong:** When `next/font` swaps in (FOUT), text height changes → element positions shift → ScrollTrigger's cached scroll positions are now wrong → animations fire too early or too late.
+**What goes wrong:** The existing codebase calls `ScrollTrigger.refresh()` after `document.fonts.ready` to correct positions after font loading. Spline has a significant load time (the `.splinecode` fetch + WebGL init). When Spline finishes loading, the About section's height may change slightly (the canvas settles to its final dimensions), which shifts all scroll positions below the About section. This means the Work section's stagger trigger, the waveform draw trigger, and the PhaseTimeline triggers all fire at wrong scroll offsets.
+
+**Why it matters here specifically:** All existing ScrollTrigger animations (Phase 4 Work stagger, Phase 5 PhaseTimeline draw, Phase 3 hero fade) were calibrated against a layout without a live Spline canvas. The canvas mount changes the layout by potentially a few pixels to tens of pixels depending on how the About section's aspect-ratio constraint resolves.
 
 **Prevention:**
-- In a top-level client effect, call `document.fonts.ready.then(() => ScrollTrigger.refresh())`.
-- Also call `ScrollTrigger.refresh()` after Spline scene finishes loading (it changes layout).
-- Use `display: 'swap'` on fonts intentionally accepting the FOUT, and refresh after.
-- Add `ScrollTrigger.config({ ignoreMobileResize: true })` to prevent the iOS address bar from triggering a refresh storm.
+- Fire `ScrollTrigger.refresh()` from Spline's `onLoad` callback:
+  ```tsx
+  const onSplineLoad = useCallback((app: Application) => {
+    splineRef.current = app
+    // Allow one frame for the canvas to settle dimensions
+    requestAnimationFrame(() => ScrollTrigger.refresh())
+  }, [])
+  ```
+- Combine with the existing `document.fonts.ready` refresh in a root-level effect — do not fire two `refresh()` calls simultaneously; the second one after Spline is the one that matters for layout.
+- Also call `ScrollTrigger.refresh()` on the `IntersectionObserver` callback when Spline first becomes visible (the canvas may only be sized after it enters the viewport).
 
-**Detection:** First load: scroll triggers fire 100–300 px off. Subsequent loads (fonts cached): correct.
+**Detection:** After wiring Spline, scroll slowly past the Work section on first load. If cards animate 100–200 px late (or early), the refresh is missing or mistimed. Easiest test: pin element jumps to wrong position.
 
-**Phase:** Animation Setup phase.
+**Phase:** ABOUT-V2-01/02 (after Spline is wired, as a final integration step).
 
 ---
 
-### Pitfall 12: next-intl + intercepting routes for project modal → locale prefix breaks the interceptor pattern
-
-**Confidence:** LOW (specific edge case worth verifying)
-
-**What goes wrong:** Intercepting routes use folder conventions like `(.)projects/[slug]`. With `[locale]` segment, you need `(.)projects/[slug]` placed correctly relative to `[locale]`. Get the depth marker wrong (`(.)` vs `(..)` vs `(..)(..)`) and the interception silently fails — clicking the card does a full navigation.
-
-**Prevention:**
-- Structure:
-  ```
-  app/[locale]/
-    layout.tsx
-    @modal/
-      default.tsx           // returns null
-      (.)projects/[slug]/
-        page.tsx            // modal version
-    projects/[slug]/
-      page.tsx              // full page version
-  ```
-- The `(.)` matches the same level — `app/[locale]/projects/...` is at the same level as the interceptor inside `@modal`.
-- Test both flows: (a) click from grid → modal opens with shared-layout morph, (b) refresh on modal URL → full page renders.
-
-**Phase:** Work Section / routing phase. Verify against current Next.js docs before implementing.
-
----
-
-## Performance Pitfalls
-
-### Pitfall 13: Lighthouse mobile drops below 85 from animation libraries — root causes ranked
+### Pitfall INT-2: The existing `next-mdx-remote` dependency in `package.json` is unused but present — causes confusion and potential import errors if accidentally used alongside `@next/mdx`
 
 **Confidence:** HIGH
 
-PROJECT.md mandates Lighthouse mobile ≥ 85. Expected regressions in order of impact:
+**What goes wrong:** `package.json` currently lists `next-mdx-remote: ^6.0.0` as a dependency. The actual project uses `@next/mdx` with webpack dynamic `import()` for MDX files. `next-mdx-remote` is not used anywhere in the codebase. If a developer adds a new MDX pattern and mistakenly imports from `next-mdx-remote` (it's in node_modules, it's listed in package.json, autocomplete will suggest it), they get a different MDX compilation pipeline than the one configured in `next.config.mjs` — the `rehype-pretty-code` plugins will not run on content compiled through `next-mdx-remote`.
 
-| Cause | Lighthouse impact | Mitigation |
-|---|---|---|
-| Spline runtime loaded on mobile | TBT +1500 ms, TTI +2 s | Desktop-only mount (`useMediaQuery('(min-width: 1024px)')`), `ssr: false` dynamic import, IntersectionObserver gate |
-| shader-gradient WebGL on initial paint | LCP +500 ms, TBT +200 ms | `prefers-reduced-motion` static fallback (CSS gradient image); lazy-import the shader after LCP |
-| GSAP full bundle imported (`import gsap from 'gsap'` pulls all plugins) | JS +50 kB | Import only what's used: `import { gsap } from 'gsap'; import { ScrollTrigger } from 'gsap/ScrollTrigger'`. Avoid `gsap/all`. |
-| Framer Motion full bundle | JS +40 kB | Use `motion/react` (Motion 11+) which has better tree-shaking; or use the `LazyMotion` + `m` component pattern to ship only needed features. |
-| Three font families loaded eagerly | FCP +200 ms | Scope Courier Prime to `/life` only (Pitfall 7) |
-| Travel photos on /life unoptimized | LCP catastrophic | Use `next/image` with explicit `width`/`height`, `placeholder="blur"`, AVIF/WebP via Next default |
-| MDX project pages with unhighlighted code blocks vs rehype-pretty-code at build | (build-time only — runtime fine) | Use build-time highlighting (`rehype-pretty-code` with `shiki`), not client-side highlight.js |
-
-**Prevention strategy:**
-- Run Lighthouse CI on every PR. Fail builds below 85 mobile.
-- Use `@next/bundle-analyzer` to inspect every route's JS payload.
-- Establish budgets in CI: hero route < 250 kB JS, project page < 200 kB JS.
-
-**Phase:** Performance Audit phase (recurring at end of every milestone).
-
----
-
-### Pitfall 14: Framer Motion `whileInView` + GSAP ScrollTrigger on same element fight each other
-
-**Confidence:** MEDIUM
-
-**What goes wrong:** PROJECT.md splits domains: "GSAP owns scroll/macro, Framer Motion owns component/transition." If a developer accidentally adds `whileInView` to a card inside a GSAP-staggered grid, both libraries write to `transform` and the animations stutter or cancel each other.
+**Why it matters here specifically:** `rehype-pretty-code` is configured via `withMDX` in `next.config.mjs`. This only applies to the webpack MDX loader. `next-mdx-remote` uses its own serializer and must have plugins passed separately to `serialize({ mdxOptions: { rehypePlugins: [...] } })`. If the v2.0 work accidentally uses `next-mdx-remote` for any new content, code blocks will have no syntax highlighting and the error will not be obvious.
 
 **Prevention:**
-- Code review rule: search PRs for `whileInView` — must be justified. Default to GSAP for any scroll-triggered animation.
-- Document the split in a `CONTRIBUTING.md` or `docs/animations.md`:
-  - GSAP: scroll reveals, ScrollTrigger pins, scrub timelines, staggers, page-load entrances driven by scroll
-  - Framer Motion: hover/tap states, `AnimatePresence` exit transitions, `layout`/`layoutId` morphs, modal mount/unmount
-- Lint rule: a custom ESLint rule that flags `whileInView` if `gsap` is imported in the same file.
+- Remove `next-mdx-remote` from `package.json` and `node_modules` before starting v2.0 work. It is dead code. Run `npm uninstall next-mdx-remote` (or the lock-file equivalent).
+- If there is a reason to keep it (not apparent from the codebase), add a comment in `package.json` explaining why, so it's not mistakenly used.
 
-**Detection:** Visual stutter on scroll. Console: no errors, just bad UX.
+**Detection:** `grep -r "next-mdx-remote" src/` — should return zero results. If it does, the library is in use and needs auditing.
 
-**Phase:** Animation Setup phase — write the split as a doc before either library is used in anger.
+**Phase:** Before PROJ-V2-02 (cleanup step at the start of the phase).
 
 ---
 
-### Pitfall 15: CLS from shader-gradient canvas resize / Spline canvas mounting late
+### Pitfall INT-3: `prose-invert` + rehype-pretty-code + dark-only design means light-mode Shiki themes render white text on white background
 
-**Confidence:** MEDIUM
+**Confidence:** HIGH
 
-**What goes wrong:** Canvas elements that resize to `100vw / 100vh` after JS executes shift surrounding content → CLS penalty. The hero shader canvas is a common offender.
+**What goes wrong:** Several popular Shiki themes (`github-light`, `solarized-light`, `catppuccin-latte`) have light backgrounds. If `rehype-pretty-code` is configured with one of these themes — or with a dual-mode theme object `{ light: '...', dark: '...' }` — and the CSS variable `--shiki-light` is applied in an environment where there is no `@media (prefers-color-scheme: light)` override (because this portfolio is dark-only by design, no `prefers-color-scheme` media query exists in `globals.css`), the browser may apply the light token colors. On a `#0A0A0A` background: white background + white text = invisible.
 
 **Prevention:**
-- Reserve hero height via CSS (`min-height: 100svh` on the hero container) so the canvas mounts into pre-sized space.
-- For the About Spline: render a fixed-aspect placeholder div with the same dimensions as the Spline canvas; only swap to the actual canvas after load.
-- Use `next/image` `priority` + width/height for any LCP image (hero name as image? — not in this design, but applies to /life photos).
+- Use a single dark theme string, not a theme object:
+  ```js
+  [rehypePrettyCode, { theme: 'github-dark-default' }]
+  ```
+  Single theme = single `--shiki-color-*` variable set. No light/dark branching. Safe for a dark-only site.
+- Do not follow the official `rehype-pretty-code` docs' dual-theme example for this project. The dual-theme pattern is designed for sites with `prefers-color-scheme` switching, which this project explicitly does not have.
+- If you want a custom feel: create a minimal Shiki JSON theme that overrides just the background to `transparent` and keeps dark token colors.
 
-**Detection:** Lighthouse CLS metric > 0.1. PageSpeed Insights "Avoid large layout shifts" diagnostic identifies the offending element.
+**Detection:** Add a `\`\`\`ts` block and load in browser. Open DevTools, inspect the `<code>` element — check `--shiki-light` and `--shiki-dark` CSS vars. If light vars are present and not overridden, the code block will look broken on any device with `prefers-color-scheme: light` set at OS level.
 
-**Phase:** Hero phase, About phase.
-
----
-
-### Pitfall 16: ScrollTrigger + smooth scroll library (Lenis, Locomotive) → triggers fire at wrong positions
-
-**Confidence:** HIGH (only relevant if smooth scroll is added later)
-
-**What goes wrong:** Adding Lenis or Locomotive Scroll later for "smoother" feel breaks every existing ScrollTrigger because they need explicit integration (`ScrollTrigger.scrollerProxy`).
-
-**Prevention:**
-- **Decision now:** native scroll only. Don't add smooth scroll later — the cost of retrofitting ScrollTrigger integration is high.
-- If smooth scroll is requested in v2, plan a dedicated migration phase with `ScrollTrigger.scrollerProxy` setup. Don't bolt it on.
-
-**Phase:** Architecture decision — log in PROJECT.md Key Decisions.
+**Phase:** PROJ-V2-02 (theme config decision, before adding any MDX code blocks).
 
 ---
 
-### Pitfall 17: DeepL translation pass produces strings with placeholders broken (HTML/ICU)
+## Phase-Specific Warnings — v2.0 Features
 
-**Confidence:** MEDIUM
-
-**What goes wrong:** Sending strings with ICU placeholders (`Hello {name}`) or rich text tags (`<b>foo</b>`) through DeepL → translations sometimes mangle the placeholder (`Hallo {Name}`, lowercased / inflected / re-ordered → next-intl can't substitute).
-
-**Prevention:**
-- Use DeepL's XML tag handling (`tag_handling=xml` + `ignore_tags`) to protect placeholders.
-- Wrap ICU placeholders in non-translatable tags before sending: `Hello <x>{name}</x>` → DeepL leaves `<x>...</x>` alone → strip after.
-- Maintain a snapshot test: render every translation key in both locales and assert no `{` or `}` is missing after substitution.
-- Manual review the DE catalog before deploy — especially short UI labels where DeepL guesses register wrong.
-
-**Detection:** Runtime: missing words in DE UI ("Hello " with no name), or React error "missing interpolation".
-
-**Phase:** i18n Translation phase.
-
----
-
-## Phase-Specific Warnings
-
-| Phase | Likely Pitfall | Mitigation |
-|---|---|---|
-| **Foundation / Setup** | next-intl middleware misconfig forces dynamic rendering (Pitfall 4) | Set up `[locale]` routing + `setRequestLocale` from day 1; verify static build output |
-| **Foundation / Setup** | @next/mdx vs next-mdx-remote confusion (Pitfall 8) | Decide MDX strategy up front; `/content/projects/*.mdx` → use next-mdx-remote or Content Collections |
-| **Design System / Fonts** | All 3 fonts loaded everywhere (Pitfall 7) | Scope Courier Prime to /life layout only |
-| **Animation Setup** | Plugin registration / Strict Mode duplication (Pitfalls 1, 2) | `lib/gsap.ts` central module + `useGSAP` everywhere |
-| **Animation Setup** | GSAP/Framer Motion domain overlap (Pitfall 14) | Write the split doc before any animation code |
-| **Hero (shader gradient)** | WebGL context leak across routes (Pitfall 6) | Mount once in root layout, persist across navigations |
-| **Hero (shader gradient)** | CLS from canvas mount (Pitfall 15) | Reserve `100svh` height in CSS first |
-| **About (Spline)** | SSR crash + bundle bloat (Pitfall 3) | `dynamic({ ssr: false })`, desktop-only, IntersectionObserver gated |
-| **About (Spline)** | Concurrent WebGL contexts with hero gradient (Pitfall 6) | Pause one when the other is on screen |
-| **Work Section** | Cross-route `layoutId` doesn't work (Pitfall 5) | Use intercepting routes for modal pattern |
-| **Work Section** | Intercepting routes + `[locale]` segment depth (Pitfall 12) | Verify folder structure against current Next docs |
-| **Work Section** | ScrollTrigger mobile pin jank (Pitfall 9) | `gsap.matchMedia` desktop-only pins, use `100svh` |
-| **Work / Scroll content** | Triggers misfire before fonts load (Pitfall 11) | `document.fonts.ready → ScrollTrigger.refresh()` in root |
-| **Project deep-dives (MDX)** | MDX raw text rendered (Pitfall 8) | Validate `pageExtensions`, `mdx-components.tsx`, build locally before push |
-| **i18n Translation** | DeepL mangling placeholders (Pitfall 17) | XML tag protection + snapshot tests |
-| **i18n Translation** | Whole catalog shipped to client (Pitfall 10) | Pick namespaces for `NextIntlClientProvider` |
-| **Performance Audit** | Bundle creep from GSAP/Framer Motion (Pitfall 13) | Modular imports, `LazyMotion`, bundle analyzer in CI |
-| **Performance Audit** | Lighthouse mobile < 85 (Pitfall 13) | CI gate on every PR |
+| Phase | Feature | Likely Pitfall | Mitigation | Confidence |
+|---|---|---|---|---|
+| **ABOUT-V2-01** | Spline scene authoring | Default camera interactivity fights GSAP scroll control (SP-4) | Disable scroll/orbit/zoom in Spline editor before exporting | MEDIUM |
+| **ABOUT-V2-01** | Spline scene URL | Draft URL used instead of published URL (SP-5) | Verify in incognito before wiring | MEDIUM |
+| **ABOUT-V2-01** | Event API | `emitEvent` method name changed between runtime versions (SP-6) | Log `Object.keys(splineApp)` in onLoad spike first | MEDIUM |
+| **ABOUT-V2-01** | ScrollTrigger timing | Spline load changes About layout, misfires existing triggers (INT-1) | `onLoad → requestAnimationFrame → ScrollTrigger.refresh()` | HIGH |
+| **ABOUT-V2-02** | Dynamic import boundary | Spline runtime enters initial bundle (SP-1) | Mirror `ShaderCanvasWrapper` two-layer pattern exactly | HIGH |
+| **ABOUT-V2-02** | WebGL contexts | ShaderCanvas + Spline exhaust context budget (SP-2) | IntersectionObserver gate + mobile-only render gate | MEDIUM |
+| **ABOUT-V2-02** | React 19 Strict Mode | `onLoad` fires twice in dev, duplicate animation subscriptions (SP-3) | `useRef` guard + `useGSAP` for GSAP bindings | MEDIUM |
+| **ABOUT-V2-02** | CLS | Spline canvas mount shifts About text column (SP-7) | Pre-sized placeholder with identical dimensions | MEDIUM |
+| **PROJ-V2-01** | MDX sync | New section added to EN but not DE (MDX-5) | Stub DE section immediately, run parity check script | MEDIUM |
+| **PROJ-V2-01** | DeepL | New prose section has code terms mangled (MDX-5) | XML tag protection for inline code in DeepL call | MEDIUM |
+| **PROJ-V2-02** | Cleanup | `next-mdx-remote` in package.json confuses MDX pipeline (INT-2) | Uninstall it before starting | HIGH |
+| **PROJ-V2-02** | Plugin config | `rehype-pretty-code` options key wrong for `@next/mdx` 16 (MDX-1) | Verify installed package README before writing config | HIGH |
+| **PROJ-V2-02** | Theme conflict | `prose-invert` + Shiki dual theme → invisible code on dark bg (INT-3, MDX-2) | Single dark theme string, not theme object | HIGH |
+| **PROJ-V2-02** | Copy button | Client event handler in server MDX → hydration error (MDX-3) | Skip copy button for v2.0, or isolate to `"use client"` island | HIGH |
+| **PROJ-V2-02** | ESM config | `require()` mixed with ESM in `next.config.mjs` breaks loader (MDX-4) | Top-level `import` only in `.mjs` config | HIGH |
 
 ---
 
-## "Works locally, breaks in production" — top scenarios
+## "Works locally, breaks on Vercel" — v2.0 Scenarios
 
-1. **GSAP plugin not registered** (Pitfall 1) — dev module order saves you, prod tree-shake kills you.
-2. **Spline `window is not defined`** (Pitfall 3) — dev fast-refresh tolerates it, prod build crashes.
-3. **next-intl static rendering off** (Pitfall 4) — works in dev (always SSR), Vercel bills you for it.
-4. **Font loading race with ScrollTrigger** (Pitfall 11) — local fonts cached, first prod visitor sees broken triggers.
-5. **MDX content path mismatch** (Pitfall 8) — relative paths work in dev, `next build` static optimization can't find files.
-6. **WebGL context leak** (Pitfall 6) — dev rarely navigates enough to hit it; users will.
-7. **DE umlauts missing** (Pitfall 7 subset) — `latin` font subset doesn't cover ä/ö/ü/ß → boxes in prod DE locale.
-8. **Intercepting routes folder structure** (Pitfall 12) — dev navigates fine, direct URL hit in prod errors out.
+1. **Spline draft URL** (SP-5) — works on dev machine (Spline auth cookie present), returns 401 for all visitors on Vercel.
+2. **rehype-pretty-code ESM import missing** (MDX-4) — `next dev` may tolerate it via HMR; `next build` on Vercel fails with loader error.
+3. **DE MDX file missing new section** (MDX-5) — local build checks EN locale by default; Vercel builds all 6 static params and the DE page silently ships without the section.
+4. **Spline bundle not lazy-loaded** (SP-1) — local machine (fast CPU, good RAM) hides the TBT impact; Vercel Lighthouse CI on a simulated mobile device fails ≥ 85 threshold.
+5. **WebGL context exhaustion** (SP-2) — local dev rarely navigates enough times in one session; real users (especially recruiters who open multiple tabs or navigate back/forth) hit the limit.
 
 ---
 
 ## Sources
 
-External research tools (WebSearch, WebFetch, Context7 MCP, ctx7 CLI, Brave Search, Exa, Firecrawl) were unavailable in this run. The pitfalls above are drawn from documented behavior of the named libraries in the assistant's training corpus.
+External research tools (WebSearch, WebFetch, ctx7, Bash) were restricted in this research run. Findings are drawn from:
+
+- Direct codebase inspection: `package.json`, `next.config.mjs`, `src/lib/gsap.ts`, `src/components/ShaderCanvas.tsx`, `src/components/AboutSection.tsx`, `src/app/[locale]/projects/[slug]/page.tsx`, `mdx-components.tsx`, `src/app/layout.tsx`
+- Training data on documented library behavior for: `@splinetool/react-spline`, `@splinetool/runtime`, `rehype-pretty-code`, `@next/mdx`, GSAP `ScrollTrigger`, React 19 Strict Mode, Shiki token themes, Tailwind Typography `prose-invert`
 
 **Recommended verification during implementation:**
-- GSAP + React: https://gsap.com/resources/react/ and `@gsap/react` README on npm
-- Framer Motion / Motion: https://motion.dev/docs (especially layout animations and `LazyMotion`)
-- Spline: https://github.com/splinetool/react-spline README
-- shader-gradient: https://github.com/ShaderGradient/shadergradient
-- next-intl: https://next-intl-docs.vercel.app/docs/getting-started/app-router (static rendering setup is the critical page)
-- @next/mdx: https://nextjs.org/docs/app/building-your-application/configuring/mdx
-- Next.js intercepting routes: https://nextjs.org/docs/app/building-your-application/routing/intercepting-routes
-- DeepL XML tag handling: https://www.deepl.com/docs-api/xml/
-
-Each pitfall above should be cross-checked against the linked source during the phase that implements it. Flag any discrepancies and update this document.
+- Spline event API: https://github.com/splinetool/react-spline — check `Application` type exports and CHANGELOG
+- rehype-pretty-code config: https://rehype-pretty-code.netlify.app/ — confirm options key for `@next/mdx` 16.x
+- Shiki themes available: https://shiki.style/themes — pick a single dark theme name
+- WebGL context limits: https://developer.mozilla.org/en-US/docs/Web/API/WebGLRenderingContext — browser limits section
+- @next/mdx + rehype: https://nextjs.org/docs/app/building-your-application/configuring/mdx#using-plugins
