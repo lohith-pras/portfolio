@@ -26,7 +26,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 8: Page Transitions** - AnimatePresence panel slides between routes
 - [x] **Phase 9: DE i18n Pass** - DeepL UI chrome translation, messages/de.json, locale switcher completion
 - [x] **Phase 10: German MDX Translation Pass** - German translation of project MDX files for deep-dives (completed 2026-05-22)
-- [ ] **Phase 11: MDX Pipeline + Code Highlights** - Install rehype-pretty-code, wire into next.config.mjs, override pre/code in mdx-components.tsx, smoke test
+- [x] **Phase 11: MDX Pipeline + Code Highlights** - Install rehype-pretty-code, wire into next.config.mjs, override pre/code in mdx-components.tsx, smoke test (completed 2026-05-22)
 - [ ] **Phase 12: Project Content Depth** - Add "What I'd Do Differently" sections + code blocks to all 6 MDX files (EN + DE)
 - [ ] **Phase 13: SplineAbout Component Shell** - Build SplineAbout.tsx with desktop gate + dynamic boundary + ScrollTrigger shell; build StaticIllustrationFallback.tsx
 - [ ] **Phase 14: Spline Scene Integration** - Wire published Spline scene URL + event names, validate greeting animation, Lighthouse mobile check
@@ -156,7 +156,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. A code block in any project MDX file renders with `vesper` (or equivalent single dark theme) syntax highlighting — token colours visible, no unstyled `<pre>` fallback
   2. The `<pre>` and `<code>` overrides in `mdx-components.tsx` apply to all project pages without breaking existing prose styles
   3. `npm run build` completes without errors after wiring rehype-pretty-code into `next.config.mjs`
-**Plans**: TBD
+**Plans**: Complete
 **UI hint**: yes
 
 ### Phase 12: Project Content Depth
@@ -211,7 +211,7 @@ Note: Phase 13 depends only on Phase 10 (not Phase 12) and can be worked in para
 | 8. Page Transitions | 1/1 | Complete | 2026-05-22 |
 | 9. DE i18n Pass | 1/1 | Complete | 2026-05-22 |
 | 10. German MDX Pass | 1/1 | Complete   | 2026-05-22 |
-| 11. MDX Pipeline + Code Highlights | 0/0 | Not started | - |
+| 11. MDX Pipeline + Code Highlights | 1/1 | Complete | 2026-05-22 |
 | 12. Project Content Depth | 0/0 | Not started | - |
 | 13. SplineAbout Component Shell | 0/0 | Not started | - |
 | 14. Spline Scene Integration | 0/0 | Not started | - |

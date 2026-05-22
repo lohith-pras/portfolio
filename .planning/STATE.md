@@ -2,15 +2,16 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: Depth + 3D
-status: planning
-last_updated: "2026-05-22T16:29:57.637Z"
-last_activity: 2026-05-22
+status: executing
+stopped_at: v2.0 roadmap created — Phases 11–14 defined and written to ROADMAP.md
+last_updated: "2026-05-22T16:56:41.631Z"
+last_activity: 2026-05-22 -- Phase 11 complete; Phase 12 planning in progress
 progress:
-  total_phases: 4
-  completed_phases: 0
-  total_plans: 0
-  completed_plans: 0
-  percent: 0
+  total_phases: 14
+  completed_phases: 2
+  total_plans: 6
+  completed_plans: 5
+  percent: 14
 ---
 
 # Project State
@@ -20,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-22)
 
 **Core value:** Visitors leave knowing Lohith is a builder with intent and a distinct perspective — not just a candidate with a CV.
-**Current focus:** Phase 11 — MDX Pipeline + Code Highlights
+**Current focus:** Phase 12 — Project Content Depth
 
 ## Current Position
 
-Phase: 11 — MDX Pipeline + Code Highlights
-Plan: —
-Status: Not started
-Last activity: 2026-05-22 — Milestone v2.0 roadmap created (Phases 11–14)
+Phase: 12 — Project Content Depth
+Plan: 12-01
+Status: Ready to execute
+Last activity: 2026-05-22 -- Phase 11 complete, syntax highlighting pipeline wired with vesper theme
 
 ## Performance Metrics
 
