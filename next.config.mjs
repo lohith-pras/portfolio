@@ -12,6 +12,12 @@ const withMDX = createMDX({
 const nextConfig = {
   // Configure pageExtensions to include md and mdx
   pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+  webpack: (config) => {
+    config.infrastructureLogging = {
+      level: 'error',
+    }
+    return config
+  },
 }
 
 // Merge MDX config with Next.js config
