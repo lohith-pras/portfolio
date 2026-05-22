@@ -1,0 +1,58 @@
+{
+  "nav": {
+    "about": "About",
+    "work": "Work",
+    "life": "Life",
+    "contact": "Contact",
+    "locale": "EN",
+    "resume": "Resume"
+  },
+  "hero": {
+    "name": "Lohith Tarikere Prasanna",
+    "contact_email": "lnlohith3@gmail.com",
+    "github": "GitHub",
+    "linkedin": "LinkedIn"
+  },
+  "about": {
+    "descriptor": "Builder at the intersection of AI, wireless, and mobility.",
+    "bio_1": "I build systems that work in the real world — not just in demos.",
+    "bio_2": "My projects span MIMO channel estimation with neural networks, vehicle-to-vehicle communication over visible light, and IoT security frameworks. I care about the gap between research and production.",
+    "bio_3": "Currently exploring how machine learning changes the way we design wireless systems. Looking for teams where that question matters."
+  },
+  "work": {
+    "heading": "Work",
+    "view_project": "View project"
+  },
+  "projects": {
+    "mimo": {
+      "name": "MIMO AI Channel Quality Tool",
+      "problem": "Neural-network-driven channel estimation for massive MIMO systems",
+      "status": "Active"
+    },
+    "vlc": {
+      "name": "VLC-based V2V Communication Prototype",
+      "problem": "Visible-light communication link for low-latency vehicle-to-vehicle data",
+      "status": "Complete"
+    },
+    "iot": {
+      "name": "IoT Security Project",
+      "problem": "Lightweight security framework for resource-constrained IoT devices",
+      "status": "Complete"
+    }
+  },
+  "life": {
+    "heading": "Life",
+    "hobbies_heading": "Hobbies",
+    "obsessions_heading": "Current obsessions"
+  },
+  "contact": {
+    "heading": "Contact",
+    "email_label": "Email",
+    "github_label": "GitHub",
+    "linkedin_label": "LinkedIn"
+  },
+  "meta": {
+    "title": "Lohith Tarikere Prasanna — Builder",
+    "description": "Builder with intent. AI, wireless, and mobility. Portfolio of Lohith Tarikere Prasanna."
+  }
+}

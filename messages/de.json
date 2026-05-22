@@ -1,0 +1,58 @@
+{
+  "nav": {
+    "about": "Über mich",
+    "work": "Projekte",
+    "life": "Leben",
+    "contact": "Kontakt",
+    "locale": "DE",
+    "resume": "Lebenslauf"
+  },
+  "hero": {
+    "name": "Lohith Tarikere Prasanna",
+    "contact_email": "lnlohith3@gmail.com",
+    "github": "GitHub",
+    "linkedin": "LinkedIn"
+  },
+  "about": {
+    "descriptor": "Builder an der Schnittstelle von KI, Funk und Mobilität.",
+    "bio_1": "Ich baue Systeme, die in der realen Welt funktionieren — nicht nur in Demos.",
+    "bio_2": "Meine Projekte umfassen MIMO-Kanalschätzung mit neuronalen Netzen, Fahrzeug-zu-Fahrzeug-Kommunikation über sichtbares Licht und IoT-Sicherheits-Frameworks. Mich interessiert die Lücke zwischen Forschung und Produktion.",
+    "bio_3": "Derzeit untersuche ich, wie maschinelles Lernen die Entwicklung drahtloser Systeme verändert. Ich suche Teams, denen diese Frage wichtig ist."
+  },
+  "work": {
+    "heading": "Projekte",
+    "view_project": "Projekt ansehen"
+  },
+  "projects": {
+    "mimo": {
+      "name": "MIMO AI Channel Quality Tool",
+      "problem": "Neuronale Netz-gesteuerte Kanalschätzung für massive MIMO-Systeme",
+      "status": "Aktiv"
+    },
+    "vlc": {
+      "name": "VLC-basierter V2V-Kommunikationsprototyp",
+      "problem": "Sichtlicht-Kommunikationsverbindung für Fahrzeug-zu-Fahrzeug-Daten mit niedriger Latenz",
+      "status": "Abgeschlossen"
+    },
+    "iot": {
+      "name": "IoT-Sicherheitsprojekt",
+      "problem": "Leichtgewichtiges Sicherheits-Framework für ressourcenbeschränkte IoT-Geräte",
+      "status": "Abgeschlossen"
+    }
+  },
+  "life": {
+    "heading": "Leben",
+    "hobbies_heading": "Hobbys",
+    "obsessions_heading": "Aktuelle Obsessionen"
+  },
+  "contact": {
+    "heading": "Kontakt",
+    "email_label": "E-Mail",
+    "github_label": "GitHub",
+    "linkedin_label": "LinkedIn"
+  },
+  "meta": {
+    "title": "Lohith Tarikere Prasanna — Builder",
+    "description": "Builder mit Intention. KI, Funk und Mobilität. Portfolio von Lohith Tarikere Prasanna."
+  }
+}

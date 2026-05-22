@@ -7,10 +7,10 @@
 
 ### Foundation
 
-- [ ] **FOUND-01**: Site uses design system tokens — colors (`#0A0A0A`, `#F0F0F0`, `#FF1E00`), Space Mono (display), Plus Jakarta Sans (body), Courier Prime (/life only) — all loaded via `next/font/google`
-- [ ] **FOUND-02**: All display text uses fluid type via `clamp()` — hero name `clamp(3rem, 10vw, 9rem)`, section headings `clamp(2rem, 6vw, 4.5rem)`, body `clamp(1rem, 2vw, 1.2rem)`
-- [ ] **FOUND-03**: Site is served under EN/DE sub-path routing (`/en/...` and `/de/...`) via next-intl middleware
-- [ ] **FOUND-04**: All pages are written mobile-first — Tailwind base classes for mobile, `md:` and `lg:` for larger screens
+- [x] **FOUND-01**: Site uses design system tokens — colors (`#0A0A0A`, `#F0F0F0`, `#FF1E00`), Space Mono (display), Plus Jakarta Sans (body), Courier Prime (/life only) — all loaded via `next/font/google`
+- [x] **FOUND-02**: All display text uses fluid type via `clamp()` — hero name `clamp(3rem, 10vw, 9rem)`, section headings `clamp(2rem, 6vw, 4.5rem)`, body `clamp(1rem, 2vw, 1.2rem)`
+- [/] **FOUND-03**: Site is served under EN/DE sub-path routing (`/en/...` and `/de/...`) via next-intl middleware
+- [x] **FOUND-04**: All pages are written mobile-first — Tailwind base classes for mobile, `md:` and `lg:` for larger screens
 
 ### Navigation
 

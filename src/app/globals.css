@@ -1,0 +1,96 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ─── CSS Custom Properties ─── */
+:root {
+  --color-bg: #0A0A0A;
+  --color-fg: #F0F0F0;
+  --color-accent: #FF1E00;
+  --color-accent-warm: #FF4500;
+  --color-accent-crimson: #C0001A;
+
+  /* Fluid type scale — FOUND-02 */
+  --type-hero: clamp(3rem, 10vw, 9rem);
+  --type-heading: clamp(2rem, 6vw, 4.5rem);
+  --type-subheading: clamp(1.5rem, 3.5vw, 3rem);
+  --type-body: clamp(1rem, 2vw, 1.2rem);
+  --type-small: clamp(0.8rem, 1.5vw, 0.95rem);
+}
+
+/* ─── Base ─── */
+html {
+  background-color: #0A0A0A;
+  color: #F0F0F0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  min-height: 100svh;
+  background-color: #0A0A0A;
+  color: #F0F0F0;
+  font-family: var(--font-plus-jakarta), sans-serif;
+  font-size: var(--type-body);
+  line-height: 1.6;
+}
+
+/* ─── Fluid type utilities ─── */
+.text-hero {
+  font-size: var(--type-hero);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+}
+
+.text-heading {
+  font-size: var(--type-heading);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.text-subheading {
+  font-size: var(--type-subheading);
+  line-height: 1.1;
+}
+
+.text-body {
+  font-size: var(--type-body);
+  line-height: 1.6;
+}
+
+/* ─── Font display utilities ─── */
+.font-display {
+  font-family: var(--font-space-mono), monospace;
+}
+
+.font-body {
+  font-family: var(--font-plus-jakarta), sans-serif;
+}
+
+/* ─── Selection ─── */
+::selection {
+  background-color: #FF1E00;
+  color: #0A0A0A;
+}
+
+/* ─── Scrollbar ─── */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: #0A0A0A;
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 2px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FF1E00;
+}
