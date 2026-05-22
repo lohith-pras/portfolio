@@ -5,6 +5,7 @@ import type { ReactNode } from 'react'
 
 type Props = {
   children: ReactNode
+  modal: ReactNode
   params: Promise<{ locale: string }>
 }
 
@@ -15,7 +16,7 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
 
-export default async function LocaleLayout({ children, params }: Props) {
+export default async function LocaleLayout({ children, modal, params }: Props) {
   const { locale } = await params
 
   // setRequestLocale enables static rendering for this locale segment.
@@ -28,6 +29,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       {children}
+      {modal}
     </NextIntlClientProvider>
   )
 }
