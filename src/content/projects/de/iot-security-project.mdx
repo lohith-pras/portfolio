@@ -1,12 +1,49 @@
 # IoT-Sicherheitsprojekt
 
-Absicherung von Smart-Home-Geräten gegen externe Angriffe und unbefugten Netzwerkzugriff.
+[Auf GitHub ansehen →](https://github.com/lnlohith/iot-security-project)
+
+Ein Sicherheits-Audit und Härtungsprojekt für eine Flotte von ESP32-basierten Smart-Home-Sensoren. Das Projekt deckte die gesamte Angriffsfläche ab: Firmware-Extraktion über physischen UART, Credential-Abgriff aus unverschlüsseltem MQTT-Verkehr sowie Replay-Angriffe auf den Cloud-API-Endpunkt. Gegenmaßnahmen wurden implementiert und mit einem zweiten Red-Team-Durchlauf verifiziert.
 
 ## Phase 1
-Bedrohungsmodellierung und Analyse der Angriffsvektoren in einer IoT-Heimnetzwerktopologie.
+Bedrohungsmodellierung und Analyse der Angriffsvektoren. Erstellung eines Bedrohungsmodells nach STRIDE-Methodik, das physische, netzwerkseitige und Cloud-Angriffsvektoren abbildet. Identifizierung von sechs kritischen Schwachstellen, darunter Klartext-Credential-Speicherung im Flash-Speicher und fehlende Zertifikat-Pinning im HTTPS-Client.
 
 ## Phase 2
-Penetrationstests und automatisierter Schwachstellenscan der eingebetteten Gerätefirmware.
+Penetrationstests und automatisierter Schwachstellenscan. Firmware-Extraktion via UART (kein Secure Boot aktiviert), Auslesen hartcodierter WLAN-Zugangsdaten und API-Token, Abfangen von MQTT-Verkehr im LAN und Demonstration eines vollständigen Command-Replay-Angriffs auf den Cloud-Endpunkt. Die folgende gegenseitige TLS-Konfiguration (mTLS) war die Ziel-Härtungsarchitektur — als Ersatz für das ursprüngliche Shared-Token-Schema.
+
+```cpp title="sichere_firmware.cpp"
+#include <WiFiClientSecure.h>
+#include <HTTPClient.h>
+
+// Zertifikate für gegenseitige TLS-Authentifizierung (mTLS)
+const char* WURZEL_CA_ZERT = "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----";
+const char* CLIENT_ZERT    = "-----BEGIN CERTIFICATE-----\n...\n-----END CERTIFICATE-----";
+const char* CLIENT_SCHLUESSEL = "-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----";
+
+WiFiClientSecure verbindung;
+
+void sichere_verbindung_aufbauen() {
+    // Wurzel-CA und Client-Zertifikate/Schlüssel für mTLS laden
+    verbindung.setCACert(WURZEL_CA_ZERT);
+    verbindung.setCertificate(CLIENT_ZERT);
+    verbindung.setPrivateKey(CLIENT_SCHLUESSEL);
+
+    HTTPClient http;
+    if (http.begin(verbindung, "https://iot-gateway.local/api/telemetrie")) {
+        http.addHeader("Content-Type", "application/json");
+        int httpCode = http.POST("{\"status\":\"aktiv\",\"firmware_ver\":\"1.0.4\"}");
+        if (httpCode > 0) {
+            Serial.printf("[mTLS] Status gesendet: %d\n", httpCode);
+        }
+        http.end();
+    }
+}
+```
 
 ## Phase 3
-Entwicklung von Eindämmungsmaßnahmen und Erstellung des abschließenden Sicherheitsberichts.
+Implementierung der Gegenmaßnahmen und Erstellung des abschließenden Sicherheitsberichts. Aktivierung von Espressif Secure Boot und Flash-Verschlüsselung, Ablösung gemeinsamer API-Token durch geräteindividuelle mTLS-Zertifikate und Deaktivierung der physischen UART-Schnittstelle. Der abschließende Red-Team-Durchlauf bestätigte die Schließung aller sechs kritischen Schwachstellen.
+
+## Was ich anders machen würde
+
+- **Hardwarebeschleunigte Kryptografie von Anfang an**: Die rein softwarebasierte TLS-Bibliothek auf dem ESP32 verursachte beim TLS-Handshake einen erheblichen Stromspitzenwert — was die Batterielebensdauer in Sleep-Wake-Duty-Cycles um rund 40 % verkürzte. Der ATECC608A-Krypto-Coprozessor war bereits in der Zielhardware verfügbar und unterstützt hardwarebeschleunigte Elliptic-Curve-Kryptografie. Sein Einsatz von Beginn an hätte die rechenintensiven Kryptooperationen vom Hauptkern entlastet und den Stromverbrauch innerhalb der Spezifikation gehalten.
+- **mTLS mit geräteindividueller Zertifikatsvergabe als Pflichtanforderung von Anfang an**: Die ursprüngliche Shared-Token-Architektur war die Wurzel mehrerer kritischer Schwachstellen. Physischer Zugriff auf ein einzelnes Gerät — oder das Kompromittieren eines einzigen Tokens — gefährdete die gesamte Geräteflotte. Hätte das Bedrohungsmodell geräteindividuelle mTLS-Zertifikate als Mindestanforderung definiert und eine einfache Fabrikprovisionierungsskript bei der Erstinbetriebnahme vorgesehen, wäre die gesamte Klasse von Credential-Diebstahl und Replay-Angriffen strukturell ausgeschlossen gewesen — statt nachträglich gepatcht zu werden.
+- **Secure Boot und Flash-Verschlüsselung während der frühen Hardware-Validierung**: Die Aktivierung von Secure Boot und Flash-Verschlüsselung zu einem späten Projektzeitpunkt machte das Neu-Flashen aller Geräte mit einem anderen Partitionsschema notwendig und invalidierte die bestehende OTA-Update-Toolchain. Die physische Schnittstelle von Beginn an zu sperren und die vollständige Flash-Verschlüsselung beim ersten Hardware-Bringup zu aktivieren — wenn dies unkompliziert ist — hätte erheblichen Nachbesserungsaufwand vermieden und die in Phase 2 demonstrierte Firmware-Extraktion von vornherein verhindert.

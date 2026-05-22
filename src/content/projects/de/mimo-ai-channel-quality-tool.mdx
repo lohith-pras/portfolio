@@ -1,12 +1,44 @@
 # MIMO-KI-Kanalqualitätstool
 
-Dieses Projekt befasst sich mit der Vorhersage der Kanalqualität in MIMO-Systemen mithilfe von KI-Modellen für maschinelles Lernen.
+[Auf GitHub ansehen →](https://github.com/lnlohith/mimo-ai-channel-quality)
+
+Dieses Projekt befasst sich mit der Vorhersage der Kanalqualität in 4×4-MIMO-Funksystemen mithilfe von KI-basierten Regressionsmodellen. Ziel war es, klassische Heuristiken durch eine datengetriebene Pipeline zu ersetzen, die CQI- und SNR-Vorhersagen in unter einer Millisekunde am Edge-Gerät — direkt neben dem Funk-Stack — ermöglicht.
 
 ## Phase 1
-Datenerfassung und Vorverarbeitung der Kanalmetriken aus realen MIMO-Messungen.
+Datenerfassung und Vorverarbeitung der Kanalmetriken aus realen MIMO-Messungen. Rohe CSI-Matrizen wurden an einem 4×4-MIMO-Prüfstand aufgezeichnet, NaN-Spalten (verursacht durch Antennenausfälle) bereinigt und kanalweise normiert, bevor die Daten in die Trainingspipeline eingespeist wurden.
 
 ## Phase 2
-Training und Evaluierung von Regressionsmodellen zur Kanalqualitätsprädiktion.
+Training und Evaluierung von Regressionsmodellen zur Kanalqualitätsprädiktion. Getestet wurden Gradient-Boosted-Regressoren, leichtgewichtige MLPs und ein quantisiertes PyTorch-CNN. Der folgende MMSE-Kanalschätzer diente als klassische Referenz — er zeigte die Leistungslücke, die unser KI-Modell schließen musste.
+
+```python title="kanalschaetzer.py"
+import numpy as np
+
+def cqi_snr_schaetzen(csi_matrix, rauschvarianz):
+    """
+    Schätzt CQI und SNR aus der Kanalzustandsinformation (CSI)-Matrix.
+    Verwendet MMSE (Minimum Mean Square Error) Kanalschätzung.
+    """
+    # H repräsentiert die Kanalmatrix
+    H = np.array(csi_matrix)
+    # Hermitesch-Transponierte berechnen
+    H_hermitesch = H.conj().T
+    # MMSE-Empfänger: Filtergewichte berechnen
+    einheitsmatrix = np.eye(H.shape[0])
+    gewicht = H_hermitesch @ np.linalg.inv(H @ H_hermitesch + rauschvarianz * einheitsmatrix)
+
+    # Signalleistung und Rausch- + Interferenzleistung schätzen
+    signalleistung = np.abs(np.trace(gewicht @ H)) ** 2
+    rauschleistung = rauschvarianz * np.trace(gewicht @ gewicht.conj().T)
+    snr = 10 * np.log10(signalleistung / rauschleistung)
+
+    return snr
+```
 
 ## Phase 3
-Bereitstellung des Inferenzsystems und Live-Validierung unter realen Bedingungen.
+Bereitstellung des Inferenzsystems und Live-Validierung unter realen Bedingungen. Die Inferenzpipeline wurde über ONNX exportiert, auf dem gehaltenen Testdatensatz gegen den MMSE-Referenzwert validiert und anschließend auf einem Edge-TPU-Entwicklungsboard auf Latenz profiliert.
+
+## Was ich anders machen würde
+
+- **Validierung zuerst bei 2×2**: Ich bin direkt mit der 4×4-MIMO-Konfiguration eingestiegen. Die Fehler in der Multipfad-Korrelationsmatrix, die beim ersten Training auftraten, hätten in Stunden statt Tagen gefunden werden können, wenn ich die Pipeline zunächst bei 2×2 validiert und erst nach bestätigter numerischer Stabilität auf 4×4 skaliert hätte.
+- **Quantisierungsbewusstes Training direkt in PyTorch**: Ich habe nach dem Training eine dynamische Post-Training-Quantisierung angewendet, um das Modell für die Edge-TPU-Bereitstellung zu verkleinern. Dies führte zu einem SNR-Vorhersagegenauigkeitsverlust von ca. 1,8 dB, der durch Kalibrierung nur teilweise ausgeglichen werden konnte. Wäre quantisierungsbewusstes Training (QAT) von Anfang an in den PyTorch-Trainingsprozess integriert worden, hätte sich die Zielmodellgröße bei erhaltener Präzision erreichen lassen.
+- **Dynamisches Batching für Edge-Inferenz**: Der REST-API-Wrapper um die Inferenz-Engine erzeugte Latenz-Overhead, der mit dem Sub-Millisekunden-Ziel des drahtlosen Systems kollidierte. Ein auf die DMA-Übertragungseigenschaften der Edge-TPU zugeschnittener Inferenz-Loop mit dynamischem Batching hätte das System von Anfang an innerhalb der Spezifikation gehalten und die aufwändige Nachbearbeitung vermieden.
