@@ -30,7 +30,7 @@ export default async function ProjectPage({ params }: Props) {
   let Content
   try {
     Content = (await import(`@/content/projects/${locale}/${slug}.mdx`)).default
-  } catch (error) {
+  } catch {
     notFound()
   }
 

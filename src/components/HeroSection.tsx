@@ -50,7 +50,7 @@ export function HeroSection() {
 
         {/* Contact row — HERO-02 */}
         <nav aria-label="Contact links" className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          {CONTACT_LINKS.map((link, index) => (
+          {CONTACT_LINKS.map((link) => (
             <a
               key={link.href}
               href={link.href}

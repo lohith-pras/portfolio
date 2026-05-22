@@ -1,12 +1,9 @@
 import { setRequestLocale } from 'next-intl/server'
 
 import { type Locale } from '@/i18n/routing'
-import { NavbarDesktop } from '@/components/NavbarDesktop'
-import { NavbarMobile } from '@/components/NavbarMobile'
 import { HeroSection } from '@/components/HeroSection'
 import { AboutSection } from '@/components/AboutSection'
 import { WorkSection } from '@/components/WorkSection'
-import { HeroScrollFade } from '@/components/HeroScrollFade'
 
 import { ShaderCanvasWrapper } from '@/components/ShaderCanvasWrapper'
 
@@ -28,16 +25,7 @@ export default async function Home({ params }: Props) {
       */}
       <ShaderCanvasWrapper />
 
-      {/*
-        HeroScrollFade: Client component that mounts a GSAP ScrollTrigger
-        linking shader-canvas opacity to hero scroll progress. HERO-04.
-        Renders null — side-effect only.
-      */}
-      <HeroScrollFade />
 
-      {/* Navigation sits above gradient (z-50 in component CSS) */}
-      <NavbarDesktop />
-      <NavbarMobile />
 
       <div className="flex flex-col">
         {/* Hero section with scramble animation + contact links. HERO-02, HERO-03. */}

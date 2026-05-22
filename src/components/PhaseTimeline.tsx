@@ -2,7 +2,7 @@
 
 import { useRef } from 'react'
 import { useGSAP } from '@gsap/react'
-import { gsap, ScrollTrigger, DrawSVGPlugin } from '@/lib/gsap'
+import { gsap } from '@/lib/gsap'
 
 export function PhaseTimeline() {
   const containerRef = useRef<HTMLDivElement>(null)

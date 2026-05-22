@@ -15,14 +15,60 @@
  *  - On mobile, a parent component may hide this element and show a static fallback
  */
 
+import { useRef } from 'react'
+import { useGSAP } from '@gsap/react'
+import { ScrollTrigger } from '@/lib/gsap'
 import { ShaderGradient, ShaderGradientCanvas } from '@shadergradient/react'
 
 export function ShaderCanvas() {
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  useGSAP(() => {
+    const canvas = containerRef.current
+    const hero = document.getElementById('hero')
+
+    if (!canvas || !hero) return
+
+    const trigger = ScrollTrigger.create({
+      trigger: hero,
+      start: 'top top',
+      end: 'bottom top',
+      scrub: true,
+      onUpdate: (self) => {
+        const progress = self.progress // 0 at top, 1 at bottom of hero
+        const opacity = 1 - progress
+
+        // Show canvas when it has visible opacity
+        if (opacity > 0 && canvas.style.display === 'none') {
+          canvas.style.display = ''
+        }
+        canvas.style.opacity = String(opacity)
+
+        // Release GPU when fully faded
+        if (opacity <= 0) {
+          canvas.style.display = 'none'
+        }
+      },
+    })
+
+    return () => {
+      // Clean up ScrollTrigger
+      trigger.kill()
+      // Restore canvas to visible state on unmount
+      if (canvas) {
+        canvas.style.opacity = '1'
+        canvas.style.display = ''
+      }
+    }
+  }, { scope: containerRef })
+
   return (
     <div
+      ref={containerRef}
       id="shader-canvas"
       className="fixed inset-0 z-0 pointer-events-none w-full h-full"
       aria-hidden="true"
+      style={{ opacity: 1 }}
     >
       <ShaderGradientCanvas
         className="w-full h-full"

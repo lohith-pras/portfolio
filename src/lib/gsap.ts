@@ -8,8 +8,9 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin'
 
-// Register all plugins at module level — runs once on first import
-gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin, ScrambleTextPlugin)
+if (typeof window !== 'undefined') {
+  gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin, ScrambleTextPlugin)
+}
 
 export { gsap, ScrollTrigger, DrawSVGPlugin, ScrambleTextPlugin }
 

@@ -2,6 +2,8 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
 import { routing, type Locale } from '@/i18n/routing'
 import { PageTransition } from '@/components/PageTransition'
+import { NavbarDesktop } from '@/components/NavbarDesktop'
+import { NavbarMobile } from '@/components/NavbarMobile'
 import type { ReactNode } from 'react'
 
 type Props = {
@@ -29,6 +31,8 @@ export default async function LocaleLayout({ children, modal, params }: Props) {
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
+      <NavbarDesktop />
+      <NavbarMobile />
       <PageTransition>
         {children}
       </PageTransition>
