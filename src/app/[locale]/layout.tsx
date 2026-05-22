@@ -4,11 +4,10 @@ import { routing, type Locale } from '@/i18n/routing'
 import { PageTransition } from '@/components/PageTransition'
 import { NavbarDesktop } from '@/components/NavbarDesktop'
 import { NavbarMobile } from '@/components/NavbarMobile'
-import type { ReactNode } from 'react'
+import { Suspense, type ReactNode } from 'react'
 
 type Props = {
   children: ReactNode
-  modal: ReactNode
   params: Promise<{ locale: string }>
 }
 
@@ -19,7 +18,7 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
 
-export default async function LocaleLayout({ children, modal, params }: Props) {
+export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params
 
   // setRequestLocale enables static rendering for this locale segment.
@@ -36,7 +35,6 @@ export default async function LocaleLayout({ children, modal, params }: Props) {
       <PageTransition>
         {children}
       </PageTransition>
-      {modal}
     </NextIntlClientProvider>
   )
 }

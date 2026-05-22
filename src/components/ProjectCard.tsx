@@ -24,10 +24,9 @@ export function ProjectCard({ id, name, problem, status, href }: ProjectCardProp
 
   return (
     <motion.article 
-      layoutId={`project-${slug}`}
       className="project-card flex flex-col gap-4 pb-6 border-b border-white/20 hover:border-white/60 transition-colors group"
     >
-      <Link href={href} scroll={false} className="flex flex-col gap-4 cursor-pointer focus:outline-none">
+      <Link href={href} className="flex flex-col gap-4 cursor-pointer focus:outline-none">
         <header className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <h3 className="font-display font-bold text-[clamp(1.5rem,3vw,2.5rem)] text-foreground group-hover:text-accent transition-colors leading-tight">
