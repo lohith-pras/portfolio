@@ -25,8 +25,6 @@ export default async function Home({ params }: Props) {
       */}
       <ShaderCanvasWrapper />
 
-
-
       <div className="flex flex-col">
         {/* Hero section with scramble animation + contact links. HERO-02, HERO-03. */}
         <HeroSection />

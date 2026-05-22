@@ -13,7 +13,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
         <motion.div
           initial={{ x: '100%' }}
           animate={{ x: '-100%' }}
-          exit={{ x: '0%' }}
+          exit={{ x: '-100%' }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           className="fixed inset-0 z-[100] bg-background pointer-events-none"
         />
