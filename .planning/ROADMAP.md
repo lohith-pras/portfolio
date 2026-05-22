@@ -15,8 +15,8 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [ ] **Phase 1: Foundation** - Next.js scaffold, design tokens, i18n routing, GSAP providers, mobile-first base
 - [x] **Phase 2: Static Shell** - Navigation + About section as verified static HTML with i18n strings, no animations
 - [x] **Phase 3: Hero** - Shader gradient, name display, GSAP scramble entry, ScrollTrigger fade (completed 2026-05-22)
-- [ ] **Phase 4: Work Section** - Project cards, SVG waveform divider, GSAP stagger reveal
-- [ ] **Phase 5: MDX Pipeline** - @next/mdx config, project pages, GSAP phase timeline component, all 3 project files
+- [x] **Phase 4: Work Section** - Project cards, SVG waveform divider, GSAP stagger reveal
+- [x] **Phase 5: MDX Pipeline** - @next/mdx config, project pages, GSAP phase timeline component, all 3 project files
 - [ ] **Phase 6: Card Expansion** - Framer Motion layoutId card-to-project expansion via intercepting routes
 - [ ] **Phase 7: Life Page** - /life with Courier Prime, seeded photo rotation, hobbies, stagger animation
 - [ ] **Phase 8: Page Transitions** - AnimatePresence panel slides between routes
@@ -145,8 +145,8 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 1. Foundation | 3/3 | Complete | 2026-05-22 |
 | 2. Static Shell | 1/1 | Complete | 2026-05-22 |
 | 3. Hero | 1/1 | Complete   | 2026-05-22 |
-| 4. Work Section | 1/1 | Planned | - |
-| 5. MDX Pipeline | 0/TBD | Not started | - |
+| 4. Work Section | 1/1 | Complete | 2026-05-22 |
+| 5. MDX Pipeline | 1/1 | Complete | 2026-05-22 |
 | 6. Card Expansion | 0/TBD | Not started | - |
 | 7. Life Page | 0/TBD | Not started | - |
 | 8. Page Transitions | 0/TBD | Not started | - |
