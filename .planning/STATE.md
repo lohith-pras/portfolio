@@ -6,7 +6,7 @@ status: planning
 last_updated: "2026-05-22T16:29:57.637Z"
 last_activity: 2026-05-22
 progress:
-  total_phases: 0
+  total_phases: 4
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -20,14 +20,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-22)
 
 **Core value:** Visitors leave knowing Lohith is a builder with intent and a distinct perspective — not just a candidate with a CV.
-**Current focus:** Phase 9 — de-i18n-pass
+**Current focus:** Phase 11 — MDX Pipeline + Code Highlights
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 11 — MDX Pipeline + Code Highlights
 Plan: —
-Status: Defining requirements
-Last activity: 2026-05-22 — Milestone v2.0 started
+Status: Not started
+Last activity: 2026-05-22 — Milestone v2.0 roadmap created (Phases 11–14)
 
 ## Performance Metrics
 
@@ -62,6 +62,8 @@ Recent decisions affecting current work:
 - Roadmap: WORK-04 (card expansion) placed in Phase 6 — requires MDX route to exist first (Phase 5)
 - Research: Framer Motion cross-route strategy must be decided before Phase 6 coding (intercepting routes recommended)
 - Research: Verify shader-gradient package name, Tailwind v4 plugin compat, and Spline subpath before Phase 1 install
+- v2.0 Roadmap: Phase 13 (SplineAbout shell) depends only on Phase 10, not Phase 12 — can run in parallel with MDX content work
+- v2.0 Roadmap: Phase 11 split from Phase 12 — pipeline wiring must smoke-test before content authors add code blocks to all 6 MDX files
 
 ### Pending Todos
 
@@ -69,23 +71,20 @@ None yet.
 
 ### Blockers/Concerns
 
-- Phase 1 pre-coding: Verify exact shader-gradient package name (`shadergradient` vs `@shadergradient/react`)
-- Phase 1 pre-coding: Confirm Tailwind v4 vs v3.4 (check `@tailwindcss/typography` v4 support)
-- Phase 1 pre-coding: Confirm `@splinetool/react-spline/next` subpath exists (affects About component structure)
-- Phase 6: Architectural decision on Framer Motion cross-route strategy must be locked before card component is built
-- Phase 2: Resume/CV PDF must exist before NAV-03 can be completed
+- Phase 14 pre-coding: Spline scene must be designed and published before scene URL can be wired
+- Phase 11 pre-coding: Confirm rehype-pretty-code peer deps against current @next/mdx version before installing
+- Phase 13: `@splinetool/react-spline/next` subpath must be verified before SplineAbout.tsx is scaffolded
 
 ## Deferred Items
 
 | Category | Item | Status | Deferred At |
 |----------|------|--------|-------------|
-| About | Spline 3D character (ABOUT-V2-01, ABOUT-V2-02, ABOUT-V2-03) | v2 | Roadmap |
-| Projects | "What I'd do differently" section (PROJ-V2-01) | v2 | Roadmap |
-| Projects | Code snippets + syntax highlighting (PROJ-V2-02) | v2 | Roadmap |
-| i18n | MDX body DE translation (I18N-V2-01) | v1.1 | Roadmap |
+| About | Spline 3D character (ABOUT-V2-01, ABOUT-V2-02, ABOUT-V2-03) | Active v2 | Roadmap — now Phase 13+14 |
+| Projects | "What I'd do differently" section (PROJ-V2-01) | Active v2 | Roadmap — now Phase 12 |
+| Projects | Code snippets + syntax highlighting (PROJ-V2-02) | Active v2 | Roadmap — now Phase 11+12 |
 
 ## Session Continuity
 
 Last session: 2026-05-22T11:06:09.066Z
-Stopped at: Detailed plans for Phase 2 (Static Shell), Phase 3 (Hero), and Phase 4 (Work Section) generated. Ready to proceed with Phase 1 Foundation execution.
+Stopped at: v2.0 roadmap created — Phases 11–14 defined and written to ROADMAP.md
 Resume file: None

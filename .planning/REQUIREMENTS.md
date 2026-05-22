@@ -122,17 +122,17 @@ Updated during v2.0 roadmap creation.
 | LIFE-04 | Phase 7 | Complete |
 | TRANS-01 | Phase 8 | Complete |
 | I18N-V2-01 | Phase 10 | Complete |
-| ABOUT-V2-01 | TBD | Pending |
-| ABOUT-V2-02 | TBD | Pending |
-| ABOUT-V2-03 | TBD | Pending |
-| PROJ-V2-01 | TBD | Pending |
-| PROJ-V2-02 | TBD | Pending |
+| ABOUT-V2-01 | Phase 14 | Pending |
+| ABOUT-V2-02 | Phase 13 | Pending |
+| ABOUT-V2-03 | Phase 13 | Pending |
+| PROJ-V2-01 | Phase 12 | Pending |
+| PROJ-V2-02 | Phase 11 + Phase 12 | Pending |
 
 **Coverage:**
 - v2.0 requirements: 5 total
-- Mapped to phases: 0 (roadmap pending)
-- Unmapped: 5
+- Mapped to phases: 5 (all covered)
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-05-22*
-*Last updated: 2026-05-22 after milestone v2.0 initialization*
+*Last updated: 2026-05-22 after milestone v2.0 roadmap creation (Phases 11–14)*

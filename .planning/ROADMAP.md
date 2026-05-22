@@ -6,6 +6,8 @@ Build a Next.js App Router personal portfolio from scratch — from project scaf
 
 For Milestone v1.1, we translate the actual MDX project deep-dive content to German to complete the multilingual experience.
 
+For Milestone v2.0, we add depth to the project pages (code highlights + reflection sections) and replace the static About illustration with a live Spline 3D character on desktop.
+
 ## Phases
 
 **Phase Numbering:**
@@ -24,6 +26,10 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 8: Page Transitions** - AnimatePresence panel slides between routes
 - [x] **Phase 9: DE i18n Pass** - DeepL UI chrome translation, messages/de.json, locale switcher completion
 - [x] **Phase 10: German MDX Translation Pass** - German translation of project MDX files for deep-dives (completed 2026-05-22)
+- [ ] **Phase 11: MDX Pipeline + Code Highlights** - Install rehype-pretty-code, wire into next.config.mjs, override pre/code in mdx-components.tsx, smoke test
+- [ ] **Phase 12: Project Content Depth** - Add "What I'd Do Differently" sections + code blocks to all 6 MDX files (EN + DE)
+- [ ] **Phase 13: SplineAbout Component Shell** - Build SplineAbout.tsx with desktop gate + dynamic boundary + ScrollTrigger shell; build StaticIllustrationFallback.tsx
+- [ ] **Phase 14: Spline Scene Integration** - Wire published Spline scene URL + event names, validate greeting animation, Lighthouse mobile check
 
 ## Phase Details
 
@@ -142,10 +148,56 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. `npm run build` runs successfully and compiles static files for the new German project slugs.
 **Plans**: Complete
 
+### Phase 11: MDX Pipeline + Code Highlights
+**Goal**: The MDX rendering pipeline supports syntax-highlighted code blocks — rehype-pretty-code is installed and wired, and a smoke-test code block renders correctly in both locales before any content is added
+**Depends on**: Phase 10
+**Requirements**: PROJ-V2-02 (pipeline half)
+**Success Criteria** (what must be TRUE):
+  1. A code block in any project MDX file renders with `vesper` (or equivalent single dark theme) syntax highlighting — token colours visible, no unstyled `<pre>` fallback
+  2. The `<pre>` and `<code>` overrides in `mdx-components.tsx` apply to all project pages without breaking existing prose styles
+  3. `npm run build` completes without errors after wiring rehype-pretty-code into `next.config.mjs`
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 12: Project Content Depth
+**Goal**: All six project MDX files (3 EN + 3 DE) contain "What I'd Do Differently" sections and at least one syntax-highlighted code block each, plus a GitHub repo link — visitors reading any project page see honest reflection and real code
+**Depends on**: Phase 11
+**Requirements**: PROJ-V2-01, PROJ-V2-02
+**Success Criteria** (what must be TRUE):
+  1. Each of the three EN project pages ends with a "What I'd Do Differently" section containing 3–5 specific, first-person technical bullets
+  2. Each EN and DE project page contains at least one syntax-highlighted code block that renders correctly with the Phase 11 theme
+  3. Each project page displays a visible GitHub repo link that opens the correct repository
+  4. The German DE counterparts of all three projects mirror the reflection sections and code blocks in translated form
+**Plans**: TBD
+
+### Phase 13: SplineAbout Component Shell
+**Goal**: The About section on desktop conditionally renders a `SplineAbout.tsx` component with a lazy-loaded dynamic boundary and ScrollTrigger shell — mobile falls back to `StaticIllustrationFallback.tsx`; both components work without the final Spline scene URL
+**Depends on**: Phase 10
+**Requirements**: ABOUT-V2-02, ABOUT-V2-03
+**Success Criteria** (what must be TRUE):
+  1. On a viewport >= 768px wide, the About section renders `SplineAbout.tsx` (even with a placeholder scene URL) and does NOT render the static fallback
+  2. On a viewport < 768px wide, the About section renders `StaticIllustrationFallback.tsx` and does NOT attempt to load the Spline runtime
+  3. The mobile fallback illustration matches the Spline character's visual style (colour palette, proportions) — a designer can compare them side-by-side and call them consistent
+  4. No Spline-related JavaScript executes on mobile — confirmed by checking Network tab shows no `@splinetool/runtime` load on a narrow viewport
+**Plans**: TBD
+**UI hint**: yes
+
+### Phase 14: Spline Scene Integration
+**Goal**: The Spline 3D character is live in the About section — the published scene URL is wired, the greeting animation fires once on scroll-in via GSAP ScrollTrigger, and Lighthouse mobile score remains >= 85
+**Depends on**: Phase 13
+**Requirements**: ABOUT-V2-01
+**Success Criteria** (what must be TRUE):
+  1. On desktop, the Spline character is visible in the About section and plays its greeting animation exactly once when the section scrolls into view — subsequent scrolls do not replay it
+  2. After the greeting plays, the character returns to its idle loop and continues animating
+  3. Lighthouse mobile score on the homepage is >= 85 — the Spline lazy-load and desktop-only conditional render do not regress mobile performance
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10
+Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 10 → 11 → 12 → 13 → 14
+
+Note: Phase 13 depends only on Phase 10 (not Phase 12) and can be worked in parallel with Phases 11–12 if desired.
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
@@ -159,3 +211,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 8. Page Transitions | 1/1 | Complete | 2026-05-22 |
 | 9. DE i18n Pass | 1/1 | Complete | 2026-05-22 |
 | 10. German MDX Pass | 1/1 | Complete   | 2026-05-22 |
+| 11. MDX Pipeline + Code Highlights | 0/0 | Not started | - |
+| 12. Project Content Depth | 0/0 | Not started | - |
+| 13. SplineAbout Component Shell | 0/0 | Not started | - |
+| 14. Spline Scene Integration | 0/0 | Not started | - |
