@@ -26,6 +26,8 @@
     "next-mdx-remote": "^6.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "rehype-pretty-code": "^0.14.3",
+    "shiki": "^4.1.0",
     "three": "^0.184.0"
   },
   "devDependencies": {

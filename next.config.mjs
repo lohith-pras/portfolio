@@ -1,11 +1,33 @@
 import createNextIntlPlugin from 'next-intl/plugin'
-
 import createMDX from '@next/mdx'
+import rehypePrettyCode from 'rehype-pretty-code'
 
 const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
 
+/** @type {import('rehype-pretty-code').Options} */
+const prettyCodeOptions = {
+  theme: 'vesper',
+  keepBackground: true,
+  onVisitLine(node) {
+    // Prevent collapsed empty lines from becoming invisible
+    if (node.children.length === 0) {
+      node.children = [{ type: 'text', value: ' ' }]
+    }
+  },
+  onVisitHighlightedLine(node) {
+    node.properties.className = node.properties.className ?? []
+    node.properties.className.push('line--highlighted')
+  },
+  onVisitHighlightedChars(node) {
+    node.properties.className = ['word--highlighted']
+  },
+}
+
 const withMDX = createMDX({
-  // Add markdown plugins here, as desired
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [[rehypePrettyCode, prettyCodeOptions]],
+  },
 })
 
 /** @type {import('next').NextConfig} */
