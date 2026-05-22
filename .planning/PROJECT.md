@@ -8,25 +8,23 @@ Personal portfolio website for Lohith Tarikere Prasanna — a complete rehaul of
 
 Visitors leave knowing Lohith is a builder with intent and a distinct perspective — not just a candidate with a CV.
 
+## Current Milestone: v1.1 German MDX Translation Pass
+
+**Goal:** Translate the project MDX bodies to German so that deep-dives render localized German content in the DE locale.
+
+**Target features:**
+- [ ] I18N-V2-01: Translate MDX content for the three project deep-dives into German under `src/content/projects/de/`
+- [ ] Build Verification: Verify that the Next.js static build generates valid `/de/projects/[slug]` paths without errors
+
 ## Requirements
 
 ### Validated
 
-(None yet — ship to validate)
+All v1.0 core portfolio requirements (FOUND-01 through FOUND-04, NAV-01 through NAV-03, HERO-01 through HERO-04, ABOUT-01 through ABOUT-02, WORK-01 through WORK-04, PROJ-01 through PROJ-02, LIFE-01 through LIFE-04, TRANS-01).
 
 ### Active
 
-- [ ] Hero section with shader gradient (warm orange-to-crimson), full name, contact links — no bio
-- [ ] About section with Spline 3D character (greeting animation on scroll) + mobile static illustration fallback + short descriptor text
-- [ ] Work section with project cards (GSAP stagger reveal), expandable via Framer Motion layoutId into project deep-dive pages
-- [ ] Contact section — email + socials, minimal
-- [ ] /life page — full Courier Prime, travel photos with random rotation, hobbies, current obsessions
-- [ ] /projects/[slug] — MDX-driven deep-dives with GSAP-drawn phase timeline
-- [ ] Navigation — transparent top bar desktop, fixed bottom bar mobile, EN/DE toggle
-- [ ] Internationalisation — next-intl, EN + DE via DeepL API, sub-path routing (/en, /de)
-- [ ] Design system — Space Mono + Plus Jakarta Sans + Courier Prime, #0A0A0A bg, #FF1E00 accent, fluid type via clamp()
-- [ ] Responsive — mobile-first Tailwind, GSAP matchMedia, Spline lazy-loaded desktop only
-- [ ] Performance — Lighthouse mobile ≥ 85
+- [ ] I18N-V2-01: MDX body DE translation (translate three project MDX files under `src/content/projects/de/` to German)
 
 ### Out of Scope
 
