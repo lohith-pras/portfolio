@@ -23,7 +23,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 7: Life Page** - /life with Courier Prime, seeded photo rotation, hobbies, stagger animation
 - [x] **Phase 8: Page Transitions** - AnimatePresence panel slides between routes
 - [x] **Phase 9: DE i18n Pass** - DeepL UI chrome translation, messages/de.json, locale switcher completion
-- [ ] **Phase 10: German MDX Translation Pass** - German translation of project MDX files for deep-dives
+- [x] **Phase 10: German MDX Translation Pass** - German translation of project MDX files for deep-dives (completed 2026-05-22)
 
 ## Phase Details
 
@@ -158,4 +158,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 →
 | 7. Life Page | 1/1 | Complete | 2026-05-22 |
 | 8. Page Transitions | 1/1 | Complete | 2026-05-22 |
 | 9. DE i18n Pass | 1/1 | Complete | 2026-05-22 |
-| 10. German MDX Pass | 0/1 | Pending | - |
+| 10. German MDX Pass | 1/1 | Complete   | 2026-05-22 |

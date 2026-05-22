@@ -57,7 +57,7 @@
 
 ### Internationalisation (Content)
 
-- [ ] **I18N-V2-01**: MDX project body content translated to German under `src/content/projects/de/[slug].mdx` (v1 shipped EN-only MDX content, v1.1 translates all project bodies to German)
+- [x] **I18N-V2-01**: MDX project body content translated to German under `src/content/projects/de/[slug].mdx` (v1 shipped EN-only MDX content, v1.1 translates all project bodies to German)
 
 ## v2 Requirements (Deferred)
 
@@ -117,7 +117,7 @@ Updated during milestone v1.1 planning — 2026-05-22.
 | LIFE-03 | Phase 7 | Complete |
 | LIFE-04 | Phase 7 | Complete |
 | TRANS-01 | Phase 8 | Complete |
-| I18N-V2-01 | Phase 10 | Pending |
+| I18N-V2-01 | Phase 10 | Complete |
 
 **Coverage:**
 - Active requirements: 1 total
