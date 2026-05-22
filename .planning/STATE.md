@@ -5,7 +5,7 @@ milestone_name: Depth + 3D
 status: executing
 stopped_at: v2.0 roadmap created — Phases 11–14 defined and written to ROADMAP.md
 last_updated: "2026-05-22T16:56:41.631Z"
-last_activity: 2026-05-22 -- Phase 11 complete; Phase 12 planning in progress
+last_activity: 2026-05-22 -- Phase 12 complete; all 6 project MDX files enriched with code blocks and reflections
 progress:
   total_phases: 14
   completed_phases: 2
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-22)
 
 **Core value:** Visitors leave knowing Lohith is a builder with intent and a distinct perspective — not just a candidate with a CV.
-**Current focus:** Phase 12 — Project Content Depth
+**Current focus:** Phase 13 — SplineAbout Component Shell
 
 ## Current Position
 
-Phase: 12 — Project Content Depth
-Plan: 12-01
-Status: Ready to execute
-Last activity: 2026-05-22 -- Phase 11 complete, syntax highlighting pipeline wired with vesper theme
+Phase: 13 — SplineAbout Component Shell
+Plan: —
+Status: Not started
+Last activity: 2026-05-22 -- Phase 12 complete, all 6 MDX project files updated with code blocks, GitHub links, and reflections
 
 ## Performance Metrics
 

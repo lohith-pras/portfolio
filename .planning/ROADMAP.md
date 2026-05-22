@@ -27,7 +27,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 9: DE i18n Pass** - DeepL UI chrome translation, messages/de.json, locale switcher completion
 - [x] **Phase 10: German MDX Translation Pass** - German translation of project MDX files for deep-dives (completed 2026-05-22)
 - [x] **Phase 11: MDX Pipeline + Code Highlights** - Install rehype-pretty-code, wire into next.config.mjs, override pre/code in mdx-components.tsx, smoke test (completed 2026-05-22)
-- [ ] **Phase 12: Project Content Depth** - Add "What I'd Do Differently" sections + code blocks to all 6 MDX files (EN + DE)
+- [x] **Phase 12: Project Content Depth** - Add "What I'd Do Differently" sections + code blocks to all 6 MDX files (EN + DE) (completed 2026-05-22)
 - [ ] **Phase 13: SplineAbout Component Shell** - Build SplineAbout.tsx with desktop gate + dynamic boundary + ScrollTrigger shell; build StaticIllustrationFallback.tsx
 - [ ] **Phase 14: Spline Scene Integration** - Wire published Spline scene URL + event names, validate greeting animation, Lighthouse mobile check
 
@@ -168,7 +168,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Each EN and DE project page contains at least one syntax-highlighted code block that renders correctly with the Phase 11 theme
   3. Each project page displays a visible GitHub repo link that opens the correct repository
   4. The German DE counterparts of all three projects mirror the reflection sections and code blocks in translated form
-**Plans**: TBD
+**Plans**: Complete
 
 ### Phase 13: SplineAbout Component Shell
 **Goal**: The About section on desktop conditionally renders a `SplineAbout.tsx` component with a lazy-loaded dynamic boundary and ScrollTrigger shell — mobile falls back to `StaticIllustrationFallback.tsx`; both components work without the final Spline scene URL
@@ -212,6 +212,6 @@ Note: Phase 13 depends only on Phase 10 (not Phase 12) and can be worked in para
 | 9. DE i18n Pass | 1/1 | Complete | 2026-05-22 |
 | 10. German MDX Pass | 1/1 | Complete   | 2026-05-22 |
 | 11. MDX Pipeline + Code Highlights | 1/1 | Complete | 2026-05-22 |
-| 12. Project Content Depth | 0/0 | Not started | - |
+| 12. Project Content Depth | 1/1 | Complete | 2026-05-22 |
 | 13. SplineAbout Component Shell | 0/0 | Not started | - |
 | 14. Spline Scene Integration | 0/0 | Not started | - |
