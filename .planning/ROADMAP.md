@@ -179,7 +179,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. On a viewport < 768px wide, the About section renders `StaticIllustrationFallback.tsx` and does NOT attempt to load the Spline runtime
   3. The mobile fallback illustration matches the Spline character's visual style (colour palette, proportions) — a designer can compare them side-by-side and call them consistent
   4. No Spline-related JavaScript executes on mobile — confirmed by checking Network tab shows no `@splinetool/runtime` load on a narrow viewport
-**Plans**: TBD
+**Plans**: 1 plan (13-01-PLAN.md)
 **UI hint**: yes
 
 ### Phase 14: Spline Scene Integration
@@ -190,7 +190,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   1. On desktop, the Spline character is visible in the About section and plays its greeting animation exactly once when the section scrolls into view — subsequent scrolls do not replay it
   2. After the greeting plays, the character returns to its idle loop and continues animating
   3. Lighthouse mobile score on the homepage is >= 85 — the Spline lazy-load and desktop-only conditional render do not regress mobile performance
-**Plans**: TBD
+**Plans**: 1 plan (14-01-PLAN.md)
 
 ## Progress
 
@@ -213,5 +213,5 @@ Note: Phase 13 depends only on Phase 10 (not Phase 12) and can be worked in para
 | 10. German MDX Pass | 1/1 | Complete   | 2026-05-22 |
 | 11. MDX Pipeline + Code Highlights | 1/1 | Complete | 2026-05-22 |
 | 12. Project Content Depth | 1/1 | Complete | 2026-05-22 |
-| 13. SplineAbout Component Shell | 0/0 | Not started | - |
-| 14. Spline Scene Integration | 0/0 | Not started | - |
+| 13. SplineAbout Component Shell | 0/1 | Planning complete | - |
+| 14. Spline Scene Integration | 0/1 | Planning complete | - |
