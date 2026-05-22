@@ -1,0 +1,17 @@
+import { setRequestLocale } from 'next-intl/server'
+import { LifeClient } from '@/components/LifeClient'
+
+type Props = {
+  params: Promise<{ locale: string }>
+}
+
+export default async function LifePage({ params }: Props) {
+  const { locale } = await params
+  setRequestLocale(locale)
+
+  return (
+    <main className="max-w-4xl mx-auto px-6 pb-32">
+      <LifeClient />
+    </main>
+  )
+}
