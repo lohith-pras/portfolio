@@ -23,8 +23,10 @@ export function ProjectCard({ id, name, problem, status, href }: ProjectCardProp
   const slug = href.split('/').pop()
 
   return (
-    <motion.article 
+    <motion.article
       className="project-card flex flex-col gap-4 pb-6 border-b border-white/20 hover:border-white/60 transition-colors group"
+      whileHover={{ y: -4 }}
+      transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
     >
       <Link href={href} className="flex flex-col gap-4 cursor-pointer focus:outline-none">
         <header className="flex flex-col gap-2">

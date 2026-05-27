@@ -34,6 +34,12 @@ export function HeroTitle() {
       const target = containerRef.current?.querySelector('.hero-name')
       if (!target) return
 
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      if (prefersReduced) {
+        gsap.set(target, { opacity: 1 })
+        return
+      }
+
       gsap.fromTo(
         target,
         { opacity: 0 },

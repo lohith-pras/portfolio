@@ -43,13 +43,15 @@ export function LifeClient() {
 
       <motion.section variants={item} className="grid grid-cols-2 md:grid-cols-3 gap-8">
         {photos.map((photo, i) => (
-          <div 
-            key={i} 
-            className="aspect-square bg-white/5 rounded-lg border border-white/10 overflow-hidden transform transition-transform hover:scale-105 hover:z-10 relative flex items-center justify-center"
-            style={{ transform: `rotate(${photo.rot}deg)` }}
+          <motion.div
+            key={i}
+            className="aspect-square bg-white/5 rounded-lg border border-white/10 overflow-hidden relative flex items-center justify-center"
+            style={{ rotate: photo.rot }}
+            whileHover={{ scale: 1.05, zIndex: 10 }}
+            transition={{ type: 'spring', duration: 0.3, bounce: 0 }}
           >
             <span className="text-white/20">Photo {i+1}</span>
-          </div>
+          </motion.div>
         ))}
       </motion.section>
 

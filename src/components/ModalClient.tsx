@@ -22,18 +22,22 @@ export function ModalClient({ slug, children }: { slug: string, children: React.
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-12 overflow-hidden bg-background/80 backdrop-blur-md">
+      <div key={slug} className="fixed inset-0 z-[100] flex items-center justify-center p-4 md:p-12 overflow-hidden bg-background/80 backdrop-blur-md">
         {/* Background overlay click dismisses */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
           onClick={onDismiss}
           className="absolute inset-0 cursor-zoom-out"
         />
-        
+
         <motion.div
-          layoutId={`project-${slug}`}
+          initial={{ opacity: 0, scale: 0.96, y: 16 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          exit={{ opacity: 0, scale: 0.98, y: -8 }}
+          transition={{ type: 'spring', duration: 0.45, bounce: 0 }}
           className="relative w-full h-full max-w-7xl max-h-full bg-background border border-white/10 rounded-xl overflow-y-auto shadow-2xl z-10"
         >
           <button

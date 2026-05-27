@@ -13,7 +13,12 @@ export function WorkSection() {
   const containerRef = useRef<HTMLElement>(null)
 
   useGSAP(() => {
-    // Stagger reveal project cards
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) {
+      gsap.set('.project-card', { opacity: 1, y: 0 })
+      return
+    }
+
     gsap.from('.project-card', {
       y: 60,
       opacity: 0,

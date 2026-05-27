@@ -1,6 +1,14 @@
 'use client'
 import { useTranslations } from 'next-intl'
 import { Link, usePathname } from '@/i18n/navigation'
+import { motion } from 'framer-motion'
+
+const NAV_LINKS = [
+  { href: '/#about', labelKey: 'about', activePath: null },
+  { href: '/#work', labelKey: 'work', activePath: null },
+  { href: '/life', labelKey: 'life', activePath: '/life' },
+  { href: '/#contact', labelKey: 'contact', activePath: null },
+] as const
 
 export function NavbarDesktop() {
   const t = useTranslations('nav')
@@ -12,10 +20,25 @@ export function NavbarDesktop() {
         L.T. Prasanna
       </Link>
       <div className="flex items-center gap-8 font-mono text-sm">
-        <Link href="/#about" className="text-foreground/80 hover:text-accent transition-colors">{t('about')}</Link>
-        <Link href="/#work" className="text-foreground/80 hover:text-accent transition-colors">{t('work')}</Link>
-        <Link href="/life" className="text-foreground/80 hover:text-accent transition-colors">{t('life')}</Link>
-        <Link href="/#contact" className="text-foreground/80 hover:text-accent transition-colors">{t('contact')}</Link>
+        {NAV_LINKS.map((item) => {
+          const isActive = item.activePath !== null && pathname === item.activePath
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="relative pb-1 text-foreground/80 hover:text-accent transition-colors"
+            >
+              {t(item.labelKey)}
+              {isActive && (
+                <motion.span
+                  layoutId="nav-indicator"
+                  className="absolute bottom-0 left-0 right-0 h-px bg-accent"
+                  transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
+                />
+              )}
+            </Link>
+          )
+        })}
         <a href="/Lohith_Prasanna_Resume.pdf" download className="text-foreground/80 hover:text-accent transition-colors">{t('resume')}</a>
         <div className="w-px h-4 bg-white/20 mx-2" />
         <Link href={pathname} locale="en" className="text-foreground/80 hover:text-accent transition-colors">EN</Link>

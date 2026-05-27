@@ -13,6 +13,13 @@ export function PhaseTimeline() {
 
     if (!line) return
 
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) {
+      gsap.set(line, { drawSVG: '0% 100%' })
+      gsap.set(nodes, { scale: 1 })
+      return
+    }
+
     gsap.set(line, { drawSVG: '0% 0%' })
     gsap.set(nodes, { scale: 0 })
 

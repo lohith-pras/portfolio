@@ -11,7 +11,12 @@ export function WaveformDivider() {
     const path = document.getElementById('waveform-path')
     if (!path) return
 
-    // Ensure DrawSVG starts at 0%
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (prefersReduced) {
+      gsap.set(path, { drawSVG: '0% 100%' })
+      return
+    }
+
     gsap.set(path, { drawSVG: '0% 0%' })
 
     gsap.to(path, {
