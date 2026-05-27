@@ -113,6 +113,7 @@ export function ShaderCanvas() {
           cAzimuthAngle={180}
           cPolarAngle={80}
           cDistance={2.8}
+          grain="off"
         />
       </ShaderGradientCanvas>
     </div>
