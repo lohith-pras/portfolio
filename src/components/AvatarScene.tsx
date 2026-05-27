@@ -1,13 +1,25 @@
 'use client'
 
-import { Suspense } from 'react'
+import { Component, Suspense, type ReactNode, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
-import { useInView } from 'framer-motion'
-import { useReducedMotion } from 'framer-motion'
-import { useRef } from 'react'
+import { useInView, useReducedMotion } from 'framer-motion'
 import { AvatarModel } from './AvatarModel'
 
-export function AvatarScene() {
+class AvatarErrorBoundary extends Component<
+  { children: ReactNode },
+  { failed: boolean }
+> {
+  state = { failed: false }
+  static getDerivedStateFromError() {
+    return { failed: true }
+  }
+  render() {
+    if (this.state.failed) return null
+    return this.props.children
+  }
+}
+
+function AvatarCanvas() {
   const containerRef = useRef<HTMLDivElement>(null)
   const inView = useInView(containerRef, { once: true, amount: 0.4 })
   const reducedMotion = useReducedMotion() ?? false
@@ -27,5 +39,13 @@ export function AvatarScene() {
         </Suspense>
       </Canvas>
     </div>
+  )
+}
+
+export function AvatarScene() {
+  return (
+    <AvatarErrorBoundary>
+      <AvatarCanvas />
+    </AvatarErrorBoundary>
   )
 }

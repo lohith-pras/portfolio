@@ -97,4 +97,3 @@ export function AvatarModel({ inView, reducedMotion }: AvatarModelProps) {
   )
 }
 
-useGLTF.preload(AVATAR_URL)
