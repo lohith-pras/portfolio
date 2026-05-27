@@ -19,15 +19,6 @@ export function LifeClient() {
     show: { opacity: 1, y: 0 }
   }
 
-  const photos = [
-    { src: '/photos/photo1.jpg', rot: -2 },
-    { src: '/photos/photo2.jpg', rot: 1 },
-    { src: '/photos/photo3.jpg', rot: 3 },
-    { src: '/photos/photo4.jpg', rot: -1 },
-    { src: '/photos/photo5.jpg', rot: -3 },
-    { src: '/photos/photo6.jpg', rot: 2 },
-  ]
-
   return (
     <motion.div
       variants={container}
@@ -85,19 +76,6 @@ export function LifeClient() {
         </div>
       </motion.section>
 
-      <motion.section variants={item} className="grid grid-cols-2 md:grid-cols-3 gap-8">
-        {photos.map((photo, i) => (
-          <motion.div
-            key={i}
-            className="aspect-square glass-card rounded-lg flex items-center justify-center"
-            style={{ rotate: photo.rot }}
-            whileHover={{ scale: 1.05, zIndex: 10 }}
-            transition={{ type: 'spring', duration: 0.3, bounce: 0 }}
-          >
-            <span className="text-white/20">Photo {i+1}</span>
-          </motion.div>
-        ))}
-      </motion.section>
     </motion.div>
   )
 }

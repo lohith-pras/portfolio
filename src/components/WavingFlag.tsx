@@ -13,11 +13,11 @@ interface WavingFlagProps {
 }
 
 const SPEED = 1.5
-const MAX_AMPLITUDE = 7
-const STRIP_COUNT = 10
-const BANNER_WIDTH = 70
-const BANNER_HEIGHT = 180
-const STRIP_HEIGHT = BANNER_HEIGHT / STRIP_COUNT // 18
+const MAX_AMPLITUDE = 10
+const STRIP_COUNT = 30
+const BANNER_WIDTH = 120
+const BANNER_HEIGHT = 280
+const STRIP_HEIGHT = BANNER_HEIGHT / STRIP_COUNT
 
 export function WavingFlag({
   bgColor,
@@ -58,7 +58,7 @@ export function WavingFlag({
           <div
             key={i}
             ref={(el) => { stripsRef.current[i] = el }}
-            style={{ overflow: 'hidden', height: STRIP_HEIGHT, position: 'relative' }}
+            style={{ overflow: 'hidden', height: STRIP_HEIGHT, position: 'relative', backgroundColor: bgColor, willChange: 'transform' }}
           >
             {/* Full banner content, clipped by parent overflow:hidden */}
             <div
@@ -79,7 +79,7 @@ export function WavingFlag({
               <img
                 src={logoUrl}
                 alt={logoAlt}
-                style={{ width: '100%', objectFit: 'contain', maxHeight: 72 }}
+                style={{ width: '100%', objectFit: 'contain', maxHeight: 110 }}
               />
               <span
                 style={{
