@@ -6,6 +6,7 @@ import { AboutSection } from '@/components/AboutSection'
 import { WorkSection } from '@/components/WorkSection'
 
 import { ShaderCanvasWrapper } from '@/components/ShaderCanvasWrapper'
+import { EVTransitionScene } from '@/components/EVTransitionScene'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -24,6 +25,7 @@ export default async function Home({ params }: Props) {
         Loaded dynamically to keep SSR clean. HERO-01.
       */}
       <ShaderCanvasWrapper />
+      <EVTransitionScene />
 
       <div className="flex flex-col">
         {/* Hero section with scramble animation + contact links. HERO-02, HERO-03. */}
