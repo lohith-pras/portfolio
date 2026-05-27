@@ -17,7 +17,7 @@ interface ProjectCardProps {
 export function ProjectCard({ id, name, problem, status, href, phasesCompleted, totalPhases }: ProjectCardProps) {
   return (
     <motion.article
-      className="project-card flex flex-col gap-4 pb-6 border-b border-white/20 hover:border-white/60 transition-colors group"
+      className="project-card flex flex-col gap-4 p-6 glass-card rounded-xl group"
       whileHover={{ y: -4 }}
       transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
     >
