@@ -15,7 +15,7 @@
  *  - On mobile, a parent component may hide this element and show a static fallback
  */
 
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, useId } from 'react'
 import { useGSAP } from '@gsap/react'
 import { useAnimate } from 'framer-motion'
 import { ScrollTrigger } from '@/lib/gsap'
@@ -28,6 +28,7 @@ export function ShaderCanvas() {
   const { grainEnabled } = useGrain()
   const [overlayScope, animateOverlay] = useAnimate()
   const prevGrainRef = useRef(true)
+  const grainFilterId = useId().replace(/:/g, '')
 
   useEffect(() => {
     const prev = prevGrainRef.current
@@ -142,7 +143,7 @@ export function ShaderCanvas() {
         style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}
       >
         <defs>
-          <filter id="grain-noise" x="0%" y="0%" width="100%" height="100%">
+          <filter id={grainFilterId} x="0%" y="0%" width="100%" height="100%">
             <feTurbulence
               type="fractalNoise"
               baseFrequency="0.65"
@@ -157,8 +158,8 @@ export function ShaderCanvas() {
       {/* Burst overlay — animates opacity during grain-off transition */}
       <div
         ref={overlayScope}
-        className="fixed inset-0 pointer-events-none opacity-0"
-        style={{ filter: 'url(#grain-noise)', zIndex: 1 }}
+        className="absolute inset-0 pointer-events-none opacity-0"
+        style={{ filter: `url(#${grainFilterId})`, zIndex: 1 }}
         aria-hidden="true"
       />
     </div>
