@@ -38,7 +38,7 @@ export function AboutSection() {
           </div>
         </motion.div>
         <motion.div
-          className="order-1 md:order-2 aspect-square w-full max-w-[400px] mx-auto bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center relative overflow-hidden"
+          className="order-1 md:order-2 aspect-square w-full max-w-[400px] mx-auto glass rounded-2xl flex items-center justify-center"
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, amount: 0.3 }}
