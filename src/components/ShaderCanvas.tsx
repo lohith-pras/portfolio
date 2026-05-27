@@ -103,7 +103,7 @@ export function ShaderCanvas() {
           uFrequency={3.5}
           color1="#5C1000"
           color2="#380008"
-          color3="#030B1A"
+          color3="#0D2E6E"
           positionX={0}
           positionY={0}
           positionZ={0}
