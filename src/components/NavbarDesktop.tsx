@@ -2,10 +2,12 @@
 import { usePathname, Link } from '@/i18n/navigation'
 import { Mail, Heart } from 'lucide-react'
 import { motion } from 'framer-motion'
+import { useGrain } from '@/components/GrainContext'
 
 export function NavbarDesktop() {
   const pathname = usePathname()
   const isLife = pathname === '/life'
+  const { grainEnabled, toggleGrain } = useGrain()
 
   return (
     <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-4rem)] max-w-5xl h-14 hidden md:flex items-center justify-between px-8 z-50 glass-bar rounded-2xl">
@@ -13,6 +15,14 @@ export function NavbarDesktop() {
         L.T. Prasanna
       </Link>
       <div className="flex items-center gap-6">
+        <button
+          type="button"
+          onClick={toggleGrain}
+          className="font-mono text-xs text-foreground/40 hover:text-foreground/70 transition-colors bg-transparent border-none p-0 cursor-pointer"
+          aria-label={grainEnabled ? 'Disable grain texture' : 'Enable grain texture'}
+        >
+          {grainEnabled ? 'too noisy' : 'filtered'}
+        </button>
         <Link
           href="/life"
           className="relative flex items-center gap-2 font-mono text-sm text-foreground/80 hover:text-accent transition-colors pb-1"
