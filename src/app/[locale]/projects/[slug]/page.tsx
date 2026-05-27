@@ -1,9 +1,15 @@
-import { setRequestLocale } from 'next-intl/server'
+import { setRequestLocale, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Link } from '@/i18n/navigation'
 import { Suspense } from 'react'
 import { type Locale } from '@/i18n/routing'
 import { PhaseTimeline } from '@/components/PhaseTimeline'
+
+const SLUG_TO_KEY: Record<string, 'mimo' | 'vlc' | 'iot'> = {
+  'mimo-ai-channel-quality-tool': 'mimo',
+  'vlc-v2v-communication': 'vlc',
+  'iot-security-project': 'iot',
+}
 
 type Props = {
   params: Promise<{ locale: string; slug: string }>
@@ -27,6 +33,11 @@ export async function generateStaticParams() {
 export default async function ProjectPage({ params }: Props) {
   const { locale, slug } = await params
   setRequestLocale(locale as Locale)
+
+  const tp = await getTranslations({ locale, namespace: 'projects' })
+  const projectKey = SLUG_TO_KEY[slug]
+  const phasesCompleted = projectKey ? Number(tp(`${projectKey}.phasesCompleted`)) : 0
+  const totalPhases = projectKey ? Number(tp(`${projectKey}.totalPhases`)) : 0
 
   // Dynamically import the MDX content based on slug and locale
   let Content
@@ -52,7 +63,7 @@ export default async function ProjectPage({ params }: Props) {
       
       <div className="max-w-4xl mx-auto flex gap-12">
         <aside className="hidden md:block w-32 shrink-0">
-          <PhaseTimeline />
+          <PhaseTimeline phasesCompleted={phasesCompleted} totalPhases={totalPhases} />
         </aside>
         
         <article className="flex-1 prose prose-invert max-w-none">
