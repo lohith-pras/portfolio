@@ -101,6 +101,24 @@ Designed in brainstorm session 2026-05-23. Approach C selected (right tool per e
 - About section: LLM agent workflow DAG with particle token flows
 - Research section: Radar Environment Map builder with Bayesian update visual
 
+### Places I've Lived — Horizontal Scroll (Life page)
+Typographic/minimal horizontal scroll, drag-to-scroll, snap per city. Three stops:
+
+| City | Descriptor |
+|------|------------|
+| Bengaluru | home, chaos, masala dosa |
+| Nuremberg | nice at first, monotonous now |
+| Dresden | amazing architecture, the Elbe |
+
+- Each stop: enormous city name (~7xl), descriptor as small italic line beneath
+- Bengaluru's entry uniquely shows `ಬೆಂಗಳೂರು` in Kannada script below English name at ~20% opacity
+- No card borders — pure typographic treatment
+
+### Identity Easter Eggs (Life page — subtle, woven in)
+- **Kannada:** `ಬೆಂಗಳೂರು` visible at low opacity under "Bengaluru" in the Places scroll
+- **KTM Duke 250:** added to Hobbies list as a past-tense item (e.g. "KTM Duke 250 — sold, never forgotten")
+- **Bengaluru:** masala dosa descriptor in Places scroll carries the hometown feel; no separate callout needed
+
 ### Easter Eggs (discoverable, never cheesy)
 - **Loading:** F1 red lights sequence — 5 lights, 200ms apart, then site loads
 - **Konami code:** "Chase Mode" — RCB red/gold palette flash, "Chase is ON" terminal line

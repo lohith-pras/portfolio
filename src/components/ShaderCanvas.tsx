@@ -23,7 +23,13 @@ import { ShaderGradient, ShaderGradientCanvas } from '@shadergradient/react'
 export function ShaderCanvas() {
   const containerRef = useRef<HTMLDivElement>(null)
 
+  const prefersReduced =
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
   useGSAP(() => {
+    if (prefersReduced) return
+
     const canvas = containerRef.current
     const hero = document.getElementById('hero')
 
@@ -62,6 +68,15 @@ export function ShaderCanvas() {
     }
   }, { scope: containerRef })
 
+  if (prefersReduced) {
+    return (
+      <div
+        className="fixed inset-0 z-0 pointer-events-none bg-[radial-gradient(ellipse_at_top_right,_rgba(255,69,0,0.12)_0%,_transparent_60%)]"
+        aria-hidden="true"
+      />
+    )
+  }
+
   return (
     <div
       ref={containerRef}
@@ -88,7 +103,7 @@ export function ShaderCanvas() {
           uFrequency={3.5}
           color1="#FF4500"
           color2="#C0001A"
-          color3="#0A0A0A"
+          color3="#030B1A"
           positionX={0}
           positionY={0}
           positionZ={0}
