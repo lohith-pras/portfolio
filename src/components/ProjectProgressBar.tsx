@@ -13,7 +13,10 @@ export function ProjectProgressBar({ phasesCompleted, totalPhases }: ProjectProg
   const percentage = totalPhases > 0 ? (completed / totalPhases) * 100 : 0
 
   return (
-    <div className="flex flex-col gap-1.5 w-full">
+    <div
+      className="flex flex-col gap-1.5 w-full"
+      aria-label={`Project progress: ${phasesCompleted} of ${totalPhases} phases complete`}
+    >
       <span className="font-mono text-xs text-white/50 uppercase tracking-widest">
         {phasesCompleted} / {totalPhases} Phases
       </span>

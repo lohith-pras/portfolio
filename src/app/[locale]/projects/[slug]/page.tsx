@@ -38,8 +38,8 @@ export default async function ProjectPage({ params }: Props) {
   if (!projectKey) notFound()
 
   const tp = await getTranslations('projects')
-  const phasesCompleted = Number(tp(`${projectKey}.phasesCompleted`))
-  const totalPhases = Number(tp(`${projectKey}.totalPhases`))
+  const phasesCompleted = Number(tp(`${projectKey}.phasesCompleted`)) || 0
+  const totalPhases = Number(tp(`${projectKey}.totalPhases`)) || 1
 
   let Content
   try {
