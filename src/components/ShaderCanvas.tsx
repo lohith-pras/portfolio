@@ -34,7 +34,7 @@ export function ShaderCanvas() {
     const prev = prevGrainRef.current
     prevGrainRef.current = grainEnabled
 
-    if (prev === true && grainEnabled === false && overlayScope.current) {
+    if (prev === true && grainEnabled === false && overlayScope.current && !prefersReduced) {
       animateOverlay(
         overlayScope.current,
         { opacity: [0, 0.65, 0.65, 0] },
