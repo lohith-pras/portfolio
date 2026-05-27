@@ -15,7 +15,7 @@ export function NavbarDesktop() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed top-0 left-0 w-full h-16 hidden md:flex items-center justify-between px-8 md:px-16 z-50 glass-bar">
+    <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-4rem)] max-w-5xl h-14 hidden md:flex items-center justify-between px-8 z-50 glass-bar rounded-2xl">
       <Link href="/" className="font-display font-bold text-foreground hover:text-accent transition-colors">
         L.T. Prasanna
       </Link>
