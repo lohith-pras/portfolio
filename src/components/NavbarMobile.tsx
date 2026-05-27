@@ -8,7 +8,7 @@ export function NavbarMobile() {
   const pathname = usePathname()
 
   return (
-    <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-md h-14 flex md:hidden items-center justify-around px-6 z-50 bg-[#0A0A0A]/90 border border-white/10 rounded-full backdrop-blur-md shadow-2xl">
+    <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-md h-14 flex md:hidden items-center justify-around px-6 z-50 glass-pill rounded-full">
       <Link href="/#about" className="flex flex-col items-center gap-1 text-foreground/60 hover:text-accent transition-colors" aria-label={t('about')}>
         <User size={18} />
       </Link>
