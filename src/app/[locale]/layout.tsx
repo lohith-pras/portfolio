@@ -5,7 +5,7 @@ import { PageTransition } from '@/components/PageTransition'
 import { NavbarDesktop } from '@/components/NavbarDesktop'
 import { NavbarMobile } from '@/components/NavbarMobile'
 import { GrainProvider } from '@/components/GrainContext'
-import { Suspense, type ReactNode } from 'react'
+import { type ReactNode } from 'react'
 
 type Props = {
   children: ReactNode
