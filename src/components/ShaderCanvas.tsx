@@ -101,8 +101,8 @@ export function ShaderCanvas() {
           uStrength={2.0}
           uDensity={1.5}
           uFrequency={3.5}
-          color1="#FF4500"
-          color2="#C0001A"
+          color1="#5C1000"
+          color2="#380008"
           color3="#030B1A"
           positionX={0}
           positionY={0}
