@@ -9,7 +9,8 @@ interface ProjectProgressBarProps {
 
 export function ProjectProgressBar({ phasesCompleted, totalPhases }: ProjectProgressBarProps) {
   const shouldReduceMotion = useReducedMotion()
-  const percentage = (phasesCompleted / totalPhases) * 100
+  const completed = Math.min(phasesCompleted, totalPhases)
+  const percentage = totalPhases > 0 ? (completed / totalPhases) * 100 : 0
 
   return (
     <div className="flex flex-col gap-1.5 w-full">
