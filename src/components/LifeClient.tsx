@@ -42,6 +42,27 @@ export function LifeClient() {
         </p>
       </motion.section>
 
+      <motion.section variants={item} className="grid md:grid-cols-2 gap-12">
+        <div className="glass-card rounded-xl p-6">
+          <h2 className="text-2xl font-bold mb-6">Hobbies</h2>
+          <ul className="space-y-3 text-white/70">
+            <li>Photography</li>
+            <li>Minimalist Design</li>
+            <li>Mechanical Keyboards</li>
+            <li>F1 Racing</li>
+          </ul>
+        </div>
+        <div className="glass-card rounded-xl p-6">
+          <h2 className="text-2xl font-bold mb-6">Current Obsessions</h2>
+          <ul className="space-y-3 text-white/70">
+            <li>Local LLMs</li>
+            <li>Next.js 15 Static Rendering</li>
+            <li>GSAP ScrollTrigger</li>
+            <li>Framer Motion Intercepting Routes</li>
+          </ul>
+        </div>
+      </motion.section>
+
       <motion.section variants={item}>
         <h2 className="text-2xl font-bold mb-6">In the Stands</h2>
         <div className="flex gap-6">
@@ -64,32 +85,11 @@ export function LifeClient() {
         </div>
       </motion.section>
 
-      <motion.section variants={item} className="grid md:grid-cols-2 gap-12">
-        <div>
-          <h2 className="text-2xl font-bold mb-6">Hobbies</h2>
-          <ul className="space-y-3 text-white/70">
-            <li>Photography</li>
-            <li>Minimalist Design</li>
-            <li>Mechanical Keyboards</li>
-            <li>F1 Racing</li>
-          </ul>
-        </div>
-        <div>
-          <h2 className="text-2xl font-bold mb-6">Current Obsessions</h2>
-          <ul className="space-y-3 text-white/70">
-            <li>Local LLMs</li>
-            <li>Next.js 15 Static Rendering</li>
-            <li>GSAP ScrollTrigger</li>
-            <li>Framer Motion Intercepting Routes</li>
-          </ul>
-        </div>
-      </motion.section>
-
       <motion.section variants={item} className="grid grid-cols-2 md:grid-cols-3 gap-8">
         {photos.map((photo, i) => (
           <motion.div
             key={i}
-            className="aspect-square bg-white/5 rounded-lg border border-white/10 overflow-hidden relative flex items-center justify-center"
+            className="aspect-square glass-card rounded-lg flex items-center justify-center"
             style={{ rotate: photo.rot }}
             whileHover={{ scale: 1.05, zIndex: 10 }}
             transition={{ type: 'spring', duration: 0.3, bounce: 0 }}
