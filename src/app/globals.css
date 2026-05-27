@@ -108,6 +108,9 @@ body {
 }
 
 /* ─── Liquid Glass Utilities ─── */
+/* .glass-bar: full-width top bars (navbar). .glass: general panels (modal, about image).
+   Identical values now but kept separate — bars and panels may diverge (e.g. border-radius,
+   border-bottom-only treatment) as the design evolves. */
 .glass-bar {
   position: relative;
   overflow: hidden;
