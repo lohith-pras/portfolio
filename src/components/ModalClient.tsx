@@ -38,11 +38,11 @@ export function ModalClient({ slug, children }: { slug: string, children: React.
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.98, y: -8 }}
           transition={{ type: 'spring', duration: 0.45, bounce: 0 }}
-          className="relative w-full h-full max-w-7xl max-h-full bg-background border border-white/10 rounded-xl overflow-y-auto shadow-2xl z-10"
+          className="w-full h-full max-w-7xl max-h-full glass rounded-xl overflow-y-auto z-10"
         >
           <button
             onClick={onDismiss}
-            className="absolute top-6 right-6 p-2 z-50 bg-background/50 backdrop-blur-sm rounded-full hover:bg-white/10 transition-colors"
+            className="absolute top-6 right-6 p-2 z-50 glass-pill rounded-full hover:bg-white/10 transition-colors"
             aria-label="Close modal"
           >
             <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">

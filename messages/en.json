@@ -27,17 +27,23 @@
     "mimo": {
       "name": "MIMO AI Channel Quality Tool",
       "problem": "Neural-network-driven channel estimation for massive MIMO systems",
-      "status": "Active"
+      "status": "Active",
+      "phasesCompleted": "1",
+      "totalPhases": "3"
     },
     "vlc": {
       "name": "VLC-based V2V Communication Prototype",
       "problem": "Visible-light communication link for low-latency vehicle-to-vehicle data",
-      "status": "Complete"
+      "status": "Complete",
+      "phasesCompleted": "3",
+      "totalPhases": "3"
     },
     "iot": {
       "name": "IoT Security Project",
       "problem": "Lightweight security framework for resource-constrained IoT devices",
-      "status": "Complete"
+      "status": "Complete",
+      "phasesCompleted": "3",
+      "totalPhases": "3"
     }
   },
   "life": {

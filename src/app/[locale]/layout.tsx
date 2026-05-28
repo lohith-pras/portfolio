@@ -4,7 +4,8 @@ import { routing, type Locale } from '@/i18n/routing'
 import { PageTransition } from '@/components/PageTransition'
 import { NavbarDesktop } from '@/components/NavbarDesktop'
 import { NavbarMobile } from '@/components/NavbarMobile'
-import { Suspense, type ReactNode } from 'react'
+import { GrainProvider } from '@/components/GrainContext'
+import { type ReactNode } from 'react'
 
 type Props = {
   children: ReactNode
@@ -30,11 +31,13 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
-      <NavbarDesktop />
-      <NavbarMobile />
-      <PageTransition>
-        {children}
-      </PageTransition>
+      <GrainProvider>
+        <NavbarDesktop />
+        <NavbarMobile />
+        <PageTransition>
+          {children}
+        </PageTransition>
+      </GrainProvider>
     </NextIntlClientProvider>
   )
 }

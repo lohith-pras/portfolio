@@ -1,7 +1,13 @@
 'use client'
 
+import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion } from 'framer-motion'
+
+const ChibiCanvas = dynamic(
+  () => import('./chibi/ChibiCanvas').then((m) => m.ChibiCanvas),
+  { ssr: false },
+)
 
 export function AboutSection() {
   const t = useTranslations('about')
@@ -18,8 +24,23 @@ export function AboutSection() {
   }
 
   return (
-    <section id="about" className="min-h-[100svh] w-full flex items-center pt-24 md:pt-0">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center px-6 md:px-16 max-w-7xl mx-auto w-full">
+    <section id="about" className="min-h-[100svh] w-full flex items-center py-24">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center px-6 md:px-16 max-w-7xl mx-auto w-full">
+
+        {/* Chibi — top on mobile, right on desktop */}
+        <motion.div
+          className="order-1 md:order-2 w-full max-w-[300px] mx-auto md:max-w-none"
+          style={{ aspectRatio: '3 / 4' }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={imageVariants}
+          transition={{ type: 'spring', duration: shouldReduce ? 0 : 0.6, bounce: 0, delay: shouldReduce ? 0 : 0.1 }}
+        >
+          <ChibiCanvas />
+        </motion.div>
+
+        {/* Text */}
         <motion.div
           className="order-2 md:order-1 flex flex-col justify-center gap-6"
           initial="hidden"
@@ -37,20 +58,7 @@ export function AboutSection() {
             <p>{t('bio_3')}</p>
           </div>
         </motion.div>
-        <motion.div
-          className="order-1 md:order-2 aspect-square w-full max-w-[400px] mx-auto bg-white/5 rounded-2xl border border-white/10 flex items-center justify-center relative overflow-hidden"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={imageVariants}
-          transition={{ type: 'spring', duration: shouldReduce ? 0 : 0.6, bounce: 0, delay: shouldReduce ? 0 : 0.1 }}
-        >
-          {/* Static illustration placeholder for v1 */}
-          <div className="absolute inset-0 bg-gradient-to-tr from-accent/20 to-transparent" />
-          <svg className="w-1/2 h-1/2 text-accent/50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-            <path strokeLinecap="round" strokeLinejoin="round" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5" />
-          </svg>
-        </motion.div>
+
       </div>
     </section>
   )

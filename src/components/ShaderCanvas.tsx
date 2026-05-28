@@ -15,13 +15,33 @@
  *  - On mobile, a parent component may hide this element and show a static fallback
  */
 
-import { useRef } from 'react'
+import { useRef, useEffect, useId } from 'react'
 import { useGSAP } from '@gsap/react'
+import { useAnimate } from 'framer-motion'
 import { ScrollTrigger } from '@/lib/gsap'
 import { ShaderGradient, ShaderGradientCanvas } from '@shadergradient/react'
+import { useGrain } from '@/components/GrainContext'
 
 export function ShaderCanvas() {
   const containerRef = useRef<HTMLDivElement>(null)
+
+  const { grainEnabled } = useGrain()
+  const [overlayScope, animateOverlay] = useAnimate()
+  const prevGrainRef = useRef(true)
+  const grainFilterId = useId().replace(/:/g, '')
+
+  useEffect(() => {
+    const prev = prevGrainRef.current
+    prevGrainRef.current = grainEnabled
+
+    if (prev === true && grainEnabled === false && overlayScope.current && !prefersReduced) {
+      animateOverlay(
+        overlayScope.current,
+        { opacity: [0, 0.65, 0.65, 0] },
+        { duration: 0.5, times: [0, 0.16, 0.58, 1], ease: 'easeOut' }
+      )
+    }
+  }, [grainEnabled, animateOverlay])
 
   const prefersReduced =
     typeof window !== 'undefined' &&
@@ -101,9 +121,9 @@ export function ShaderCanvas() {
           uStrength={2.0}
           uDensity={1.5}
           uFrequency={3.5}
-          color1="#FF4500"
-          color2="#C0001A"
-          color3="#030B1A"
+          color1="#5C1000"
+          color2="#380008"
+          color3="#0A0A0A"
           positionX={0}
           positionY={0}
           positionZ={0}
@@ -113,8 +133,35 @@ export function ShaderCanvas() {
           cAzimuthAngle={180}
           cPolarAngle={80}
           cDistance={2.8}
+          grain={grainEnabled ? 'on' : 'off'}
         />
       </ShaderGradientCanvas>
+
+      {/* SVG filter for burst overlay noise texture */}
+      <svg
+        aria-hidden="true"
+        style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}
+      >
+        <defs>
+          <filter id={grainFilterId} x="0%" y="0%" width="100%" height="100%">
+            <feTurbulence
+              type="fractalNoise"
+              baseFrequency="0.65"
+              numOctaves="3"
+              stitchTiles="stitch"
+            />
+            <feColorMatrix type="saturate" values="0" />
+          </filter>
+        </defs>
+      </svg>
+
+      {/* Burst overlay — animates opacity during grain-off transition */}
+      <div
+        ref={overlayScope}
+        className="absolute inset-0 pointer-events-none opacity-0"
+        style={{ filter: `url(#${grainFilterId})`, zIndex: 1 }}
+        aria-hidden="true"
+      />
     </div>
   )
 }

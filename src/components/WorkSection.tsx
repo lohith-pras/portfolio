@@ -36,38 +36,41 @@ export function WorkSection() {
   return (
     <section id="work" ref={containerRef} className="w-full flex flex-col pt-12 pb-32">
       <WaveformDivider />
-      
+
       <div className="px-6 md:px-16 max-w-7xl mx-auto w-full mt-8">
         <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-16">
           {t('heading')}
         </h2>
 
         <div id="work-grid" className="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
-          {/* MIMO AI Channel Quality Tool */}
-          <ProjectCard 
+          <ProjectCard
             id="PROJ-01"
             name={tp('mimo.name')}
             problem={tp('mimo.problem')}
             status={tp('mimo.status')}
             href="/projects/mimo-ai-channel-quality-tool"
+            phasesCompleted={Number(tp('mimo.phasesCompleted'))}
+            totalPhases={Number(tp('mimo.totalPhases'))}
           />
 
-          {/* VLC-based V2V Communication Prototype */}
-          <ProjectCard 
+          <ProjectCard
             id="PROJ-02"
             name={tp('vlc.name')}
             problem={tp('vlc.problem')}
             status={tp('vlc.status')}
             href="/projects/vlc-v2v-communication"
+            phasesCompleted={Number(tp('vlc.phasesCompleted'))}
+            totalPhases={Number(tp('vlc.totalPhases'))}
           />
 
-          {/* IoT Security Project */}
-          <ProjectCard 
+          <ProjectCard
             id="PROJ-03"
             name={tp('iot.name')}
             problem={tp('iot.problem')}
             status={tp('iot.status')}
             href="/projects/iot-security-project"
+            phasesCompleted={Number(tp('iot.phasesCompleted'))}
+            totalPhases={Number(tp('iot.totalPhases'))}
           />
         </div>
       </div>
