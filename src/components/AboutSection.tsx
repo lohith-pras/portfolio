@@ -4,8 +4,8 @@ import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion } from 'framer-motion'
 
-const AvatarScene = dynamic(
-  () => import('./AvatarScene').then((m) => m.AvatarScene),
+const ChibiCanvas = dynamic(
+  () => import('./chibi/ChibiCanvas').then((m) => m.ChibiCanvas),
   { ssr: false },
 )
 
@@ -24,8 +24,23 @@ export function AboutSection() {
   }
 
   return (
-    <section id="about" className="min-h-[100svh] w-full flex items-center pt-24 md:pt-0">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center px-6 md:px-16 max-w-7xl mx-auto w-full">
+    <section id="about" className="min-h-[100svh] w-full flex items-center py-24">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center px-6 md:px-16 max-w-7xl mx-auto w-full">
+
+        {/* Chibi — top on mobile, right on desktop */}
+        <motion.div
+          className="order-1 md:order-2 w-full max-w-[300px] mx-auto md:max-w-none"
+          style={{ aspectRatio: '3 / 4' }}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.3 }}
+          variants={imageVariants}
+          transition={{ type: 'spring', duration: shouldReduce ? 0 : 0.6, bounce: 0, delay: shouldReduce ? 0 : 0.1 }}
+        >
+          <ChibiCanvas />
+        </motion.div>
+
+        {/* Text */}
         <motion.div
           className="order-2 md:order-1 flex flex-col justify-center gap-6"
           initial="hidden"
@@ -43,16 +58,7 @@ export function AboutSection() {
             <p>{t('bio_3')}</p>
           </div>
         </motion.div>
-        <motion.div
-          className="order-1 md:order-2 aspect-square w-full max-w-[400px] mx-auto glass rounded-2xl flex items-center justify-center"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={imageVariants}
-          transition={{ type: 'spring', duration: shouldReduce ? 0 : 0.6, bounce: 0, delay: shouldReduce ? 0 : 0.1 }}
-        >
-          <AvatarScene />
-        </motion.div>
+
       </div>
     </section>
   )
