@@ -18,26 +18,11 @@
  */
 
 import { HeroTitle } from '@/components/HeroTitle'
-
-const CONTACT_LINKS = [
-  {
-    label: 'lnlohith3@gmail.com',
-    href: 'mailto:lnlohith3@gmail.com',
-    external: false,
-  },
-  {
-    label: 'GitHub',
-    href: 'https://github.com/lohith-pras',
-    external: true,
-  },
-  {
-    label: 'LinkedIn',
-    href: 'https://linkedin.com/in/lohith-tarikere-prasanna',
-    external: true,
-  },
-]
+import { useGrain } from '@/components/GrainContext'
 
 export function HeroSection() {
+  const { grainEnabled, toggleGrain } = useGrain()
+
   return (
     <section
       id="hero"
@@ -48,20 +33,15 @@ export function HeroSection() {
         {/* Main name — GSAP scramble plays on mount */}
         <HeroTitle />
 
-        {/* Contact row — HERO-02 */}
-        <nav aria-label="Contact links" className="flex flex-wrap items-center gap-x-6 gap-y-2">
-          {CONTACT_LINKS.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              target={link.external ? '_blank' : undefined}
-              rel={link.external ? 'noopener noreferrer' : undefined}
-              className="font-display text-sm text-foreground/60 hover:text-accent transition-colors duration-200 tracking-wide"
-            >
-              {link.label}
-            </a>
-          ))}
-        </nav>
+        {/* Grain toggle — only here in the hero, controls the home-page shader grain */}
+        <button
+          type="button"
+          onClick={toggleGrain}
+          className="self-start font-display text-sm text-foreground/40 hover:text-accent transition-colors duration-200 tracking-wide bg-transparent border-none p-0 cursor-pointer"
+          aria-label={grainEnabled ? 'Disable grain texture' : 'Enable grain texture'}
+        >
+          {grainEnabled ? 'too noisy' : 'filtered'}
+        </button>
       </div>
 
       {/* Scroll indicator — subtle animated caret */}
