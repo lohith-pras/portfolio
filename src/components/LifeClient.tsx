@@ -19,6 +19,16 @@ export function LifeClient() {
     show: { opacity: 1, y: 0 }
   }
 
+  const list = {
+    hidden: {},
+    show: { transition: { staggerChildren: 0.05 } }
+  }
+
+  const listItem = {
+    hidden: { opacity: 0, x: -8 },
+    show: { opacity: 1, x: 0 }
+  }
+
   return (
     <motion.div
       variants={container}
@@ -36,21 +46,19 @@ export function LifeClient() {
       <motion.section variants={item} className="grid md:grid-cols-2 gap-12">
         <div className="glass-card rounded-xl p-6">
           <h2 className="text-2xl font-bold mb-6">Hobbies</h2>
-          <ul className="space-y-3 text-white/70">
-            <li>Photography</li>
-            <li>Minimalist Design</li>
-            <li>Mechanical Keyboards</li>
-            <li>F1 Racing</li>
-          </ul>
+          <motion.ul variants={list} className="space-y-3 text-white/70">
+            {['Photography', 'Minimalist Design', 'Mechanical Keyboards', 'F1 Racing'].map((h) => (
+              <motion.li key={h} variants={listItem}>{h}</motion.li>
+            ))}
+          </motion.ul>
         </div>
         <div className="glass-card rounded-xl p-6">
           <h2 className="text-2xl font-bold mb-6">Current Obsessions</h2>
-          <ul className="space-y-3 text-white/70">
-            <li>Local LLMs</li>
-            <li>Next.js 15 Static Rendering</li>
-            <li>GSAP ScrollTrigger</li>
-            <li>Framer Motion Intercepting Routes</li>
-          </ul>
+          <motion.ul variants={list} className="space-y-3 text-white/70">
+            {['Local LLMs', 'Next.js 15 Static Rendering', 'GSAP ScrollTrigger', 'Framer Motion Intercepting Routes'].map((o) => (
+              <motion.li key={o} variants={listItem}>{o}</motion.li>
+            ))}
+          </motion.ul>
         </div>
       </motion.section>
 

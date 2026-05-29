@@ -20,8 +20,10 @@
     "bio_3": "Derzeit untersuche ich, wie maschinelles Lernen die Art und Weise verändert, wie wir drahtlose Systeme entwerfen. Ich suche nach Teams, für die diese Frage von Bedeutung ist."
   },
   "work": {
-    "heading": "Arbeit",
-    "view_project": "Projekt ansehen"
+    "heading": "Projekt",
+    "view_project": "Projekt ansehen",
+    "tech_label": "Tech-Stack",
+    "overview_label": "Überblick"
   },
   "projects": {
     "mimo": {
@@ -29,27 +31,49 @@
       "problem": "Kanalschätzung durch neuronale Netze für massive MIMO-Systeme",
       "status": "Aktiv",
       "phasesCompleted": "1",
-      "totalPhases": "3"
+      "totalPhases": "3",
+      "tech": "—",
+      "description": "Kanalschätzung durch neuronale Netze, die die Verbindungsqualität für massive MIMO-Systeme verbessert."
     },
     "vlc": {
       "name": "VLC-based V2V Communication Prototype",
       "problem": "VLC-Verbindung für fahrzeugübergreifende Daten mit geringer Latenz",
       "status": "Abgeschlossen",
       "phasesCompleted": "3",
-      "totalPhases": "3"
+      "totalPhases": "3",
+      "tech": "—",
+      "description": "Eine Verbindung über sichtbares Licht für latenzarmen Datenaustausch zwischen Fahrzeugen in Sichtlinie."
     },
     "iot": {
       "name": "IoT Security Project",
       "problem": "Leichtgewichtiges Sicherheits-Framework für ressourcenbeschränkte IoT-Geräte",
       "status": "Abgeschlossen",
       "phasesCompleted": "3",
-      "totalPhases": "3"
+      "totalPhases": "3",
+      "tech": "—",
+      "description": "Ein leichtgewichtiges Sicherheits-Framework für ressourcenbeschränkte IoT-Geräte."
     }
   },
   "life": {
     "heading": "Leben",
     "hobbies_heading": "Hobbys",
     "obsessions_heading": "Aktuelle Obsessionen"
+  },
+  "places": {
+    "heading": "Orte, an denen ich gelebt habe",
+    "scroll_hint": "Scrollen zum Erkunden",
+    "bengaluru": {
+      "tagline": "Wo alles begann",
+      "story": "18 Jahre lang mein Zuhause. Aufgewachsen zwischen Monsunregen, nächtlichen Dosas und der Erkenntnis, dass die besten Ideen aus dem Chaos kommen. Die Stadt, die mir Neugier einpflanzte."
+    },
+    "nurnberg": {
+      "tagline": "Erstes Kapitel im Ausland",
+      "story": "Angekommen ohne jemanden zu kennen. Gegangen mit dem Wissen, was es bedeutet, in der Fremde etwas aufzubauen. Weihnachtsmärkte, lange Winter und noch längere Lernsessions."
+    },
+    "dresden": {
+      "tagline": "Wo ich jetzt bin",
+      "story": "Eine ruhigere Stadt mit komplizierter Geschichte und überraschend lebendiger Tech-Szene. Ich lerne, langsamer zu werden, ohne aufzuhören."
+    }
   },
   "contact": {
     "heading": "Kontakt",

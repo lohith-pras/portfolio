@@ -20,8 +20,10 @@
     "bio_3": "Currently exploring how machine learning changes the way we design wireless systems. Looking for teams where that question matters."
   },
   "work": {
-    "heading": "Work",
-    "view_project": "View project"
+    "heading": "Project",
+    "view_project": "View project",
+    "tech_label": "Tech Stack",
+    "overview_label": "Overview"
   },
   "projects": {
     "mimo": {
@@ -29,27 +31,49 @@
       "problem": "Neural-network-driven channel estimation for massive MIMO systems",
       "status": "Active",
       "phasesCompleted": "1",
-      "totalPhases": "3"
+      "totalPhases": "3",
+      "tech": "—",
+      "description": "Neural-network-driven channel estimation that improves link quality for massive MIMO systems."
     },
     "vlc": {
       "name": "VLC-based V2V Communication Prototype",
       "problem": "Visible-light communication link for low-latency vehicle-to-vehicle data",
       "status": "Complete",
       "phasesCompleted": "3",
-      "totalPhases": "3"
+      "totalPhases": "3",
+      "tech": "—",
+      "description": "A visible-light communication link enabling low-latency, line-of-sight data exchange between vehicles."
     },
     "iot": {
       "name": "IoT Security Project",
       "problem": "Lightweight security framework for resource-constrained IoT devices",
       "status": "Complete",
       "phasesCompleted": "3",
-      "totalPhases": "3"
+      "totalPhases": "3",
+      "tech": "—",
+      "description": "A lightweight security framework designed for resource-constrained IoT devices."
     }
   },
   "life": {
     "heading": "Life",
     "hobbies_heading": "Hobbies",
     "obsessions_heading": "Current obsessions"
+  },
+  "places": {
+    "heading": "Places I've Lived",
+    "scroll_hint": "Scroll to explore",
+    "bengaluru": {
+      "tagline": "Where it all began",
+      "story": "Home for 18 years. Grew up chasing monsoons, eating dosas at midnight, and learning that the best ideas come from chaos. The city that wired curiosity into me."
+    },
+    "nurnberg": {
+      "tagline": "First chapter abroad",
+      "story": "Arrived knowing no one. Left knowing what it means to build something from scratch in a foreign place. Christmas markets, long winters, and longer study sessions."
+    },
+    "dresden": {
+      "tagline": "Where I am now",
+      "story": "A quieter city with a complicated history and an unexpectedly vibrant tech scene. Learning to slow down without stopping."
+    }
   },
   "contact": {
     "heading": "Contact",
