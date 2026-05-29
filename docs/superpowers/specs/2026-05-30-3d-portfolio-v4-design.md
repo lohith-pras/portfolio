@@ -42,6 +42,45 @@ Root canvas lives in `src/components/R3FRoot.tsx`, mounted in `[locale]/layout.t
 - GSAP for timeline scrubbing and the hero name scramble (unchanged)
 - All animations honor `prefers-reduced-motion`
 
+### Easing Vocabulary
+
+One authored curve set, reused everywhere. No bare `ease` / `ease-in-out` (reads AI-generic). Define as tokens (`src/lib/motion.ts`) so GSAP, Framer, and CSS share them.
+
+| Token | Curve | Used for |
+|---|---|---|
+| `enter` | `cubic-bezier(0.22, 1, 0.36, 1)` (expo-out) | Section enters, card lifts, experience stagger |
+| `exit` | `cubic-bezier(0.4, 0, 1, 1)` (in) | Section leaves / disperse — subtler than enter |
+| `hover` | `cubic-bezier(0.34, 1.3, 0.64, 1)` (slight overshoot) | Card hover lift, hover `speedMultiplier` ramp |
+| `scrub` | `none` (linear) | GSAP ScrollTrigger camera — driven by scroll position, not time |
+| `signature` | Framer spring `{ stiffness: 200, damping: 26, bounce: 0 }` | Card tilt pointer-follow (no wobble) |
+
+Durations: section enters 400–500ms (Jakub polish range), hover transitions 150–200ms (never instant), hero converge 1.5s (once, on mount).
+
+### Reduced-Motion Contract (per surface)
+
+`prefers-reduced-motion: reduce` is not "skip some" — every animated surface has an explicit static target. Codebase already gates per-component (`ShaderCanvas`, `ProjectCard`, `PhaseTimeline`); spec extends that.
+
+| Surface | Full motion | Reduced-motion target |
+|---|---|---|
+| Hero `SignalField` | particle converge + drift + parallax + scroll camera | static radial gradient (existing fallback) |
+| Domain micro-scenes | infinite `useFrame` loop | render **one static frame**, no `useFrame`; or still poster image |
+| Scroll camera (GSAP) | Z pull-back on scroll | fixed Z, ScrollTrigger not registered |
+| Mouse parallax (hero ±5°) | pointer-tilt field | disabled, no `pointermove` listener attached |
+| Card tilt (±8°) | pointer-follow spring | disabled, flat card |
+| Experience stagger | sequential slide-up | all entries visible at once, no transform |
+| Domain tag / card stagger | sequential pop | instant, all visible |
+
+Implementation: single `useReducedMotion()` (Framer) at section root; for R3F, gate `useFrame` body on the flag and skip listener `useEffect`s.
+
+### Idle-Still + Offscreen-Pause Strategy
+
+5 micro-scenes + 3000-particle hero must not all animate forever. `View` renders every attached view each frame regardless of viewport.
+
+- **Offscreen pause:** each `DomainCard` `View` gates its `useFrame` on an `IntersectionObserver` / drei `useInView`. Not in viewport → no per-frame work.
+- **Idle-still:** in-viewport but not hovered → scene near-static (minimal drift). Lively motion lives in the hover `speedMultiplier` ramp — makes hover feel earned, keeps the page calm.
+- **Root canvas:** prefer `frameloop="demand"` + manual `invalidate()` on active scenes over always-on `frameloop="always"`.
+- **GPU policy:** resolve the `powerPreference` contradiction — either lean scenes that genuinely run `"low-power"`, or `"high-performance"` + the pause strategy above. Do not request low-power while feeding high-power work.
+
 ---
 
 ## Section 1 — Hero (Replace ShaderGradient)
@@ -60,7 +99,9 @@ Replace `ShaderGradientCanvas` with a custom R3F scene (`SignalField.tsx`).
 
 **Mouse:** subtle parallax tilt of the entire field (±5°) via pointer move event.
 
-**Performance:** custom `Points` geometry, single `ShaderMaterial` (vertex + fragment). `powerPreference: "low-power"`. Reduced motion: static radial gradient fallback (same as current).
+**Performance:** custom `Points` geometry, single `ShaderMaterial` (vertex + fragment). `powerPreference` per GPU policy (see Architecture → Idle-Still). Reduced motion: static radial gradient fallback (same as current).
+
+**Signal-first:** hero DOM content (name, contact links) renders immediately on top of the converging field — do NOT gate text on the 1.5s converge. Recruiter must read before they bounce.
 
 **Files:**
 - `src/components/SignalField.tsx` — R3F scene component (View-aware)
@@ -112,7 +153,7 @@ All share the root Canvas via `View`. Animation rate doubles on card hover (unif
 | **Signal Processing** | `SpectrumScene` | 3D FFT bar chart, bars morphing between noise → clean tone → impulse |
 | **IoT** | `NodeMeshScene` | Connected sphere graph, nodes pulsing, data packet particles between nodes |
 
-All scenes: transparent background, same orange/crimson palette, `powerPreference: "low-power"`.
+All scenes: transparent background, same orange/crimson palette, `powerPreference` per GPU policy (Architecture → Idle-Still), offscreen-paused + idle-still per the same section.
 
 ### Files
 
