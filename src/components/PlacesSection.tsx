@@ -95,9 +95,9 @@ export function PlacesSection() {
       </div>
 
       {/* Mobile: vertical stack */}
-      <div className="block md:hidden px-6">
-        <h2 className="text-2xl font-bold font-display mb-8">{t('heading')}</h2>
-        <div className="flex flex-col gap-16">
+      <div className="block md:hidden">
+        <h2 className="text-2xl font-bold font-display mb-8 px-6">{t('heading')}</h2>
+        <div className="flex flex-col gap-16 pb-24">
           {PLACES.map((place, i) => (
             <PlaceCard key={place.key} place={place} index={i} mobile />
           ))}
