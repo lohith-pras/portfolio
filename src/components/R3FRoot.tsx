@@ -7,6 +7,8 @@ export function R3FRoot() {
   // z-0 (NOT negative): the canvas must paint ABOVE main's opaque bg so Views are
   // visible; it stays below the navbar (z-50). pointer-events:none keeps page
   // content interactive — tracked View divs opt back in individually.
+  // The style prop duplicates className on purpose: R3F injects its own inline style
+  // on the Canvas, so the style prop is needed to win — don't remove as "duplication".
   return (
     <Canvas
       eventSource={typeof document !== 'undefined' ? document.body : undefined}
