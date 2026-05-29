@@ -47,6 +47,7 @@ uniform float uTime;
 uniform float uConverge;
 uniform float uDisperse;
 uniform vec2  uMouse;
+uniform float uPixelRatio;
 
 attribute vec3 aRandomPos;
 
@@ -92,7 +93,13 @@ void main() {
   vEdgeDist = clamp(max(normX, normY), 0.0, 1.0);
 
   vec4 mvPos = modelViewMatrix * vec4(pos, 1.0);
-  gl_PointSize = clamp(2.5 / max(-mvPos.z, 0.001), 1.0, 4.0);
+  // Base size: 8 CSS pixels (≈logical pixels), scaled by device pixel ratio so
+  // particles are never sub-pixel on HiDPI screens. Distance-attenuate gently
+  // (world-space denominator / 6 keeps size stable near default camera z=6)
+  // and clamp to a visible [4, 20] device-pixel range.
+  float basePx = 8.0 * uPixelRatio;
+  float distScale = 6.0 / max(-mvPos.z, 0.5);
+  gl_PointSize = clamp(basePx * distScale, 4.0, 20.0);
   gl_Position = projectionMatrix * mvPos;
 }
 `
@@ -161,13 +168,14 @@ function SignalFieldScene({
   scrollProgress: React.MutableRefObject<number>
   mouseTarget: React.MutableRefObject<THREE.Vector2>
 }) {
-  const { invalidate, camera } = useThree()
+  const { invalidate, camera, gl } = useThree()
 
   const uniforms = useRef({
-    uTime:     { value: 0 } as THREE.IUniform<number>,
-    uConverge: { value: 0 } as THREE.IUniform<number>,
-    uDisperse: { value: 0 } as THREE.IUniform<number>,
-    uMouse:    { value: new THREE.Vector2(0, 0) } as THREE.IUniform<THREE.Vector2>,
+    uTime:       { value: 0 } as THREE.IUniform<number>,
+    uConverge:   { value: 0 } as THREE.IUniform<number>,
+    uDisperse:   { value: 0 } as THREE.IUniform<number>,
+    uMouse:      { value: new THREE.Vector2(0, 0) } as THREE.IUniform<THREE.Vector2>,
+    uPixelRatio: { value: Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2) } as THREE.IUniform<number>,
   })
 
   const { positions, randomPositions } = useMemo(() => ({
@@ -190,8 +198,11 @@ function SignalFieldScene({
     const raw = Math.min(elapsed / durations.heroConverge, 1)
     u.uConverge.value = 1 - Math.pow(1 - raw, 3)
 
+    // Keep pixel ratio in sync (can change on window move to different display)
+    u.uPixelRatio.value = Math.min(gl.getPixelRatio(), 2)
+
     // Scroll-driven disperse + camera pull-back
-    const sp = scrollProgress.current
+    const sp = isNaN(scrollProgress.current) ? 0 : scrollProgress.current
     u.uDisperse.value = sp
     camera.position.z = CAMERA_Z_DEFAULT + sp * (CAMERA_Z_SCROLLED - CAMERA_Z_DEFAULT)
 
