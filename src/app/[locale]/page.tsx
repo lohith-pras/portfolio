@@ -3,7 +3,7 @@ import { setRequestLocale } from 'next-intl/server'
 import { type Locale } from '@/i18n/routing'
 import { HeroSection } from '@/components/HeroSection'
 import { AboutSection } from '@/components/AboutSection'
-import { WorkSection } from '@/components/WorkSection'
+import { ProjectsSection } from '@/components/ProjectsSection'
 
 import { ShaderCanvasWrapper } from '@/components/ShaderCanvasWrapper'
 
@@ -18,7 +18,7 @@ export default async function Home({ params }: Props) {
   setRequestLocale(locale as Locale)
 
   return (
-    <main className="relative min-h-screen bg-background text-foreground overflow-x-hidden selection:bg-accent/30">
+    <main className="relative min-h-screen bg-background text-foreground [overflow-x:clip] selection:bg-accent/30">
       {/*
         ShaderCanvas: Fixed full-bleed WebGL gradient (z-0).
         Loaded dynamically to keep SSR clean. HERO-01.
@@ -32,8 +32,8 @@ export default async function Home({ params }: Props) {
         {/* About section follows immediately after hero. */}
         <AboutSection />
 
-        {/* Work section with waveform divider and project cards. WORK-01, WORK-02, WORK-03. */}
-        <WorkSection />
+        {/* Projects section with waveform divider and project cards. WORK-01, WORK-02, WORK-03. */}
+        <ProjectsSection />
       </div>
     </main>
   )

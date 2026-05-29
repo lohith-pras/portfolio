@@ -33,6 +33,11 @@ yarn-error.log*
 # graphify output
 graphify-out/
 
+# claude / skills tooling (local, not project source)
+.agents/
+.claude/skills/
+skills-lock.json
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts

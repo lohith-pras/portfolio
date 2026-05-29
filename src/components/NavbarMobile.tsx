@@ -1,21 +1,17 @@
 'use client'
 import { Link } from '@/i18n/navigation'
-import { Heart, Mail, ScanLine } from 'lucide-react'
-import { useGrain } from '@/components/GrainContext'
+import { Heart, Mail, Home } from 'lucide-react'
 
 export function NavbarMobile() {
-  const { grainEnabled, toggleGrain } = useGrain()
-
   return (
     <nav className="fixed bottom-4 left-1/2 -translate-x-1/2 w-auto h-14 flex md:hidden items-center gap-6 px-8 z-50 glass-pill rounded-full">
-      <button
-        type="button"
-        onClick={toggleGrain}
-        className={`transition-colors bg-transparent border-none p-0 cursor-pointer ${grainEnabled ? 'text-foreground/80' : 'text-foreground/30'}`}
-        aria-label={grainEnabled ? 'Disable grain texture' : 'Enable grain texture'}
+      <Link
+        href="/"
+        className="text-foreground/60 hover:text-accent transition-colors"
+        aria-label="Home"
       >
-        <ScanLine size={16} />
-      </button>
+        <Home size={16} />
+      </Link>
       <Link
         href="/life"
         className="text-foreground/60 hover:text-accent transition-colors"
@@ -43,7 +39,7 @@ export function NavbarMobile() {
         </svg>
       </a>
       <a
-        href="https://linkedin.com/in/lohith-tarikere-prasanna"
+        href="https://www.linkedin.com/in/loh-pras"
         target="_blank"
         rel="noopener noreferrer"
         className="text-foreground/60 hover:text-accent transition-colors"
