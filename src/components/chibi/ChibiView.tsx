@@ -1,6 +1,6 @@
 'use client'
 
-import { Component, Suspense, useRef, type ReactNode } from 'react'
+import { Component, Suspense, type ReactNode } from 'react'
 import { View, PerspectiveCamera } from '@react-three/drei'
 import { useChibiAnimation } from '@/hooks/useChibiAnimation'
 import { ChibiCharacter } from './ChibiCharacter'
@@ -20,27 +20,23 @@ class ChibiErrorBoundary extends Component<
 }
 
 function ChibiViewInner() {
-  const trackRef = useRef<HTMLDivElement>(null!)
   const { pose, onPointerEnter, onPointerLeave } = useChibiAnimation('#about')
 
+  // drei <View> in the DOM tree renders its OWN tracked element from the style
+  // here and portals the scene into R3FRoot's <View.Port/>. Do NOT pass a `track`
+  // ref + separate div — the HtmlView path ignores `track` (0-size view).
+  // pointerEvents:auto so the chibi receives hover events (canvas is pe:none).
   return (
-    <>
-      {/* Tracked div — this is what the View uses to determine its viewport rect */}
-      <div
-        ref={trackRef}
-        style={{ width: '100%', height: '100%', pointerEvents: 'auto' }}
-      />
-      <View track={trackRef}>
-        <PerspectiveCamera makeDefault position={[0, 0, 3]} fov={50} />
-        <Suspense fallback={null}>
-          <ChibiCharacter
-            pose={pose}
-            onPointerEnter={onPointerEnter}
-            onPointerLeave={onPointerLeave}
-          />
-        </Suspense>
-      </View>
-    </>
+    <View style={{ width: '100%', height: '100%', pointerEvents: 'auto' }}>
+      <PerspectiveCamera makeDefault position={[0, 0, 3]} fov={50} />
+      <Suspense fallback={null}>
+        <ChibiCharacter
+          pose={pose}
+          onPointerEnter={onPointerEnter}
+          onPointerLeave={onPointerLeave}
+        />
+      </Suspense>
+    </View>
   )
 }
 
