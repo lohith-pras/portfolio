@@ -245,7 +245,6 @@ function SignalFieldScene({
 // ---------------------------------------------------------------------------
 function SignalFieldViewWithScroll() {
   const containerRef = useRef<HTMLDivElement>(null)
-  const trackRef = useRef<HTMLDivElement>(null!)
   const isHeroVisible = useRef(true)
   const scrollProgress = useRef(0)
   const mouseTarget = useRef(new THREE.Vector2(0, 0))
@@ -307,12 +306,13 @@ function SignalFieldViewWithScroll() {
       className="fixed inset-0 z-0 pointer-events-none"
       aria-hidden="true"
     >
-      {/* Tracked element — fills fixed parent, defines the View's rect */}
-      <div
-        ref={trackRef}
-        style={{ width: '100%', height: '100%' }}
-      />
-      <View track={trackRef}>
+      {/*
+        drei <View> in the DOM tree renders its OWN tracked element from the
+        style/className passed here, then portals the scene into R3FRoot's
+        <View.Port/>. Do NOT pass a `track` ref + separate div — the HtmlView
+        path ignores `track` and would render a 0-size, invisible view.
+      */}
+      <View style={{ width: '100%', height: '100%' }}>
         <PerspectiveCamera makeDefault position={[0, 0, CAMERA_Z_DEFAULT]} fov={45} />
         <SignalFieldScene
           isHeroVisible={isHeroVisible}

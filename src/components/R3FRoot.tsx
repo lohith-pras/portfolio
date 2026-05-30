@@ -17,7 +17,7 @@ export function R3FRoot() {
       style={{ position: 'fixed', inset: 0, pointerEvents: 'none' }}
       gl={{ alpha: true, antialias: true, powerPreference: 'high-performance', toneMapping: 0 }}
       onCreated={({ gl }) => gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))}
-      frameloop="demand"
+      frameloop="always"
     >
       <View.Port />
     </Canvas>
