@@ -12,21 +12,27 @@ dialing in the RF frequency on an old TV. The device's screen crossfades from
 RF static (snow) into a clean glowing waveform when the knob hits a single
 sweet-spot frequency. A magnetic snap pulls the knob to lock when close.
 
-It is a **pure aesthetic toy** — the clear screen reveals no real content, just
-a clean waveform + a `FREQ` readout. Delight, not information.
+The knob is **functional**: its tune value drives the hero's EM-wave background
+(`SignalField`). Detuned = an incoherent, noisy particle field + RF-static screen;
+tuned to the sweet-spot = a clean coherent standing wave in the background + a
+clear waveform on the screen. Screen and background reflect the **same** state.
+This widget **replaces** the old `too noisy / filtered` grain toggle as the hero's
+interactive control.
 
 ## Locked Decisions
 
 | # | Decision |
 |---|----------|
-| Purpose | Aesthetic toy. Static resolves to clean waveform. No real info revealed. |
+| Purpose | Functional control. Knob `tune` (0–1 clarity) drives the `SignalField` background coherence AND the screen static↔waveform together. |
 | Fidelity | Full 3D device — modeled body, bezel, screen, physical knob, buttons, lighting. |
-| Build | Procedural R3F geometry (no GLTF / Blender asset). |
+| Build | Procedural R3F geometry (no GLTF / Blender asset). Blender MCP not available; procedural confirmed. |
 | Interaction | Click-drag circular rotation of the knob. Single sweet-spot + magnetic snap. |
 | Placement | Hero bottom-right, opposite the name (shared `justify-end` bottom row). Desktop only. |
 | Screen content | Minimal — animated waveform + `FREQ` readout. No weather flavor. |
 | Color | Screen glow = site accent `#FF1E00`. |
-| Idle behavior | Animates while detuned/interacting; goes quiet (no render) once locked clear. Demand-friendly. |
+| Background link | New `uCoherence` uniform on `SignalField`; driven by knob `clarity` via a shared `TunerContext`. |
+| Grain toggle | Removed. The `too noisy / filtered` button in `HeroSection` is deleted; tuner is the new hero control. |
+| Idle behavior | Tuner screen animates while detuned/interacting; quiet once locked. `SignalField` keeps its own existing render loop. |
 
 ## Architecture & Files
 
@@ -40,12 +46,22 @@ Mirrors the existing `src/components/chibi/` View pattern. New folder
 | `TunerScreen.tsx` | Screen plane: `ShaderMaterial` (static↔waveform) + drei `<Text>` FREQ readout. |
 | `tunerScreen.glsl.ts` | Fragment (+ vertex passthrough) shader source for the screen. Inline-able if small. |
 | `useTuner.ts` | Knob drag → angle → `clarity` (0–1); magnetic snap; demand-render invalidate control. |
+| `TunerContext.tsx` | Shared state: `{ tune: number (0–1), setTune }`. Knob writes; `SignalField` reads. Same pattern as `GrainContext`. |
+
+**Edited file:** `src/components/SignalField.tsx` — add `uCoherence` uniform, read
+`tune` from `TunerContext`, drive coherence in the shader (see SignalField
+Integration). Existing scroll/mouse/converge behavior untouched.
 
 **Wiring:**
-- `HeroSection` adds a bottom-right container `div` (`hidden lg:block`) in the
-  same bottom row as the name. `TunerView` renders into it.
+- `HeroSection`: **remove** the `too noisy / filtered` grain toggle button and its
+  `useGrain` usage. Add a bottom-right container `div` (`hidden lg:block`) in the
+  same bottom row as the name; `TunerView` renders into it.
+- Wrap hero (or the existing provider scope where `GrainProvider` lives) with
+  `TunerProvider` so both `TunerView` and `SignalField` share it.
 - The R3F `<Canvas>` root (`R3FRoot.tsx`) and its `<View.Port />` are unchanged.
 - Name stays bottom-left; widget bottom-right.
+- `GrainContext` / `GrainProvider` are left in place (SignalField still imports
+  `grainEnabled` as a no-op); fully ripping out grain is out of scope.
 
 ## Geometry & Lighting
 
@@ -109,6 +125,31 @@ because it's real text geometry, not baked in the shader.
 - Knob mesh `rotation.z = knobAngle`; accent dot rides along.
 - Cursor: `grab` / `grabbing` on the tracked div.
 
+**`clarity` is the single shared value** — it drives, every frame:
+1. screen `uClarity` (static↔waveform), and
+2. `SignalField` `uCoherence` (via `TunerContext.tune`).
+
+So tuning the knob simultaneously clears the screen and resolves the background.
+
+## SignalField Integration
+
+The knob controls the hero's existing particle EM-wave background.
+
+- **Shared state**: `TunerContext` exposes `tune` (0–1, = knob `clarity`).
+  `useTuner` calls `setTune(clarity)` on change. `SignalField` reads `tune`.
+- **New uniform**: add `uCoherence` (0–1) to `SignalField`'s uniforms. Each frame,
+  lerp the live uniform toward `tune` (smoothing) so background reacts smoothly.
+- **Shader effect** (in `SignalField` fragment/vertex):
+  - `uCoherence → 0`: inject per-particle phase noise / jitter into `waveHeight`
+    so the two-source interference scrambles into an incoherent, noisy field.
+  - `uCoherence → 1`: zero noise → the clean standing-wave interference pattern.
+  - Optionally bias color/brightness toward the brighter palette at full coherence.
+- **Render gating**: `SignalField` already invalidates while in view (its
+  IntersectionObserver + `uTime` loop), so coherence changes render without new
+  plumbing. No extra always-on loop added.
+- **Independence**: scroll (`uDisperse`), mouse parallax, and converge load anim
+  are untouched and compose on top of coherence.
+
 ## Performance
 
 Respect `frameloop="demand"` via `useThree().invalidate`:
@@ -131,15 +172,18 @@ ambient static animation.
 ## Out of Scope
 
 - Mobile / touch layout and interaction.
-- Real data on the screen (weather, status, live stats).
-- GLTF / Blender asset pipeline.
+- Weather/status flavor or live data on the screen.
+- GLTF / Blender asset pipeline (no Blender MCP available; procedural confirmed).
 - Functional buttons (TMP/RAD/SYS are decoration only).
+- Full removal of `GrainContext`/`GrainProvider` (button removed; provider stays as no-op).
 
 ## Success Criteria
 
 1. On desktop hero, a 3D device renders bottom-right, opposite the name, in the accent palette.
 2. Dragging the knob circularly rotates it and crossfades the screen between static and a clean waveform.
 3. A single sweet-spot locks the screen clear; magnetic snap assists near it.
-4. `FREQ` readout updates with the knob angle and stays crisp.
-5. Once locked and idle, the canvas stops rendering (no continuous cost); re-arms on interaction.
-6. Not mounted below the `lg` breakpoint; `prefers-reduced-motion` starts near-locked.
+4. The same knob value visibly drives the `SignalField` background: detuned = noisy/incoherent field, sweet-spot = clean coherent standing wave.
+5. `FREQ` readout updates with the knob angle and stays crisp.
+6. The `too noisy / filtered` grain toggle is gone from the hero.
+7. Once locked and idle, the tuner screen stops re-rendering on its own; re-arms on interaction.
+8. Not mounted below the `lg` breakpoint; `prefers-reduced-motion` starts near-locked.
