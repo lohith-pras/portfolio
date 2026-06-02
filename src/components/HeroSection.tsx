@@ -17,14 +17,7 @@
  *   - Positioned bottom-center, visible on desktop
  */
 
-import dynamic from 'next/dynamic'
 import { HeroTitle } from '@/components/HeroTitle'
-
-// Desktop-only 3D RF tuner widget. Client-only (R3F View, no SSR).
-const TunerView = dynamic(
-  () => import('@/components/tuner/TunerView').then((m) => m.TunerView),
-  { ssr: false },
-)
 
 export function HeroSection() {
   return (
@@ -38,13 +31,6 @@ export function HeroSection() {
         <HeroTitle />
       </div>
 
-      {/* RF tuner — functional control driving the SignalField background.
-          Fluid across all breakpoints (clamp width + fixed aspect so the 3D
-          never distorts). Top-right on phones to clear the name; bottom-right
-          from md up, opposite the name. */}
-      <div className="absolute right-4 top-20 md:top-auto md:bottom-24 md:right-16 z-10 w-[clamp(170px,42vw,340px)] aspect-[340/210]">
-        <TunerView />
-      </div>
 
       {/* Scroll indicator — subtle animated caret */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 opacity-40">

@@ -26,7 +26,6 @@ import { useFrame, useThree } from '@react-three/fiber'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from '@/lib/gsap'
 import { durations } from '@/lib/motion'
-import { useTunerContext } from '@/components/tuner/TunerContext'
 import * as THREE from 'three'
 
 // ---------------------------------------------------------------------------
@@ -42,11 +41,11 @@ const CAMERA_Z_SCROLLED = 10
 // client; SSR falls back to the desktop count (the field is client-only via
 // the View and never server-rendered, so there's no hydration mismatch).
 function getParticleCount(): number {
-  if (typeof window === 'undefined') return 6000
+  if (typeof window === 'undefined') return 4000
   const lowPower =
     window.matchMedia('(max-width: 768px)').matches ||
     (navigator.hardwareConcurrency ?? 8) <= 4
-  return lowPower ? 3000 : 6000
+  return lowPower ? 2000 : 4000
 }
 
 // ---------------------------------------------------------------------------
@@ -122,7 +121,7 @@ void main() {
 `
 
 const fragmentShader = `
-uniform float uTune;
+uniform float uTime;
 varying float vHeight;
 varying float vEdgeDist;
 
@@ -144,13 +143,13 @@ void main() {
   // This makes the interference pattern visible as bright/dark bands.
   float waveVis = smoothstep(0.0, 0.22, abs(vHeight));
   float softDisk = 1.0 - smoothstep(0.15, 0.25, r);
-  // Knob ceiling: detuned dims toward a low floor, locked blazes full.
-  float tuneGain = mix(0.25, 1.0, uTune);
-  float alpha = edgeFade * waveVis * softDisk * tuneGain;
+  // Auto-pulse: intensity swells bright then fades, looping forever.
+  float pulse = 0.3 + 0.7 * (0.5 + 0.5 * sin(uTime * 0.6));
+  float alpha = edgeFade * waveVis * softDisk * pulse;
   alpha = clamp(alpha, 0.0, 1.0);
 
   // Peaks get extra brightness — white-orange glow at constructive zones
-  float brightness = (0.5 + 0.5 * smoothstep(0.1, 0.4, abs(vHeight))) * tuneGain;
+  float brightness = (0.5 + 0.5 * smoothstep(0.1, 0.4, abs(vHeight))) * pulse;
   vec3 col = mix(colDark, waveColor * brightness, edgeFade);
 
   if (alpha < 0.01) discard;
@@ -174,7 +173,6 @@ const wavePlaneFragmentShader = `
 #define FIELD_H  6.0
 uniform float uTime;
 uniform float uDisperse;
-uniform float uTune;
 varying vec2 vWorld;
 
 void main() {
@@ -194,9 +192,8 @@ void main() {
   float h = clamp(wave * 0.5 + 0.5, 0.0, 1.0);
   vec3 waveColor = mix(colCrimson, colOrange, h);
 
-  // Warm-white hot core at strongest constructive zones — only blooms
-  // when the knob is near lock (scaled by uTune).
-  float hotCore = smoothstep(0.7, 1.0, abs(wave)) * 0.45 * uTune;
+  // Warm-white hot core at strongest constructive zones.
+  float hotCore = smoothstep(0.7, 1.0, abs(wave)) * 0.45;
   vec3 col = mix(waveColor, vec3(1.0, 0.78, 0.45), hotCore);
 
   // Tight edge fade — glow stays in center, black at borders
@@ -207,13 +204,11 @@ void main() {
   // Disperse on scroll; converge opacity handled by parent div
   float visibility = clamp(1.0 - uDisperse * 1.5, 0.0, 1.0);
 
-  // Auto-pulse: slow breathing envelope so the beams swell and fade on a loop
-  // with zero interaction. Knob sets the ceiling (uTune); a low floor keeps the
-  // field alive even fully detuned.
-  float breath = 0.78 + 0.22 * sin(uTime * 0.6);
-  float tuneGain = mix(0.2, 1.0, uTune);
+  // Auto-pulse: beam intensity swells bright then fades, looping forever with
+  // zero interaction. Wide range (0.3 → 1.0) so the breathing is clearly felt.
+  float pulse = 0.3 + 0.7 * (0.5 + 0.5 * sin(uTime * 0.6));
 
-  float alpha = glow * edgeFade * visibility * breath * tuneGain;
+  float alpha = glow * edgeFade * visibility * pulse;
   gl_FragColor = vec4(col, alpha);
 }
 `
@@ -290,13 +285,11 @@ function SignalFieldScene({
   mouseTarget: React.MutableRefObject<THREE.Vector2>
 }) {
   const { invalidate, camera } = useThree()
-  const { tuneRef } = useTunerContext()
 
   const uniforms = useRef({
     uTime:       { value: 0 } as THREE.IUniform<number>,
     uConverge:   { value: 0 } as THREE.IUniform<number>,
     uDisperse:   { value: 0 } as THREE.IUniform<number>,
-    uTune:       { value: 0 } as THREE.IUniform<number>,
     uMouse:      { value: new THREE.Vector2(0, 0) } as THREE.IUniform<THREE.Vector2>,
     uPixelRatio: { value: Math.min(typeof window !== 'undefined' ? window.devicePixelRatio : 1, 2) } as THREE.IUniform<number>,
   })
@@ -376,10 +369,6 @@ function SignalFieldScene({
     lerpedMouse.current.y += (mouseTarget.current.y - lerpedMouse.current.y) * 0.06
     u.uMouse.value.copy(lerpedMouse.current)
 
-    // Knob → field intensity ceiling. Smoothed for a gentle settle (clarity is
-    // already eased in useTuner, this just avoids any micro-steps).
-    u.uTune.value += (tuneRef.current - u.uTune.value) * 0.12
-
     u.uTime.value = t
     // Frame scheduling is owned by the keep-alive ticker effect above.
   })
@@ -395,7 +384,6 @@ function SignalFieldScene({
           uniforms={{
             uTime:     uniforms.current.uTime,
             uDisperse: uniforms.current.uDisperse,
-            uTune:     uniforms.current.uTune,
           }}
           transparent
           depthWrite={false}
