@@ -10,7 +10,7 @@
  *   - Full-screen section (#hero, min-h-screen)
  *   - Content centered vertically in lower-middle area (justify-end pb-24)
  *   - Name at fluid scale; contact row small mono text below
- *   - z-10 ensures content sits above the ShaderCanvas (z-0)
+ *   - z-10 ensures content sits above the SignalField background (z-0)
  *
  * Scroll-down indicator:
  *   - Subtle animated chevron inviting the user to scroll
@@ -18,31 +18,19 @@
  */
 
 import { HeroTitle } from '@/components/HeroTitle'
-import { useGrain } from '@/components/GrainContext'
 
 export function HeroSection() {
-  const { grainEnabled, toggleGrain } = useGrain()
-
   return (
     <section
       id="hero"
       className="relative min-h-screen w-full flex flex-col justify-end pb-24 px-6 md:px-16"
     >
-      {/* Content sits above ShaderCanvas (z-0) */}
+      {/* Content sits above SignalField background (z-0) */}
       <div className="relative z-10 max-w-7xl w-full mx-auto flex flex-col gap-8">
         {/* Main name — GSAP scramble plays on mount */}
         <HeroTitle />
-
-        {/* Grain toggle — only here in the hero, controls the home-page shader grain */}
-        <button
-          type="button"
-          onClick={toggleGrain}
-          className="self-start font-display text-sm text-foreground/40 hover:text-accent transition-colors duration-200 tracking-wide bg-transparent border-none p-0 cursor-pointer"
-          aria-label={grainEnabled ? 'Disable grain texture' : 'Enable grain texture'}
-        >
-          {grainEnabled ? 'too noisy' : 'filtered'}
-        </button>
       </div>
+
 
       {/* Scroll indicator — subtle animated caret */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden md:flex flex-col items-center gap-2 opacity-40">

@@ -4,8 +4,8 @@ import dynamic from 'next/dynamic'
 import { useTranslations } from 'next-intl'
 import { motion, useReducedMotion } from 'framer-motion'
 
-const ChibiCanvas = dynamic(
-  () => import('./chibi/ChibiCanvas').then((m) => m.ChibiCanvas),
+const ChibiView = dynamic(
+  () => import('./chibi/ChibiView').then((m) => m.ChibiView),
   { ssr: false },
 )
 
@@ -37,7 +37,7 @@ export function AboutSection() {
           variants={imageVariants}
           transition={{ type: 'spring', duration: shouldReduce ? 0 : 0.6, bounce: 0, delay: shouldReduce ? 0 : 0.1 }}
         >
-          <ChibiCanvas />
+          <ChibiView />
         </motion.div>
 
         {/* Text */}

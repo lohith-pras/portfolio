@@ -13,7 +13,7 @@ export const PLACES: Place[] = [
     city: 'Bengaluru',
     country: 'India',
     years: '2000–2018',
-    sprite: '/places/bengaluru.png',
+    sprite: '/bengaluru.png',
     placeholderColor: '#1a3a1a',
   },
   {
@@ -21,7 +21,7 @@ export const PLACES: Place[] = [
     city: 'Nürnberg',
     country: 'Germany',
     years: '2022–2024',
-    sprite: '/places/nurnberg.png',
+    sprite: '/nurnberg.png',
     placeholderColor: '#1a1a3a',
   },
   {
@@ -29,7 +29,7 @@ export const PLACES: Place[] = [
     city: 'Dresden',
     country: 'Germany',
     years: '2024–now',
-    sprite: '/places/dresden.png',
+    sprite: '/dresden.png',
     placeholderColor: '#3a1a1a',
   },
 ]
