@@ -21,11 +21,7 @@ export default async function Home({ params }: Props) {
   return (
     <DescentProvider>
       <main className="relative min-h-screen bg-background text-foreground [overflow-x:clip] selection:bg-accent/30">
-        {/*
-          CityView: Fixed full-bleed R3F View for the scroll-driven city descent.
-          Renders into the shared Canvas via View — single WebGL context.
-          (SignalField.tsx is now unused; file retired in M15.)
-        */}
+        {/* CityView: Fixed full-bleed R3F View for the scroll-driven city descent. */}
         <CityView />
         <R3FRoot />
 

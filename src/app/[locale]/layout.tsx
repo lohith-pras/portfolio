@@ -2,8 +2,6 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages, setRequestLocale } from 'next-intl/server'
 import { routing, type Locale } from '@/i18n/routing'
 import { PageTransition } from '@/components/PageTransition'
-import { NavbarDesktop } from '@/components/NavbarDesktop'
-import { NavbarMobile } from '@/components/NavbarMobile'
 import { GrainProvider } from '@/components/GrainContext'
 import { SmoothScroll } from '@/components/SmoothScroll'
 import { type ReactNode } from 'react'
@@ -34,8 +32,7 @@ export default async function LocaleLayout({ children, params }: Props) {
     <NextIntlClientProvider locale={locale} messages={messages}>
       <GrainProvider>
         <SmoothScroll />
-        <NavbarDesktop />
-        <NavbarMobile />
+        {/* Navbar on hold — design TBD. NavbarDesktop/NavbarMobile components retained. */}
         <PageTransition>
           {children}
         </PageTransition>
