@@ -15,7 +15,11 @@ export function HeroStage({ children }: { children: ReactNode }) {
   const reduced = useReducedMotion()
 
   useGSAP(() => {
-    if (reduced) { progress.current = REVEAL_END; return }
+    if (reduced) {
+      // Reduced motion: immediately resolve to the post-reveal city pose.
+      progress.current = REVEAL_END
+      return
+    }
     const outer = outerRef.current, pin = pinRef.current
     if (!outer || !pin) return
     const trigger = ScrollTrigger.create({
