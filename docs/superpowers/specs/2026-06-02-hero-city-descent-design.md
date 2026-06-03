@@ -28,6 +28,10 @@ This replaces `SignalField` as the hero background.
 | City render style | Pure wireframe (LineSegments / Points / instanced + additive blending) |
 | Dimensionality | Fully 3D — real depth, vehicles + drones move in true 3D space |
 | Palette | Black `#000000`, electric cyan `#00F5FF`, white, subtle gray `#111111` |
+| Fidelity ceiling | Build toward stylized, **ship wireframe first** (see §11) |
+| Skin selection | Capability-driven — desktop → stylized (later), mobile/reduced → wireframe-lite |
+| Stylized assets | Procedural meshes (code-built), **no GLB, no physics engine** |
+| Motion | Scripted/choreographed — "looks physical", never simulated |
 
 ### Not negotiable (constraints)
 
@@ -90,6 +94,8 @@ src/components/city/
 ```
 
 `HeroSection` wires `HeroStage` + the title overlay.
+
+> **Render skins:** `City`/`Vehicles`/`Drones`/`Clouds` are thin skin-selectors over shared data + motion — see §11 for the wireframe→stylized seam. This build ships the wireframe skin only.
 
 **Phase-gating contract:** each subsystem self-fades within its progress window and does **no per-frame work** when off-phase (clouds stop ticking after city appears; vehicles/drones don't update until REVEAL; overlays only animate inside their beat). When the hero is fully scrolled away, the whole scene's animation loop idles.
 
@@ -166,17 +172,22 @@ Instanced small wireframe drones flying **altitude arcs** above the streets on s
 
 ---
 
-## 8. Out of scope (Tier 3 — parked, named so we don't scope-creep)
+## 8. Out of scope
 
-The beats **evoke** these; they are not simulated:
+### 8a. Planned NEXT milestone (architecturally enabled now, built later — see §11)
+- The `*Stylized` procedural render skin: shaded low-poly buildings, antennas, roof props, low-poly vehicles/drones — desktop-tier.
+- Volumetric/lit clouds on desktop.
+
+These are **not built in this hero**, but the seams (§11) guarantee they bolt on without a rewrite. Each gets its own spec + plan when built.
+
+### 8b. Parked to a standalone `/lab` page (Tier 3 — NOT behind portfolio content)
+The beats **evoke** these; they are never simulated here:
+- Real **physics engine** (Rapier/cannon) — suspension, collisions, drone aerodynamics. Too heavy + glitchy for an always-on background.
 - Real traffic AI: merging, intersection decision-making, dynamic routing, collision solving.
 - LiDAR / radar / camera sensor cones + object detection highlights.
 - Transparent buildings with live animated dashboards / real data.
-- Infinite streaming/procedural city.
-- Full V2X taxonomy (V2P pedestrians, V2C cloud modeling) as real agents.
-- Per-vehicle-type behavioral models.
-
-If wanted later, these belong on a standalone load-on-demand `/lab` page, not behind portfolio content.
+- Heavy GLB model libraries; infinite streaming/procedural city.
+- Full V2X taxonomy (V2P pedestrians, V2C cloud modeling) as real agents; per-vehicle behavioral models.
 
 ---
 
@@ -191,8 +202,63 @@ Visual-first (preview screenshots at each phase) + a little unit coverage:
 
 ---
 
-## 10. Open defaults to confirm during planning
+## 10. Defaults (resolved during planning)
 
-- Title placement during beats (over-city vs anchored corner).
-- Exact pin scroll distance (cinematic length vs scroll-fatigue).
-- Whether desktop gets optional bloom at all.
+- Title placement → **anchored lower-left** after REVEAL.
+- Pin scroll distance → **≈500vh**.
+- Desktop bloom → **none; fake glow only** (additive + sprite halos).
+
+---
+
+## 11. Fidelity roadmap & render-skin architecture
+
+Decision: **build toward stylized, ship wireframe first**, skins selected by device capability, stylized layer made of **procedural meshes + scripted motion** (no GLB, no physics). This section defines the seams that make future enrichment additive, not a rewrite.
+
+### Principle: separate *what exists* from *how it's drawn*
+
+```
+DATA   (what exists)     cityData.ts — footprints, heights, lane graph, chargers,
+                         + detail fields (antenna, roofProp, category). Wireframe
+                         ignores the extras; the stylized skin reads them later.
+
+MOTION (how it moves)    useAgents() — computes vehicle/drone transforms per frame
+                         from lanes/arcs. Scripted, "looks physical". Shared by BOTH
+                         skins, so motion is never rewritten.
+
+SKIN   (how it's drawn)  useRenderProfile() → 'wireframe' | 'stylized'
+                         (capability-driven; both map to 'wireframe' until the
+                         stylized skin exists)
+```
+
+### The seam
+
+Each visual piece is a thin selector that renders the active skin off shared data + motion:
+
+```
+City.tsx      → reads profile → <CityWireframe>   (now) | <CityStylized>   (later)
+Vehicles.tsx  → reads profile → <VehiclesWireframe>     | <VehiclesStylized>
+Drones.tsx    → reads profile → <DronesWireframe>       | <DronesStylized>
+Clouds.tsx    → <CloudsBasic> (now, upgraded)           | <CloudsVolumetric> (later, desktop)
+
+src/components/city/
+  useRenderProfile.ts   capability → 'wireframe' | 'stylized' (both → wireframe for now)
+  useAgents.ts          shared scripted-motion transforms for vehicles + drones
+  skins/
+    CityWireframe.tsx        (current City render logic)
+    VehiclesWireframe.tsx
+    DronesWireframe.tsx
+    CloudsBasic.tsx
+    # later: CityStylized.tsx, VehiclesStylized.tsx, DronesStylized.tsx, CloudsVolumetric.tsx
+```
+
+### What this changes in the current (wireframe) build
+- `cityData.ts` gains cheap detail fields now: per-building `antenna?: {h:number}`, `roofProp?: 'dish'|'ac'|'vent'`, `category`. Wireframe may render antennas as thin lines; stylized uses the rest later.
+- Vehicle/drone motion factored into `useAgents()` so both skins share it.
+- Clouds upgraded from flat sprites to **multi-octave noise texture + depth layers** (addresses "needs more definition") — shipped in `CloudsBasic` now.
+- `City`/`Vehicles`/`Drones` become thin profile-selectors; the wireframe logic moves into `skins/*Wireframe.tsx`.
+
+### Capability check (`useRenderProfile`)
+`'wireframe'` when: `prefers-reduced-motion`, `(max-width:768px)`, or `hardwareConcurrency ≤ 4`. `'stylized'` otherwise — but until the stylized skin is built, the function returns `'wireframe'` unconditionally (the seam exists; the branch is dormant).
+
+### Cost
+Modest upfront: ~3 plan tasks adjusted (selectors + `useAgents` + `cityData` fields) + 1 added (`useRenderProfile`) + cloud upgrade. Wireframe ship date barely moves. The stylized skin itself is deferred (§8a) — guaranteed reachable, not built now (YAGNI).
