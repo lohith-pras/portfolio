@@ -2,6 +2,7 @@
 import { useEffect } from 'react'
 import { useDescentCamera } from './useDescentCamera'
 import { useDescent } from './DescentContext'
+import { Porthole } from './Porthole'
 
 export function CityScene() {
   const { mouse } = useDescent()
@@ -15,6 +16,11 @@ export function CityScene() {
     return () => window.removeEventListener('pointermove', onMove)
   }, [mouse])
 
-  // Temporary debug content — replaced as subsystems land (porthole, clouds, city).
-  return <gridHelper args={[64, 16, 0x00f5ff, 0x113333]} />
+  // Debug grid stays until the city wireframe lands (M8); porthole opens the descent.
+  return (
+    <>
+      <gridHelper args={[64, 16, 0x00f5ff, 0x113333]} />
+      <Porthole />
+    </>
+  )
 }
