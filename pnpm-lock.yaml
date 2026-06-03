@@ -70,7 +70,7 @@ importers:
         version: 0.184.0
     devDependencies:
       '@types/mdx':
-        specifier: 2.0.13
+        specifier: ^2.0.13
         version: 2.0.13
       '@types/node':
         specifier: ^22.15.17
@@ -82,7 +82,7 @@ importers:
         specifier: ^19.1.2
         version: 19.2.3(@types/react@19.2.15)
       '@types/three':
-        specifier: 0.184.0
+        specifier: ^0.184.0
         version: 0.184.0
       '@vitejs/plugin-react':
         specifier: ^6.0.2
