@@ -5,13 +5,15 @@ import * as THREE from 'three'
 interface Descent {
   progress: MutableRefObject<number>       // 0..1, written by HeroStage
   mouse: MutableRefObject<THREE.Vector2>    // -1..1 parallax target
+  visible: MutableRefObject<boolean>       // true when #hero is in viewport (offscreen pause)
 }
 const Ctx = createContext<Descent | null>(null)
 
 export function DescentProvider({ children }: { children: ReactNode }) {
   const progress = useRef(0)
   const mouse = useRef(new THREE.Vector2(0, 0))
-  return <Ctx.Provider value={{ progress, mouse }}>{children}</Ctx.Provider>
+  const visible = useRef(true)
+  return <Ctx.Provider value={{ progress, mouse, visible }}>{children}</Ctx.Provider>
 }
 
 export function useDescent(): Descent {

@@ -7,11 +7,14 @@ import { useDescent } from './DescentContext'
 
 export function useDescentCamera() {
   const { camera } = useThree()
-  const { progress, mouse } = useDescent()
+  const { progress, mouse, visible } = useDescent()
   const lerpedMouse = useRef(new THREE.Vector2())
   const lookTarget = useRef(new THREE.Vector3())
 
   useFrame(({ clock }) => {
+    // Offscreen pause — skip all work when #hero is not visible.
+    if (!visible.current) return
+
     const p = Number.isNaN(progress.current) ? 0 : progress.current
     const pose = sampleCamera(p)
 

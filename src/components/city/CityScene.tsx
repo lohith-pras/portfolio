@@ -1,12 +1,15 @@
 'use client'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
+import { useFrame } from '@react-three/fiber'
+import * as THREE from 'three'
 import { useDescentCamera } from './useDescentCamera'
 import { useDescent } from './DescentContext'
 import { Porthole } from './Porthole'
 import { CloudField } from './CloudField'
+import { City } from './City'
 
 export function CityScene() {
-  const { mouse } = useDescent()
+  const { mouse, visible } = useDescent()
   useDescentCamera()
 
   useEffect(() => {
@@ -17,12 +20,20 @@ export function CityScene() {
     return () => window.removeEventListener('pointermove', onMove)
   }, [mouse])
 
-  // Debug grid stays until the city wireframe lands (M8); porthole opens the descent.
+  // Offscreen pause: stop driving any work when the hero section is off-screen.
+  useEffect(() => {
+    const hero = document.getElementById('hero')
+    if (!hero) return
+    const obs = new IntersectionObserver(([e]) => { visible.current = e.isIntersecting }, { threshold: 0 })
+    obs.observe(hero)
+    return () => obs.disconnect()
+  }, [visible])
+
   return (
     <>
-      <gridHelper args={[64, 16, 0x00f5ff, 0x113333]} />
       <Porthole />
       <CloudField />
+      <City />
     </>
   )
 }

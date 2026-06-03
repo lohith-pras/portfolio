@@ -10,7 +10,7 @@ const CYAN = new THREE.Color(0x00f5ff)
 export function Porthole() {
   const group = useRef<THREE.Group>(null)
   const ringMat = useRef<THREE.MeshBasicMaterial>(null)
-  const { progress } = useDescent()
+  const { progress, visible } = useDescent()
 
   // Bolt ring positions.
   const bolts = useMemo(() => {
@@ -23,6 +23,7 @@ export function Porthole() {
   }, [])
 
   useFrame(({ clock }) => {
+    if (!visible.current) return
     const p = progress.current
     const vis = Math.max(envelope(p, [PHASE.porthole[0], PHASE.enter[1]], 0.04),
                          p < PHASE.porthole[0] + 0.001 ? 1 : 0)

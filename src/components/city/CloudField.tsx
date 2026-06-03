@@ -59,7 +59,7 @@ function makeCloudTexture(seed: number): THREE.Texture {
 }
 
 export function CloudField() {
-  const { progress } = useDescent()
+  const { progress, visible } = useDescent()
   const group = useRef<THREE.Group>(null)
   // Two texture variants so neighbouring puffs don't read as identical stamps.
   const texA = useMemo(() => makeCloudTexture(0xC10D), [])
@@ -85,6 +85,7 @@ export function CloudField() {
   }, [matA, matB])
 
   useFrame(() => {
+    if (!visible.current) return
     const vis = envelope(progress.current, PHASE.clouds, 0.06)
     const g = group.current
     if (!g) return
