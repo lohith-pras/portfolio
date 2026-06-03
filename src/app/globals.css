@@ -11,7 +11,7 @@
   --color-accent-crimson: #C0001A;
 
   /* Fluid type scale — FOUND-02 */
-  --type-hero: clamp(3rem, 10vw, 9rem);
+  --type-hero: clamp(2.5rem, 6.5vw, 6rem);
   --type-heading: clamp(2rem, 6vw, 4.5rem);
   --type-subheading: clamp(1.5rem, 3.5vw, 3rem);
   --type-body: clamp(1rem, 2vw, 1.2rem);
@@ -29,7 +29,21 @@ html {
   color: #F0F0F0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  scroll-behavior: smooth;
+}
+
+/* ─── Lenis smooth scroll (recommended) ─── */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
 }
 
 * {

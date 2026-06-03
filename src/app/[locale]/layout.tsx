@@ -5,7 +5,7 @@ import { PageTransition } from '@/components/PageTransition'
 import { NavbarDesktop } from '@/components/NavbarDesktop'
 import { NavbarMobile } from '@/components/NavbarMobile'
 import { GrainProvider } from '@/components/GrainContext'
-import { R3FRootWrapper } from '@/components/R3FRootWrapper'
+import { SmoothScroll } from '@/components/SmoothScroll'
 import { type ReactNode } from 'react'
 
 type Props = {
@@ -33,7 +33,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
       <GrainProvider>
-        <R3FRootWrapper />
+        <SmoothScroll />
         <NavbarDesktop />
         <NavbarMobile />
         <PageTransition>

@@ -27,7 +27,7 @@ export function R3FRoot() {
       onCreated={(state) => {
         state.gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
       }}
-      frameloop="demand"
+      frameloop="always"
     >
       <View.Port />
     </Canvas>

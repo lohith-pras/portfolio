@@ -67,12 +67,10 @@ varying float vHeight;
 varying float vEdgeDist;
 
 float waveHeight(vec2 p, float t) {
-  vec2 srcA = vec2(-FIELD_W * 0.5, 0.0);
-  vec2 srcB = vec2( FIELD_W * 0.5, 0.0);
-  float dA = distance(p, srcA);
-  float dB = distance(p, srcB);
-  float wA = sin(dA * 2.0 - t * 1.8);
-  float wB = sin(dB * 2.0 + t * 1.4);
+  // Vertical bands traveling along +X → horizontal sweep.
+  // Two slightly detuned freqs keep the interference beating.
+  float wA = sin(p.x * 2.2 - t * 1.8);
+  float wB = sin(p.x * 1.6 + t * 1.4);
   return (wA + wB) * 0.25;
 }
 
@@ -144,7 +142,7 @@ void main() {
   float waveVis = smoothstep(0.0, 0.22, abs(vHeight));
   float softDisk = 1.0 - smoothstep(0.15, 0.25, r);
   // Auto-pulse: intensity swells bright then fades, looping forever.
-  float pulse = 0.3 + 0.7 * (0.5 + 0.5 * sin(uTime * 0.6));
+  float pulse = 0.6 + 0.4 * (0.5 + 0.5 * sin(uTime * 0.6));
   float alpha = edgeFade * waveVis * softDisk * pulse;
   alpha = clamp(alpha, 0.0, 1.0);
 
@@ -176,16 +174,13 @@ uniform float uDisperse;
 varying vec2 vWorld;
 
 void main() {
-  vec2 srcA = vec2(-FIELD_W * 0.5, 0.0);
-  vec2 srcB = vec2( FIELD_W * 0.5, 0.0);
-  float dA = distance(vWorld, srcA);
-  float dB = distance(vWorld, srcB);
-  float wA = sin(dA * 2.0 - uTime * 1.8);
-  float wB = sin(dB * 2.0 + uTime * 1.4);
+  // Vertical bands traveling along +X → horizontal sweep.
+  float wA = sin(vWorld.x * 2.2 - uTime * 1.8);
+  float wB = sin(vWorld.x * 1.6 + uTime * 1.4);
   float wave = (wA + wB) * 0.5; // -1..1
 
-  // pow(2.8) sharpens falloff: peaks bright, nulls true-black
-  float glow = pow(abs(wave), 2.8) * 1.1;
+  // pow(2.0) widens the bright bands; *1.6 lifts overall brightness
+  float glow = pow(abs(wave), 2.0) * 1.6;
 
   vec3 colOrange  = vec3(1.0, 0.271, 0.0);
   vec3 colCrimson = vec3(0.753, 0.0, 0.102);
@@ -205,8 +200,8 @@ void main() {
   float visibility = clamp(1.0 - uDisperse * 1.5, 0.0, 1.0);
 
   // Auto-pulse: beam intensity swells bright then fades, looping forever with
-  // zero interaction. Wide range (0.3 → 1.0) so the breathing is clearly felt.
-  float pulse = 0.3 + 0.7 * (0.5 + 0.5 * sin(uTime * 0.6));
+  // zero interaction. Range (0.6 → 1.0) — brighter, gentler breathing.
+  float pulse = 0.6 + 0.4 * (0.5 + 0.5 * sin(uTime * 0.6));
 
   float alpha = glow * edgeFade * visibility * pulse;
   gl_FragColor = vec4(col, alpha);
@@ -222,9 +217,6 @@ function makeWavePositions(particleCount: number): Float32Array {
   // shows the wave band pattern as a 2D projection (Z displacement is invisible
   // from the camera, but XY clustering is visible). As uTime evolves, alpha-by-
   // waveheight makes bands pulsate in brightness.
-  const srcAx = -FIELD_W * 0.5
-  const srcBx =  FIELD_W * 0.5
-
   const pos = new Float32Array(particleCount * 3)
   let idx = 0
   let count = 0
@@ -237,10 +229,9 @@ function makeWavePositions(particleCount: number): Float32Array {
     attempts++
     const x = (Math.random() - 0.5) * FIELD_W
     const y = (Math.random() - 0.5) * FIELD_H
-    const dA = Math.sqrt((x - srcAx) ** 2 + y * y)
-    const dB = Math.sqrt((x - srcBx) ** 2 + y * y)
-    const wA = Math.sin(dA * 2.0)
-    const wB = Math.sin(dB * 2.0)
+    // Match shader: vertical bands along X (clustering follows the beams)
+    const wA = Math.sin(x * 2.2)
+    const wB = Math.sin(x * 1.6)
     const amp = Math.abs((wA + wB) * 0.25) // 0..0.5
     // Accept probability: base 0.08 (sparse at nulls) + heavy weight at peaks
     if (Math.random() < Math.min(0.08 + amp * 3.6, 1.0)) {
@@ -284,7 +275,7 @@ function SignalFieldScene({
   scrollProgress: React.MutableRefObject<number>
   mouseTarget: React.MutableRefObject<THREE.Vector2>
 }) {
-  const { invalidate, camera } = useThree()
+  const { camera } = useThree()
 
   const uniforms = useRef({
     uTime:       { value: 0 } as THREE.IUniform<number>,
@@ -331,22 +322,9 @@ function SignalFieldScene({
     return () => obs.disconnect()
   }, [])
 
-  // Keep-alive ticker — the field must animate on its own, with no interaction.
-  // A dedicated rAF (not useFrame's self-invalidate) drives the demand loop so
-  // it CANNOT stall: it always runs, invalidating only while the hero is
-  // visible, and resumes automatically on re-entry. Previously the per-frame
-  // early-return could break the invalidate chain, leaving pointer events as
-  // the only thing stepping frames (the field appeared to react to clicks).
-  useEffect(() => {
-    let raf = 0
-    const tick = () => {
-      if (isHeroVisible.current) invalidate()
-      raf = requestAnimationFrame(tick)
-    }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [invalidate])
-
+  // Canvas runs frameloop="always", so the field animates every frame with no
+  // manual invalidate() needed. The IntersectionObserver flag below short-
+  // circuits the per-frame uniform math when the hero is scrolled offscreen.
   useFrame(({ clock }) => {
     if (!isHeroVisible.current) return
 
