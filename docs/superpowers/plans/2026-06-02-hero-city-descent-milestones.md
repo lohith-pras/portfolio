@@ -10,6 +10,21 @@
 
 **Principle (from spec §11):** DATA (`cityData`) ⊥ MOTION (`useAgents`) ⊥ SKIN (`useRenderProfile` → wireframe now, stylized later). Each visual piece is a thin skin-selector. Ship wireframe only.
 
+**Reference skills (installed `~/.claude/skills/threejs-*`):** consult the matching skill when expanding each milestone.
+
+| Skill | Use in |
+|---|---|
+| `threejs-fundamentals` | M5 scene/camera/renderer setup, Object3D hierarchy |
+| `threejs-geometry` | M8 building edges, **instancing** for M9 vehicles / M10 drones |
+| `threejs-materials` | wireframe + additive blending now; stylized skin later |
+| `threejs-shaders` | M7 cloud noise texture, beat energy/link flow |
+| `threejs-animation` | scripted motion (`useAgents`), camera rig choreography |
+| `threejs-textures` | M7 procedural cloud texture, future stylized surfaces |
+| `threejs-loaders` | parked — only if GLB is ever added (spec §8a stylized) |
+| `threejs-postprocessing` | reference only — bloom is OFF (fake glow, spec §10) |
+| `threejs-lighting` | parked — wireframe is unlit; relevant for stylized skin |
+| `threejs-interaction` | mouse parallax input (M5) |
+
 ---
 
 ## Milestone map (each small — 1–4 files)
