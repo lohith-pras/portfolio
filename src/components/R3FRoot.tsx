@@ -23,11 +23,11 @@ export function R3FRoot() {
       eventPrefix="client"
       className="!fixed inset-0 z-0 pointer-events-none"
       style={{ position: 'fixed', inset: 0, pointerEvents: 'none' }}
-      gl={{ alpha: true, antialias: true, powerPreference: 'high-performance', toneMapping: 0 }}
+      gl={{ alpha: true, antialias: true, powerPreference: 'high-performance', toneMapping: 0, stencil: true }}
       onCreated={(state) => {
         state.gl.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
       }}
-      frameloop="demand"
+      frameloop="always"
     >
       <View.Port />
     </Canvas>

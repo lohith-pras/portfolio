@@ -36,7 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceMono.variable} ${plusJakartaSans.variable} scroll-smooth`}
+      className={`${spaceMono.variable} ${plusJakartaSans.variable}`}
     >
       <body className="bg-background text-foreground antialiased">
         {children}

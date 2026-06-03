@@ -24,7 +24,7 @@ export function AboutSection() {
   }
 
   return (
-    <section id="about" className="min-h-[100svh] w-full flex items-center py-24">
+    <section id="about" className="relative z-10 min-h-[100svh] w-full flex items-center py-24 bg-[#0C0C0C]">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center px-6 md:px-16 max-w-7xl mx-auto w-full">
 
         {/* Chibi — top on mobile, right on desktop */}
