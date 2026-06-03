@@ -1,12 +1,13 @@
 'use client'
-import { useEffect, useRef } from 'react'
-import { useFrame } from '@react-three/fiber'
-import * as THREE from 'three'
+import { useEffect } from 'react'
 import { useDescentCamera } from './useDescentCamera'
 import { useDescent } from './DescentContext'
 import { Porthole } from './Porthole'
 import { CloudField } from './CloudField'
 import { City } from './City'
+import { Vehicles } from './Vehicles'
+import { Drones } from './Drones'
+import { Overlays } from './Overlays'
 
 export function CityScene() {
   const { mouse, visible } = useDescent()
@@ -34,6 +35,9 @@ export function CityScene() {
       <Porthole />
       <CloudField />
       <City />
+      <Vehicles />
+      <Drones />
+      <Overlays />
     </>
   )
 }
