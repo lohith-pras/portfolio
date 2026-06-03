@@ -5,7 +5,7 @@ import * as THREE from 'three'
 import { useDescent } from './DescentContext'
 import { PHASE, envelope, localProgress } from './phases'
 
-const CYAN = new THREE.Color(0x00f5ff)
+const ACCENT = new THREE.Color(0xff1e00)  // #FF1E00 site accent red
 
 export function Porthole() {
   const group = useRef<THREE.Group>(null)
@@ -43,17 +43,17 @@ export function Porthole() {
     <group ref={group} position={[0, 0, 0]}>
       <mesh>
         <torusGeometry args={[3, 0.08, 12, 64]} />
-        <meshBasicMaterial ref={ringMat} color={CYAN} transparent blending={THREE.AdditiveBlending} depthWrite={false} />
+        <meshBasicMaterial ref={ringMat} color={ACCENT} transparent blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
       {/* Inner thin ring */}
       <mesh>
         <torusGeometry args={[2.7, 0.02, 8, 64]} />
-        <meshBasicMaterial color={CYAN} transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <meshBasicMaterial color={0xff4500} transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} />
       </mesh>
       {bolts.map((b, i) => (
         <mesh key={i} position={b}>
           <sphereGeometry args={[0.12, 8, 8]} />
-          <meshBasicMaterial color={0x66ffff} transparent opacity={0.8} blending={THREE.AdditiveBlending} depthWrite={false} />
+          <meshBasicMaterial color={0xff6622} transparent opacity={0.8} blending={THREE.AdditiveBlending} depthWrite={false} />
         </mesh>
       ))}
     </group>

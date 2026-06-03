@@ -6,7 +6,9 @@ import { buildCity, CITY_SEED } from '../cityData'
 import { useDescent } from '../DescentContext'
 import { PHASE, localProgress } from '../phases'
 
-const CYAN = new THREE.Color(0x00f5ff)
+// Site palette — matches globals.css
+const ACCENT     = new THREE.Color(0xff1e00) // #FF1E00 — accent red
+const ACCENT_WARM = new THREE.Color(0xff4500) // #FF4500 — orange-red (buildings)
 
 export function CityWireframe() {
   const { progress, visible } = useDescent()
@@ -58,10 +60,10 @@ export function CityWireframe() {
   return (
     <group ref={group} visible={false}>
       <lineSegments geometry={roads}>
-        <lineBasicMaterial color={CYAN} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <lineBasicMaterial color={ACCENT} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
       </lineSegments>
       <lineSegments geometry={buildingGeo}>
-        <lineBasicMaterial color={CYAN} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <lineBasicMaterial color={ACCENT_WARM} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
       </lineSegments>
     </group>
   )

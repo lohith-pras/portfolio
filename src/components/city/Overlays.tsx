@@ -7,7 +7,9 @@ import { mulberry32, range } from '@/lib/rng'
 import { useDescent } from './DescentContext'
 import { PHASE, envelope, localProgress } from './phases'
 
-const CYAN = new THREE.Color(0x00f5ff)
+// Site palette — matches globals.css
+const ACCENT      = new THREE.Color(0xff1e00) // #FF1E00 — accent red (V2X links)
+const ACCENT_WARM  = new THREE.Color(0xff4500) // #FF4500 — orange-red (energy streams)
 const NEURAL_Y = 16
 
 export function Overlays() {
@@ -94,19 +96,19 @@ export function Overlays() {
     <group>
       {/* Beat 1 — V2X connectivity links */}
       <lineSegments ref={links} geometry={linkData} visible={false}>
-        <lineBasicMaterial ref={linkMat} color={CYAN} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <lineBasicMaterial ref={linkMat} color={ACCENT} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
       </lineSegments>
 
       {/* Beat 2 — AI neural plane */}
       <group ref={neural} visible={false}>
         <lineSegments geometry={neuralGeo}>
-          <lineBasicMaterial ref={neuralMat} color={0x66ffff} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+          <lineBasicMaterial ref={neuralMat} color={0xff6633} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
         </lineSegments>
       </group>
 
       {/* Beat 3 — Electromobility energy streams */}
       <points ref={energy} geometry={energyGeo} visible={false}>
-        <pointsMaterial ref={energyMat} color={CYAN} size={0.18} sizeAttenuation transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+        <pointsMaterial ref={energyMat} color={ACCENT_WARM} size={0.22} sizeAttenuation transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
       </points>
     </group>
   )

@@ -8,7 +8,7 @@ import { mulberry32, range } from '@/lib/rng'
 import { useDescent } from './DescentContext'
 import { PHASE } from './phases'
 
-const CYAN = new THREE.Color(0x00f5ff)
+const ACCENT = new THREE.Color(0xff1e00) // #FF1E00 site accent
 
 function vehicleCount(): number {
   if (typeof window === 'undefined') return 40
@@ -54,7 +54,7 @@ export function Vehicles() {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, count]} visible={false}>
       <boxGeometry args={[0.5, 0.25, 1.0]} />
-      <meshBasicMaterial color={CYAN} transparent opacity={0.9} blending={THREE.AdditiveBlending} depthWrite={false} />
+      <meshBasicMaterial color={ACCENT} transparent opacity={0.9} blending={THREE.AdditiveBlending} depthWrite={false} />
     </instancedMesh>
   )
 }

@@ -42,7 +42,7 @@ export function Drones() {
   return (
     <instancedMesh ref={meshRef} args={[undefined, undefined, COUNT]} visible={false}>
       <octahedronGeometry args={[0.35, 0]} />
-      <meshBasicMaterial color={0x99ffff} wireframe transparent opacity={0.9} blending={THREE.AdditiveBlending} depthWrite={false} />
+      <meshBasicMaterial color={0xff6622} wireframe transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} />
     </instancedMesh>
   )
 }

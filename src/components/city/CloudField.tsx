@@ -49,7 +49,9 @@ function makeCloudTexture(seed: number): THREE.Texture {
       const d = Math.hypot(u - 0.5, v - 0.5) * 2 // 0 center → ~1 edge
       const fall = 1 - smoothstep(0.45, 1.0, d)
       const idx = (y * s + x) * 4
-      img.data[idx] = 210; img.data[idx + 1] = 232; img.data[idx + 2] = 255
+      // Warm ember tint — aligns with the site's red/orange accent palette.
+      // Slightly desaturated so clouds read as smoke/haze rather than fire.
+      img.data[idx] = 255; img.data[idx + 1] = 200; img.data[idx + 2] = 160
       img.data[idx + 3] = Math.round(n * fall * 255)
     }
   }
@@ -65,11 +67,11 @@ export function CloudField() {
   const texA = useMemo(() => makeCloudTexture(0xC10D), [])
   const texB = useMemo(() => makeCloudTexture(0x5EA), [])
   const matA = useMemo(
-    () => new THREE.SpriteMaterial({ map: texA, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.5 }),
+    () => new THREE.SpriteMaterial({ map: texA, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.35 }),
     [texA],
   )
   const matB = useMemo(
-    () => new THREE.SpriteMaterial({ map: texB, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.5 }),
+    () => new THREE.SpriteMaterial({ map: texB, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.35 }),
     [texB],
   )
 
