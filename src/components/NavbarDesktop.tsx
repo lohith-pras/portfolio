@@ -1,17 +1,41 @@
 'use client'
+import { useState, useEffect } from 'react'
 import { usePathname, Link } from '@/i18n/navigation'
 import { Mail, Heart } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { motion, AnimatePresence } from 'framer-motion'
 
 export function NavbarDesktop() {
   const pathname = usePathname()
   const isLife = pathname === '/life'
+  const [show, setShow] = useState(false)
+
+  useEffect(() => {
+    const checkShow = () => {
+      const about = document.getElementById('about')
+      if (about) {
+        setShow(about.getBoundingClientRect().top <= window.innerHeight * 0.75)
+      } else {
+        // If there's no about section (e.g. on /life), just show it
+        setShow(true)
+      }
+    }
+    checkShow()
+    window.addEventListener('scroll', checkShow, { passive: true })
+    return () => window.removeEventListener('scroll', checkShow)
+  }, [])
 
   return (
-    <nav className="fixed top-4 left-1/2 -translate-x-1/2 w-[calc(100%-4rem)] max-w-5xl h-14 hidden md:flex items-center justify-between px-8 z-50 glass-bar rounded-2xl">
-      <Link href="/" className="link-wipe font-display font-bold text-foreground hover:text-accent transition-colors">
-        L.T. Prasanna
-      </Link>
+    <AnimatePresence>
+      {show && (
+        <motion.nav 
+          initial={{ y: -100, x: "-50%", opacity: 0 }}
+          animate={{ y: 0, x: "-50%", opacity: 1 }}
+          exit={{ y: -100, x: "-50%", opacity: 0 }}
+          className="fixed top-4 left-1/2 w-[calc(100%-4rem)] max-w-5xl h-14 hidden md:flex items-center justify-between px-8 z-50 glass-bar rounded-2xl"
+        >
+          <Link href="/" className="link-wipe font-display font-bold text-foreground hover:text-accent transition-colors">
+            L.T. Prasanna
+          </Link>
       <div className="flex items-center gap-6">
         <Link
           href="/life"
@@ -58,6 +82,8 @@ export function NavbarDesktop() {
           </svg>
         </a>
       </div>
-    </nav>
+        </motion.nav>
+      )}
+    </AnimatePresence>
   )
 }

@@ -62,12 +62,12 @@ deleted:
 - Create: `vitest.config.ts`
 - Create: `src/lib/rng.test.ts` (smoke)
 
-- [ ] **Step 1: Install vitest**
+- [x] **Step 1: Install vitest**
 
 Run: `rtk pnpm add -D vitest @vitejs/plugin-react`
 Expected: added to devDependencies.
 
-- [ ] **Step 2: Add config**
+- [x] **Step 2: Add config**
 
 Create `vitest.config.ts`:
 
@@ -83,11 +83,11 @@ export default defineConfig({
 })
 ```
 
-- [ ] **Step 3: Add test script**
+- [x] **Step 3: Add test script**
 
 In `package.json` `"scripts"`, add: `"test": "vitest run"`, `"test:watch": "vitest"`.
 
-- [ ] **Step 4: Smoke test**
+- [x] **Step 4: Smoke test**
 
 Create `src/lib/rng.test.ts`:
 
@@ -99,7 +99,7 @@ describe('vitest', () => { it('runs', () => { expect(1 + 1).toBe(2) }) })
 Run: `rtk pnpm test`
 Expected: 1 passing.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 rtk git add package.json pnpm-lock.yaml vitest.config.ts src/lib/rng.test.ts
@@ -116,7 +116,7 @@ Deterministic randomness so the city layout is stable (testable, no SSR/client d
 - Create: `src/lib/rng.ts`
 - Test: `src/lib/rng.test.ts` (replace smoke)
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 Replace `src/lib/rng.test.ts`:
 
@@ -139,12 +139,12 @@ describe('mulberry32', () => {
 })
 ```
 
-- [ ] **Step 2: Run → fail**
+- [x] **Step 2: Run → fail**
 
 Run: `rtk pnpm test`
 Expected: FAIL "mulberry32 is not a function".
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 Create `src/lib/rng.ts`:
 
@@ -166,12 +166,12 @@ export const range = (r: () => number, min: number, max: number) => min + r() * 
 export const rangeInt = (r: () => number, min: number, max: number) => Math.floor(range(r, min, max + 1))
 ```
 
-- [ ] **Step 4: Run → pass**
+- [x] **Step 4: Run → pass**
 
 Run: `rtk pnpm test`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 rtk git add src/lib/rng.ts src/lib/rng.test.ts
@@ -188,7 +188,7 @@ Maps `progress` (0..1) to named phases and produces per-subsystem opacity envelo
 - Create: `src/components/city/phases.ts`
 - Test: `src/components/city/phases.test.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -212,12 +212,12 @@ describe('phases', () => {
 })
 ```
 
-- [ ] **Step 2: Run → fail**
+- [x] **Step 2: Run → fail**
 
 Run: `rtk pnpm test src/components/city/phases.test.ts`
 Expected: FAIL "Cannot find module".
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```ts
 // src/components/city/phases.ts
@@ -256,12 +256,12 @@ export function localProgress(p: number, [start, end]: Window): number {
 }
 ```
 
-- [ ] **Step 4: Run → pass**
+- [x] **Step 4: Run → pass**
 
 Run: `rtk pnpm test src/components/city/phases.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 rtk git add src/components/city/phases.ts src/components/city/phases.test.ts
@@ -278,7 +278,7 @@ Pure keyframe sampler: `progress → { position, lookAt }`. Drives the descent.
 - Create: `src/components/city/cameraPath.ts`
 - Test: `src/components/city/cameraPath.test.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -308,12 +308,12 @@ describe('sampleCamera', () => {
 })
 ```
 
-- [ ] **Step 2: Run → fail**
+- [x] **Step 2: Run → fail**
 
 Run: `rtk pnpm test src/components/city/cameraPath.test.ts`
 Expected: FAIL.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```ts
 // src/components/city/cameraPath.ts
@@ -352,12 +352,12 @@ export function sampleCamera(p: number): CamPose {
 }
 ```
 
-- [ ] **Step 4: Run → pass**
+- [x] **Step 4: Run → pass**
 
 Run: `rtk pnpm test src/components/city/cameraPath.test.ts`
 Expected: PASS. (If the continuity test fails, soften the offending keyframe gap — that is the intended tuning signal.)
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 rtk git add src/components/city/cameraPath.ts src/components/city/cameraPath.test.ts
@@ -374,7 +374,7 @@ Seeded procedural layout: building boxes, road segments, charging stations. Pure
 - Create: `src/components/city/cityData.ts`
 - Test: `src/components/city/cityData.test.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -401,12 +401,12 @@ describe('buildCity', () => {
 })
 ```
 
-- [ ] **Step 2: Run → fail**
+- [x] **Step 2: Run → fail**
 
 Run: `rtk pnpm test src/components/city/cityData.test.ts`
 Expected: FAIL.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```ts
 // src/components/city/cityData.ts
@@ -465,12 +465,12 @@ export function buildCity(seed: number): CityLayout {
 }
 ```
 
-- [ ] **Step 4: Run → pass**
+- [x] **Step 4: Run → pass**
 
 Run: `rtk pnpm test src/components/city/cityData.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 rtk git add src/components/city/cityData.ts src/components/city/cityData.test.ts
@@ -487,7 +487,7 @@ Vehicles follow road centerlines; drones follow arcs. Pure samplers → testable
 - Create: `src/components/city/lanes.ts`
 - Test: `src/components/city/lanes.test.ts`
 
-- [ ] **Step 1: Write failing test**
+- [x] **Step 1: Write failing test**
 
 ```ts
 import { describe, it, expect } from 'vitest'
@@ -518,12 +518,12 @@ describe('lanes', () => {
 })
 ```
 
-- [ ] **Step 2: Run → fail**
+- [x] **Step 2: Run → fail**
 
 Run: `rtk pnpm test src/components/city/lanes.test.ts`
 Expected: FAIL.
 
-- [ ] **Step 3: Implement**
+- [x] **Step 3: Implement**
 
 ```ts
 // src/components/city/lanes.ts
@@ -573,12 +573,12 @@ export function sampleArc(arc: Arc, t: number): Vec3 {
 }
 ```
 
-- [ ] **Step 4: Run → pass**
+- [x] **Step 4: Run → pass**
 
 Run: `rtk pnpm test src/components/city/lanes.test.ts`
 Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 rtk git add src/components/city/lanes.ts src/components/city/lanes.test.ts
@@ -596,7 +596,7 @@ Bridge the two DOM subtrees and own the GSAP pin. After this task, scrolling dri
 - Create: `src/components/hero/HeroStage.tsx`
 - Modify: `src/components/HeroSection.tsx`
 
-- [ ] **Step 1: DescentContext**
+- [x] **Step 1: DescentContext**
 
 ```tsx
 // src/components/city/DescentContext.tsx
@@ -623,7 +623,7 @@ export function useDescent(): Descent {
 }
 ```
 
-- [ ] **Step 2: HeroStage**
+- [x] **Step 2: HeroStage**
 
 `PIN_VH = 500` realizes the ≈500vh default. Writes `progress` each scroll tick; exposes a `data-progress` attribute for verification.
 
@@ -677,7 +677,7 @@ export function HeroStage({ children }: { children: ReactNode }) {
 }
 ```
 
-- [ ] **Step 3: Wire HeroSection to use HeroStage**
+- [x] **Step 3: Wire HeroSection to use HeroStage**
 
 In `src/components/HeroSection.tsx`, wrap the existing inner content with `<HeroStage>`. Keep the `#hero` id on the outer `<section>`. Replace the `<section>` body:
 
@@ -700,11 +700,11 @@ export function HeroSection() {
 
 (The scroll-indicator + gradient-fade from the old HeroSection are dropped — the descent replaces them; re-add later in Task 18 if wanted.)
 
-- [ ] **Step 4: Verify via preview**
+- [x] **Step 4: Verify via preview**
 
 Run `preview_start`. Use `preview_eval` to scroll: `window.scrollTo(0, window.innerHeight * 3)`. Then `preview_snapshot` / inspect the pinned div's `data-progress` attribute — it should be a value between 0 and 1 that increases with scroll. `preview_console_logs`: no errors.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 rtk git add src/components/city/DescentContext.tsx src/components/hero/HeroStage.tsx src/components/HeroSection.tsx
@@ -722,7 +722,7 @@ Stand up the drei `View` with its own camera and reduced-motion fallback. Render
 - Create: `src/components/city/CityScene.tsx` (stub)
 - Modify: `src/app/[locale]/page.tsx`
 
-- [ ] **Step 1: CityScene stub**
+- [x] **Step 1: CityScene stub**
 
 ```tsx
 // src/components/city/CityScene.tsx
@@ -737,7 +737,7 @@ export function CityScene() {
 }
 ```
 
-- [ ] **Step 2: CityView**
+- [x] **Step 2: CityView**
 
 ```tsx
 // src/components/city/CityView.tsx
@@ -762,7 +762,7 @@ export function CityView() {
 }
 ```
 
-- [ ] **Step 3: Swap page.tsx**
+- [x] **Step 3: Swap page.tsx**
 
 In `src/app/[locale]/page.tsx`: replace `SignalField` with `CityView`, and wrap `<main>`'s content in `DescentProvider`. Keep `<R3FRoot/>`.
 
@@ -791,11 +791,11 @@ export default async function Home({ params }: Props) {
 }
 ```
 
-- [ ] **Step 4: Verify**
+- [x] **Step 4: Verify**
 
 Run `preview_start`, `preview_screenshot`. Expected: a cyan debug grid fills the background behind the hero text. `preview_console_logs`: no WebGL/View errors. Run `rtk tsc --noEmit` → 0 errors.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 rtk git add src/components/city/CityView.tsx src/components/city/CityScene.tsx 'src/app/[locale]/page.tsx'
@@ -812,7 +812,7 @@ Drive the View camera from `progress` (via `sampleCamera`) + mouse parallax + id
 - Create: `src/components/city/useDescentCamera.ts`
 - Modify: `src/components/city/CityScene.tsx`
 
-- [ ] **Step 1: useDescentCamera**
+- [x] **Step 1: useDescentCamera**
 
 ```ts
 // src/components/city/useDescentCamera.ts
@@ -850,7 +850,7 @@ export function useDescentCamera() {
 }
 ```
 
-- [ ] **Step 2: Wire into CityScene + add pointer parallax source**
+- [x] **Step 2: Wire into CityScene + add pointer parallax source**
 
 Update `CityScene.tsx` to call the rig, and add a `useEffect` writing pointer position into the shared `mouse` ref:
 
@@ -877,11 +877,11 @@ export function CityScene() {
 }
 ```
 
-- [ ] **Step 3: Verify**
+- [x] **Step 3: Verify**
 
 `preview_start`. Scroll via `preview_eval` to several positions (`window.scrollTo(0, h*1)`, `h*3`, `h*5`); `preview_screenshot` each. Expected: the grid is viewed from progressively lower/closer angles as you scroll (camera descends). Move mouse via `preview_eval` dispatching a `pointermove` — slight parallax shift. No console errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 rtk git add src/components/city/useDescentCamera.ts src/components/city/CityScene.tsx
@@ -898,7 +898,7 @@ Holographic ring on black, visible `.00–.28`, breathing + scanline, dissolving
 - Create: `src/components/city/Porthole.tsx`
 - Modify: `src/components/city/CityScene.tsx`
 
-- [ ] **Step 1: Implement Porthole**
+- [x] **Step 1: Implement Porthole**
 
 Real working starter — a torus ring + bolt instances + additive glow. Opacity from `envelope`; ring scales up through ENTER.
 
@@ -966,15 +966,15 @@ export function Porthole() {
 }
 ```
 
-- [ ] **Step 2: Mount in CityScene**
+- [x] **Step 2: Mount in CityScene**
 
 Add `<Porthole />` to `CityScene`'s returned JSX (keep the grid for now).
 
-- [ ] **Step 3: Verify + tune**
+- [x] **Step 3: Verify + tune**
 
 `preview_start`, `preview_screenshot` at scroll 0 → cyan ring centered on black. Scroll to `h*1.5` → ring scales up and fades (entering). Adjust `position`/`scale`/`KEYS[0]` camera if the ring isn't centered/parallel to camera. No console errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 rtk git add src/components/city/Porthole.tsx src/components/city/CityScene.tsx
@@ -991,7 +991,7 @@ Layered soft-cloud sprite billboards, visible `.28–.55`, flown-through.
 - Create: `src/components/city/CloudField.tsx`
 - Modify: `src/components/city/CityScene.tsx`
 
-- [ ] **Step 1: Generate a soft radial cloud texture (no asset file)**
+- [x] **Step 1: Generate a soft radial cloud texture (no asset file)**
 
 Build the sprite texture procedurally so there's no binary asset to ship.
 
@@ -1054,13 +1054,13 @@ export function CloudField() {
 }
 ```
 
-- [ ] **Step 2: Mount in CityScene** — add `<CloudField />`.
+- [x] **Step 2: Mount in CityScene** — add `<CloudField />`.
 
-- [ ] **Step 3: Verify + tune**
+- [x] **Step 3: Verify + tune**
 
 `preview_screenshot` while scrolling through `.28–.5` (≈`h*1.7`–`h*2.6`): soft luminous clouds appear, camera passes through, they thin out toward the city reveal. Tune puff count/positions/opacity for a convincing veil over a dark sky. Confirm cyan rim feel (clouds read cool, not warm). No perf warnings in `preview_console_logs`.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 rtk git add src/components/city/CloudField.tsx src/components/city/CityScene.tsx
@@ -1077,7 +1077,7 @@ Wireframe buildings + glowing road grid from `buildCity`, visible `.50–1.0`, d
 - Create: `src/components/city/City.tsx`
 - Modify: `src/components/city/CityScene.tsx` (remove debug grid)
 
-- [ ] **Step 1: Implement City**
+- [x] **Step 1: Implement City**
 
 Buildings as `EdgesGeometry` line segments (merged via instancing of a unit box edges), roads as `LineSegments` along the lattice. Twin buildings get a brighter material.
 
@@ -1153,13 +1153,13 @@ export function City() {
 
 (`twin`/WHITE accent buildings are a follow-up tuning pass — leave the hook in `layout.buildings[].twin` for later.)
 
-- [ ] **Step 2: CityScene** — remove `<gridHelper>`, add `<City />`.
+- [x] **Step 2: CityScene** — remove `<gridHelper>`, add `<City />`.
 
-- [ ] **Step 3: Verify**
+- [x] **Step 3: Verify**
 
 `preview_screenshot` at scroll `.5–.65` and `1.0`: wireframe city draws in below as clouds clear; roads + building outlines glow cyan; camera flies over it. Run `rtk tsc --noEmit` → 0. No console errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 rtk git add src/components/city/City.tsx src/components/city/CityScene.tsx
@@ -1176,7 +1176,7 @@ Instanced low-poly vehicles looping along lanes, with a short additive trail. Co
 - Create: `src/components/city/Vehicles.tsx`
 - Modify: `src/components/city/CityScene.tsx`
 
-- [ ] **Step 1: Implement Vehicles**
+- [x] **Step 1: Implement Vehicles**
 
 ```tsx
 // src/components/city/Vehicles.tsx
@@ -1242,13 +1242,13 @@ export function Vehicles() {
 
 (Trail is a Task-19 polish item — keep vehicles solid streaks for now.)
 
-- [ ] **Step 2: Mount** — add `<Vehicles />` to CityScene.
+- [x] **Step 2: Mount** — add `<Vehicles />` to CityScene.
 
-- [ ] **Step 3: Verify**
+- [x] **Step 3: Verify**
 
 `preview_screenshot`/observe at scroll `.65`: small glowing vehicles move along the roads, looping, no teleports. On a mobile viewport (`preview_resize` to 390×844) the count drops (visually sparser). No console errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 rtk git add src/components/city/Vehicles.tsx src/components/city/CityScene.tsx
@@ -1265,7 +1265,7 @@ Instanced drones flying parabolic arcs above the city.
 - Create: `src/components/city/Drones.tsx`
 - Modify: `src/components/city/CityScene.tsx`
 
-- [ ] **Step 1: Implement Drones** (mirrors Vehicles, using `buildDroneArcs`/`sampleArc`)
+- [x] **Step 1: Implement Drones** (mirrors Vehicles, using `buildDroneArcs`/`sampleArc`)
 
 ```tsx
 // src/components/city/Drones.tsx
@@ -1318,11 +1318,11 @@ export function Drones() {
 }
 ```
 
-- [ ] **Step 2: Mount** — add `<Drones />` to CityScene.
+- [x] **Step 2: Mount** — add `<Drones />` to CityScene.
 
-- [ ] **Step 3: Verify** — `preview_screenshot` at city phases: small wireframe drones arc above the streets at altitude, spinning gently. No console errors.
+- [x] **Step 3: Verify** — `preview_screenshot` at city phases: small wireframe drones arc above the streets at altitude, spinning gently. No console errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 rtk git add src/components/city/Drones.tsx src/components/city/CityScene.tsx
@@ -1339,7 +1339,7 @@ Thin glowing links between nearby vehicles/nodes + traveling packets, gated to `
 - Create: `src/components/city/Overlays.tsx`
 - Modify: `src/components/city/CityScene.tsx`
 
-- [ ] **Step 1: Implement links**
+- [x] **Step 1: Implement links**
 
 A fixed set of node points (roadside units on the lattice). Each frame during beat1, draw a pulsing `LineSegments` between random nearby node pairs and animate point "packets" along them. Use a static node set + precomputed pairs (deterministic) so it's cheap.
 
@@ -1397,11 +1397,11 @@ export function Overlays() {
 }
 ```
 
-- [ ] **Step 2: Mount** — add `<Overlays />` to CityScene.
+- [x] **Step 2: Mount** — add `<Overlays />` to CityScene.
 
-- [ ] **Step 3: Verify** — `preview_screenshot` at scroll `.70`: thin cyan links pulse between roadside nodes; fade out before beat 2. No console errors.
+- [x] **Step 3: Verify** — `preview_screenshot` at scroll `.70`: thin cyan links pulse between roadside nodes; fade out before beat 2. No console errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 rtk git add src/components/city/Overlays.tsx src/components/city/CityScene.tsx
@@ -1417,7 +1417,7 @@ A wireframe neural plane rising above the city, nodes + traveling pulses, gated 
 **Files:**
 - Modify: `src/components/city/Overlays.tsx`
 
-- [ ] **Step 1: Add neural plane to Overlays**
+- [x] **Step 1: Add neural plane to Overlays**
 
 Add a second block inside `Overlays`: a grid of node points at `y = NEURAL_Y`, connected to nearest neighbors as `LineSegments`, the whole group rising from the city into place over `localProgress(beat2)`.
 
@@ -1462,9 +1462,9 @@ In the returned JSX, add inside the `<group>`:
 </group>
 ```
 
-- [ ] **Step 2: Verify** — `preview_screenshot` at scroll `.83`: a translucent wireframe mesh floats above the city, with real depth between it and the streets; camera is lifted (Task 4 keyframe). Fades out before beat 3. No console errors.
+- [x] **Step 2: Verify** — `preview_screenshot` at scroll `.83`: a translucent wireframe mesh floats above the city, with real depth between it and the streets; camera is lifted (Task 4 keyframe). Fades out before beat 3. No console errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 rtk git add src/components/city/Overlays.tsx
@@ -1480,7 +1480,7 @@ Cyan energy flowing grid → charging station → vehicle, gated to `beat3`.
 **Files:**
 - Modify: `src/components/city/Overlays.tsx`
 
-- [ ] **Step 1: Add energy streams**
+- [x] **Step 1: Add energy streams**
 
 For each charger in `layout.chargers`, draw a vertical/arc stream of moving points (energy) rising from the pad. Use a `Points` cloud whose per-point phase animates upward; opacity from `envelope(beat3)`.
 
@@ -1518,9 +1518,9 @@ JSX inside the `<group>`:
 </points>
 ```
 
-- [ ] **Step 2: Verify** — `preview_screenshot` at scroll `.95`: cyan energy columns pulse upward at charging stations while the camera pans to the cluster (Task 4 keyframe). No console errors.
+- [x] **Step 2: Verify** — `preview_screenshot` at scroll `.95`: cyan energy columns pulse upward at charging stations while the camera pans to the cluster (Task 4 keyframe). No console errors.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 rtk git add src/components/city/Overlays.tsx
@@ -1537,7 +1537,7 @@ Resolve the name at REVEAL, dock it to the lower-left corner during beats; add a
 - Modify: `src/components/HeroSection.tsx`
 - Create: `src/components/hero/DescentTitle.tsx`
 
-- [ ] **Step 1: DescentTitle**
+- [x] **Step 1: DescentTitle**
 
 A client component that reads `progress` via rAF and sets CSS — big-centered at REVEAL, then animates to small lower-left as beats begin. Includes the porthole-phase caret.
 
@@ -1589,7 +1589,7 @@ export function DescentTitle() {
 }
 ```
 
-- [ ] **Step 2: Use it in HeroSection** — replace the `<HeroTitle/>` inside `HeroStage` with `<DescentTitle/>`:
+- [x] **Step 2: Use it in HeroSection** — replace the `<HeroTitle/>` inside `HeroStage` with `<DescentTitle/>`:
 
 ```tsx
 <HeroStage>
@@ -1599,9 +1599,9 @@ export function DescentTitle() {
 </HeroStage>
 ```
 
-- [ ] **Step 3: Verify** — `preview_screenshot` sequence: porthole shows "Scroll to enter ↓"; at `.6` the name resolves; through beats it shrinks + docks lower-left, staying readable over the city. Confirm `HeroTitle`'s GSAP scramble still fires once. No console errors.
+- [x] **Step 3: Verify** — `preview_screenshot` sequence: porthole shows "Scroll to enter ↓"; at `.6` the name resolves; through beats it shrinks + docks lower-left, staying readable over the city. Confirm `HeroTitle`'s GSAP scramble still fires once. No console errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 rtk git add src/components/hero/DescentTitle.tsx src/components/HeroSection.tsx
@@ -1618,7 +1618,7 @@ Idle the per-frame work when the hero is scrolled away; clamp counts; confirm bu
 - Modify: `src/components/city/CityScene.tsx`
 - Modify: `src/components/R3FRoot.tsx` (only if DPR needs lowering on mobile)
 
-- [ ] **Step 1: Add an offscreen flag in CityScene**
+- [x] **Step 1: Add an offscreen flag in CityScene**
 
 Mirror `SignalField`'s IntersectionObserver: observe `#hero`, store `visible` in a ref, and have `useDescentCamera` + subsystem `useFrame`s early-return when not visible. Implement by adding a shared `visible` ref to `DescentContext` and gating each subsystem's `useFrame` on it.
 
@@ -1636,11 +1636,11 @@ useEffect(() => {
 
 Then in each subsystem `useFrame`, add `if (!visible.current) return` at the top (Porthole, CloudField, City, Vehicles, Drones, Overlays, useDescentCamera).
 
-- [ ] **Step 2: Verify perf**
+- [x] **Step 2: Verify perf**
 
 `preview_start`. Scroll past the hero into About; `preview_console_logs` for any runaway warnings. Use `preview_eval` to read `performance` timing or observe smoothness. On a 390×844 `preview_resize`, confirm vehicle/drone counts dropped (Task 13/14). Confirm DPR is clamped (R3FRoot already sets `min(dpr,1.5)`). If mobile still janks, lower to `1.0` on `(max-width:768px)` in `R3FRoot.onCreated`.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ```bash
 rtk git add src/components/city/CityScene.tsx src/components/city/DescentContext.tsx src/components/R3FRoot.tsx
@@ -1658,11 +1658,11 @@ Guarantee the accessible path: no scroll-jack under reduced-motion; a skip-intro
 - Modify: `src/components/city/CityScene.tsx`
 - Create: `src/components/hero/SkipIntro.tsx`
 
-- [ ] **Step 1: Confirm reduced-motion path**
+- [x] **Step 1: Confirm reduced-motion path**
 
 `HeroStage` already sets `progress.current = REVEAL_END` and skips the pin under `useReducedMotion()`. Verify `CityScene` renders the lit city + docked title at that fixed progress (no animation needed). The `key={reduced ? 'static' : 'live'}` on `CityScene` (Task 8) ensures a clean remount.
 
-- [ ] **Step 2: SkipIntro control**
+- [x] **Step 2: SkipIntro control**
 
 ```tsx
 // src/components/hero/SkipIntro.tsx
@@ -1683,11 +1683,11 @@ export function SkipIntro() {
 
 Mount `<SkipIntro />` inside `HeroSection` (outside `HeroStage`, so it's always reachable).
 
-- [ ] **Step 3: Verify**
+- [x] **Step 3: Verify**
 
 Emulate reduced motion: `preview_eval` to set `matchMedia('(prefers-reduced-motion: reduce)')` is environment-driven — instead verify by temporarily forcing `reduced=true` OR use the browser devtools emulation via `preview_eval` if supported. Confirm: no pin, city shown lit, title visible immediately, normal scroll reaches About. Click "Skip intro" → smooth-scrolls to About. No console errors.
 
-- [ ] **Step 4: Commit**
+- [x] **Step 4: Commit**
 
 ```bash
 rtk git add src/components/hero/SkipIntro.tsx src/components/hero/HeroStage.tsx src/components/city/CityScene.tsx src/components/HeroSection.tsx
@@ -1704,28 +1704,28 @@ Remove the dead background and confirm the whole flow + build.
 - Delete: `src/components/SignalField.tsx`
 - Verify: full build
 
-- [ ] **Step 1: Confirm no importers**
+- [x] **Step 1: Confirm no importers**
 
 Run: `rtk grep -n "SignalField" src/`
 Expected: no matches (page.tsx swapped in Task 8). If any remain, remove them.
 
-- [ ] **Step 2: Delete**
+- [x] **Step 2: Delete**
 
 ```bash
 rtk git rm src/components/SignalField.tsx
 ```
 
-- [ ] **Step 3: Full build + tests + type-check**
+- [x] **Step 3: Full build + tests + type-check**
 
 Run: `rtk pnpm test` → all pure-logic tests pass.
 Run: `rtk tsc --noEmit` → 0 errors.
 Run: `rtk next build` → compiles, no type errors (this is what Vercel runs).
 
-- [ ] **Step 4: End-to-end visual pass**
+- [x] **Step 4: End-to-end visual pass**
 
 `preview_start`, then `preview_screenshot` at scroll fractions 0.0, 0.2, 0.4, 0.6, 0.75, 0.85, 0.95, 1.0 and one past-hero (About). Confirm the full storyboard reads: porthole → enter → clouds → city reveal + title → beat1 links → beat2 neural → beat3 energy → handoff. `preview_console_logs` clean.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ```bash
 rtk git add -A

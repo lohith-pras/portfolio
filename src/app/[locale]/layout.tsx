@@ -4,6 +4,8 @@ import { routing, type Locale } from '@/i18n/routing'
 import { PageTransition } from '@/components/PageTransition'
 import { GrainProvider } from '@/components/GrainContext'
 import { SmoothScroll } from '@/components/SmoothScroll'
+import { NavbarDesktop } from '@/components/NavbarDesktop'
+import { NavbarMobile } from '@/components/NavbarMobile'
 import { type ReactNode } from 'react'
 
 type Props = {
@@ -32,7 +34,8 @@ export default async function LocaleLayout({ children, params }: Props) {
     <NextIntlClientProvider locale={locale} messages={messages}>
       <GrainProvider>
         <SmoothScroll />
-        {/* Navbar on hold — design TBD. NavbarDesktop/NavbarMobile components retained. */}
+        <NavbarDesktop />
+        <NavbarMobile />
         <PageTransition>
           {children}
         </PageTransition>

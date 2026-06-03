@@ -45,13 +45,12 @@ function makeCloudTexture(seed: number): THREE.Texture {
     for (let x = 0; x < s; x++) {
       const u = x / s, v = y / s
       let n = 0.5 * vnoise(g4, 4, u, v) + 0.3 * vnoise(g8, 8, u, v) + 0.2 * vnoise(g16, 16, u, v)
-      n = Math.min(1, Math.max(0, (n - 0.35) / 0.5)) // lift contrast → defined wisps
+      n = Math.min(1, Math.max(0, (n - 0.2) / 0.6)) // softer contrast for fluffiness
       const d = Math.hypot(u - 0.5, v - 0.5) * 2 // 0 center → ~1 edge
-      const fall = 1 - smoothstep(0.45, 1.0, d)
+      const fall = 1 - smoothstep(0.4, 1.0, d)
       const idx = (y * s + x) * 4
-      // Warm ember tint — aligns with the site's red/orange accent palette.
-      // Slightly desaturated so clouds read as smoke/haze rather than fire.
-      img.data[idx] = 255; img.data[idx + 1] = 200; img.data[idx + 2] = 160
+      // Pure white, fluffy clouds
+      img.data[idx] = 255; img.data[idx + 1] = 255; img.data[idx + 2] = 255
       img.data[idx + 3] = Math.round(n * fall * 255)
     }
   }
@@ -67,11 +66,17 @@ export function CloudField() {
   const texA = useMemo(() => makeCloudTexture(0xC10D), [])
   const texB = useMemo(() => makeCloudTexture(0x5EA), [])
   const matA = useMemo(
-    () => new THREE.SpriteMaterial({ map: texA, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.35 }),
+    () => new THREE.SpriteMaterial({ 
+      map: texA, transparent: true, depthWrite: false, blending: THREE.NormalBlending, opacity: 0.8,
+      stencilWrite: true, stencilRef: 1, stencilFunc: THREE.EqualStencilFunc
+    }),
     [texA],
   )
   const matB = useMemo(
-    () => new THREE.SpriteMaterial({ map: texB, transparent: true, depthWrite: false, blending: THREE.AdditiveBlending, opacity: 0.35 }),
+    () => new THREE.SpriteMaterial({ 
+      map: texB, transparent: true, depthWrite: false, blending: THREE.NormalBlending, opacity: 0.8,
+      stencilWrite: true, stencilRef: 1, stencilFunc: THREE.EqualStencilFunc
+    }),
     [texB],
   )
 
@@ -80,20 +85,37 @@ export function CloudField() {
   const puffs = useMemo(() => {
     const r = mulberry32(0xC10DF1E)
     return Array.from({ length: 80 }, (_, i) => ({
-      pos: new THREE.Vector3(range(r, -34, 34), range(r, 4, 28), range(r, -34, 34)),
+      pos: new THREE.Vector3(range(r, -34, 34), range(r, -10, 28), range(r, -34, 34)),
       scale: range(r, 9, 22),
       mat: i % 2 === 0 ? matA : matB,
     }))
   }, [matA, matB])
 
-  useFrame(() => {
+  useFrame((_, delta) => {
     if (!visible.current) return
-    const vis = envelope(progress.current, PHASE.clouds, 0.06)
+    // Start window below 0 so clouds are fully visible at initial load (progress 0)
+    const vis = envelope(progress.current, [-1, PHASE.clouds[1]], 0.06)
     const g = group.current
     if (!g) return
     g.visible = vis > 0.001
-    matA.opacity = 0.6 * vis
-    matB.opacity = 0.6 * vis
+    matA.opacity = 0.8 * vis
+    matB.opacity = 0.8 * vis
+
+    // Cloud physics: slow horizontal drift (wind)
+    g.children.forEach((child) => {
+      child.position.x += 1.2 * delta // Wind blowing on X axis
+      if (child.position.x > 34) child.position.x -= 68
+    })
+
+    // Seamlessly disable the stencil mask once we pass through the porthole.
+    // The porthole component hides itself at PHASE.enter[1] (0.28).
+    // Switching to AlwaysStencilFunc prevents the clouds from suddenly vanishing.
+    const passedPorthole = progress.current >= PHASE.enter[1]
+    const currentStencilFunc = passedPorthole ? THREE.AlwaysStencilFunc : THREE.EqualStencilFunc
+    if (matA.stencilFunc !== currentStencilFunc) {
+      matA.stencilFunc = currentStencilFunc
+      matB.stencilFunc = currentStencilFunc
+    }
   })
 
   return (

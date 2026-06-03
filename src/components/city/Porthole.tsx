@@ -41,6 +41,18 @@ export function Porthole() {
 
   return (
     <group ref={group} position={[0, 0, 0]}>
+      {/* Portal Hole Stencil Mask */}
+      <mesh position={[0, 0, 0]} renderOrder={-1}>
+        <circleGeometry args={[2.8, 64]} />
+        <meshBasicMaterial 
+          colorWrite={false} 
+          depthWrite={false}
+          stencilWrite={true}
+          stencilRef={1}
+          stencilFunc={THREE.AlwaysStencilFunc}
+          stencilZPass={THREE.ReplaceStencilOp}
+        />
+      </mesh>
       <mesh>
         <torusGeometry args={[3, 0.08, 12, 64]} />
         <meshBasicMaterial ref={ringMat} color={ACCENT} transparent blending={THREE.AdditiveBlending} depthWrite={false} />
