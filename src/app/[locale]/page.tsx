@@ -4,9 +4,9 @@ import { type Locale } from '@/i18n/routing'
 import { HeroSection } from '@/components/HeroSection'
 import { AboutSection } from '@/components/AboutSection'
 import { ProjectsSection } from '@/components/ProjectsSection'
-import { SignalField } from '@/components/SignalField'
 import { R3FRoot } from '@/components/R3FRoot'
 import { DescentProvider } from '@/components/city/DescentContext'
+import { CityView } from '@/components/city/CityView'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -22,11 +22,11 @@ export default async function Home({ params }: Props) {
     <DescentProvider>
       <main className="relative min-h-screen bg-background text-foreground [overflow-x:clip] selection:bg-accent/30">
         {/*
-          SignalField: Fixed full-bleed R3F particle background (z-0).
-          Renders into the shared Canvas via View — single WebGL context. HERO-01.
-          (Retired in M15 once the city descent fully replaces it.)
+          CityView: Fixed full-bleed R3F View for the scroll-driven city descent.
+          Renders into the shared Canvas via View — single WebGL context.
+          (SignalField.tsx is now unused; file retired in M15.)
         */}
-        <SignalField />
+        <CityView />
         <R3FRoot />
 
         <div className="flex flex-col">
