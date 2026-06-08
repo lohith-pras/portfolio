@@ -22,7 +22,7 @@ module.exports = {
       },
       fontFamily: {
         display: ['var(--font-space-mono)', 'monospace'],
-        body: ['var(--font-plus-jakarta)', 'sans-serif'],
+        body: ['var(--font-outfit)', 'sans-serif'],
         life: ['var(--font-courier-prime)', 'monospace'],
         mono: ['var(--font-space-mono)', 'monospace'],
       },
