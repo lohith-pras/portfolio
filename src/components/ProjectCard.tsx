@@ -56,6 +56,30 @@ export function ProjectCard({
     { scope: cardRef, dependencies: [reduce] },
   )
 
+  // Sine wave horizontal scroll based on vertical progress
+  useGSAP(
+    () => {
+      if (reduce || !cardRef.current) return
+      
+      gsap.to(cardRef.current, {
+        scrollTrigger: {
+          trigger: cardRef.current,
+          start: 'top bottom',
+          end: 'bottom top',
+          scrub: true,
+          onUpdate: (self) => {
+            // Calculate sine wave based on scroll progress and card index
+            // 1 full cycle (0 to PI) creates a gentle sway.
+            const phase = self.progress * Math.PI + (index * 0.7)
+            const waveX = Math.sin(phase) * 60 // 60px amplitude
+            gsap.set(cardRef.current, { x: waveX })
+          }
+        }
+      })
+    },
+    { scope: cardRef, dependencies: [reduce, index] },
+  )
+
   // Expand / collapse — animate the body's height.
   useGSAP(
     () => {
@@ -91,108 +115,112 @@ export function ProjectCard({
   return (
     <article
       ref={cardRef}
-      style={{ backgroundColor: color }}
-      className="relative flex w-full flex-col rounded-3xl p-6 text-white shadow-[0_24px_80px_-24px_rgba(0,0,0,0.85)] md:p-9"
+      className="group relative flex w-full flex-col"
     >
-      {/* header — always visible */}
-      <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
-        <span className="font-display leading-none text-white/20 text-[clamp(2.6rem,7vw,5rem)]">
-          {number}
-        </span>
-        <div className="flex min-w-0 flex-col gap-1">
-          <span className="font-mono text-xs uppercase tracking-widest text-white/60">
-            {category}
+      <div 
+        style={{ backgroundColor: color }}
+        className="relative flex w-full flex-col rounded-3xl p-6 text-white shadow-[0_24px_80px_-24px_rgba(20,10,10,0.85)] md:p-9 transition-transform duration-700 ease-out group-hover:scale-[1.02]"
+      >
+        {/* header — always visible */}
+        <div className="flex flex-wrap items-end gap-x-4 gap-y-3">
+          <span className="font-display leading-none text-white/20 text-[clamp(2.6rem,7vw,5rem)]">
+            {number}
           </span>
-          <h3 className="font-display font-bold leading-tight text-white text-[clamp(1.1rem,2.6vw,1.85rem)] [overflow-wrap:anywhere]">
-            {name}
-          </h3>
+          <div className="flex min-w-0 flex-col gap-1">
+            <span className="font-mono text-xs uppercase tracking-widest text-white/60">
+              {category}
+            </span>
+            <h3 className="font-display font-bold leading-tight text-white text-[clamp(1.1rem,2.6vw,1.85rem)] [overflow-wrap:anywhere]">
+              {name}
+            </h3>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            aria-controls={bodyId}
+            className="group/btn ml-auto inline-flex shrink-0 items-center gap-2 rounded-full border border-white/30 px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-white transition-all duration-200 hover:bg-white/10 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            {open ? 'Less' : 'More details'}
+            <span
+              aria-hidden="true"
+              className="transition-transform duration-200"
+              style={{ transform: open ? 'rotate(180deg)' : 'none' }}
+            >
+              ↓
+            </span>
+          </button>
         </div>
 
-        <button
-          type="button"
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls={bodyId}
-          className="group ml-auto inline-flex shrink-0 items-center gap-2 rounded-full border border-white/30 px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-white transition-colors duration-200 hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-        >
-          {open ? 'Less' : 'More details'}
-          <span
-            aria-hidden="true"
-            className="transition-transform duration-200"
-            style={{ transform: open ? 'rotate(180deg)' : 'none' }}
-          >
-            ↓
-          </span>
-        </button>
-      </div>
-
-      {/* expandable body — height animated by GSAP */}
-      <div ref={bodyRef} id={bodyId} className="overflow-hidden" style={{ height: 0, opacity: 0 }}>
-        <div className="mt-8 grid gap-8 border-t border-white/15 pt-8 md:grid-cols-[1.2fr_1fr]">
-              {/* overview · metric · tech */}
-              <div className="flex flex-col gap-4">
-                <span className="font-mono text-xs uppercase tracking-widest text-white/60">
-                  {t('overview_label')}
-                </span>
-                <p className="font-body leading-relaxed text-white/85 text-[clamp(0.95rem,1.2vw,1.05rem)]">
-                  {description}
-                </p>
-                {metric && (
-                  <p className="border-l-2 border-white/50 pl-3 font-mono text-xs text-white/80">
-                    {metric}
-                  </p>
-                )}
-                <div className="mt-1 flex flex-col gap-2">
+        {/* expandable body — height animated by GSAP */}
+        <div ref={bodyRef} id={bodyId} className="overflow-hidden" style={{ height: 0, opacity: 0 }}>
+          <div className="mt-8 grid gap-8 border-t border-white/15 pt-8 md:grid-cols-[1.2fr_1fr]">
+                {/* overview · metric · tech */}
+                <div className="flex flex-col gap-4">
                   <span className="font-mono text-xs uppercase tracking-widest text-white/60">
-                    {t('tech_label')}
+                    {t('overview_label')}
                   </span>
-                  <div className="flex flex-wrap gap-2">
-                    {tech.split(' · ').map((item) => (
-                      <span
-                        key={item}
-                        className="rounded border border-white/20 bg-white/10 px-2 py-1 font-mono text-[11px] text-white/85"
-                      >
-                        {item}
-                      </span>
-                    ))}
+                  <p className="font-body leading-relaxed text-white/85 text-[clamp(0.95rem,1.2vw,1.05rem)] [text-wrap:pretty]">
+                    {description}
+                  </p>
+                  {metric && (
+                    <p className="border-l-2 border-white/50 pl-3 font-mono text-xs text-white/80">
+                      {metric}
+                    </p>
+                  )}
+                  <div className="mt-1 flex flex-col gap-2">
+                    <span className="font-mono text-xs uppercase tracking-widest text-white/60">
+                      {t('tech_label')}
+                    </span>
+                    <div className="flex flex-wrap gap-2">
+                      {tech.split(' · ').map((item) => (
+                        <span
+                          key={item}
+                          className="rounded border border-white/20 bg-white/10 px-2 py-1 font-mono text-[11px] text-white/85"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
 
-              {/* lessons + repo */}
-              <div className="flex flex-col gap-5 md:border-l md:border-white/15 md:pl-8">
-                {whatWentWrong && (
-                  <div className="border-l-2 border-white/40 pl-4">
-                    <span className="font-mono text-[11px] uppercase tracking-widest text-white/55">
-                      What went wrong
+                {/* lessons + repo */}
+                <div className="flex flex-col gap-5 md:border-l md:border-white/15 md:pl-8">
+                  {whatWentWrong && (
+                    <div className="border-l-2 border-white/40 pl-4">
+                      <span className="font-mono text-[11px] uppercase tracking-widest text-white/55">
+                        What went wrong
+                      </span>
+                      <p className="mt-1 font-body text-sm leading-relaxed text-white/85">
+                        {whatWentWrong}
+                      </p>
+                    </div>
+                  )}
+                  {whatIdChange && (
+                    <div className="border-l-2 border-white/40 pl-4">
+                      <span className="font-mono text-[11px] uppercase tracking-widest text-white/55">
+                        What I&apos;d change
+                      </span>
+                      <p className="mt-1 font-body text-sm leading-relaxed text-white/85">
+                        {whatIdChange}
+                      </p>
+                    </div>
+                  )}
+                  <a
+                    href={githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="group/link mt-1 inline-flex w-fit items-center gap-2 font-mono text-xs uppercase tracking-widest text-white/80 underline-offset-4 hover:text-white hover:underline transition-transform active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  >
+                    View on GitHub
+                    <span aria-hidden="true" className="transition-transform duration-200 group-hover/link:translate-x-1">
+                      →
                     </span>
-                    <p className="mt-1 font-body text-sm leading-relaxed text-white/85">
-                      {whatWentWrong}
-                    </p>
-                  </div>
-                )}
-                {whatIdChange && (
-                  <div className="border-l-2 border-white/40 pl-4">
-                    <span className="font-mono text-[11px] uppercase tracking-widest text-white/55">
-                      What I&apos;d change
-                    </span>
-                    <p className="mt-1 font-body text-sm leading-relaxed text-white/85">
-                      {whatIdChange}
-                    </p>
-                  </div>
-                )}
-                <a
-                  href={githubUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="group mt-1 inline-flex w-fit items-center gap-2 font-mono text-xs uppercase tracking-widest text-white/80 underline-offset-4 hover:text-white hover:underline focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-                >
-                  View on GitHub
-                  <span aria-hidden="true" className="transition-transform duration-200 group-hover:translate-x-1">
-                    →
-                  </span>
-                </a>
-              </div>
+                  </a>
+                </div>
+          </div>
         </div>
       </div>
     </article>

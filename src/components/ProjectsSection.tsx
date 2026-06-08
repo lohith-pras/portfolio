@@ -15,12 +15,12 @@ export function ProjectsSection() {
   const tp = useTranslations('projects')
 
   return (
-    <section id="projects" className="relative z-10 bg-paper-2">
-      <div className="mx-auto max-w-5xl px-6 pt-[var(--space-section-lg)] pb-[var(--space-section-lg)] md:px-16">
+    <section id="projects" className="relative z-10 bg-paper-2 py-32 md:py-48">
+      <div className="mx-auto max-w-5xl px-6 md:px-16">
         <h2 className="hero-heading font-display text-heading">{t('heading')}</h2>
 
         {/* Separate cards in a vertical column — each reveals on scroll (GSAP). */}
-        <div className="mt-12 flex flex-col gap-8 md:mt-16 md:gap-14">
+        <div className="mt-20 flex flex-col gap-12 md:mt-32 md:gap-24">
           {PROJECTS.map((p, i) => (
             <ProjectCard
               key={p.key}
