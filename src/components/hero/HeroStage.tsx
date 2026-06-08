@@ -6,7 +6,7 @@ import { ScrollTrigger } from '@/lib/gsap'
 import { useDescent } from '@/components/city/DescentContext'
 import { REVEAL_END } from '@/components/city/phases'
 
-const PIN_VH = 300 // ≈300vh of scroll drives progress 0→1 (longer, slower descent)
+const PIN_VH = 600 // ≈300vh of scroll drives progress 0→1 (longer, slower descent)
 
 export function HeroStage({ children }: { children: ReactNode }) {
   const outerRef = useRef<HTMLDivElement>(null)
