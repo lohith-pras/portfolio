@@ -6,7 +6,7 @@ import { useDescent } from './DescentContext'
 import { PHASE } from './phases'
 
 // Shared assets — one allocation reused across every drone instance.
-const FILL = new THREE.MeshBasicMaterial({ color: 0x0a1420 })
+const FILL = new THREE.MeshStandardMaterial({ color: 0x0a1420, metalness: 0.8, roughness: 0.2 })
 const EDGE = new THREE.LineBasicMaterial({
   color: new THREE.Color(0x4db8ff).multiplyScalar(3.0), transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false,
 })

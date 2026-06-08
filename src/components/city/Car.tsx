@@ -7,7 +7,7 @@ import { useDescent } from './DescentContext'
 import { PHASE } from './phases'
 
 // Shared assets — one allocation reused across every car instance.
-const FILL = new THREE.MeshBasicMaterial({ color: 0x0a1420 })
+const FILL = new THREE.MeshStandardMaterial({ color: 0x111111, metalness: 0.6, roughness: 0.4 })
 const EDGE = new THREE.LineBasicMaterial({
   color: new THREE.Color(0x4db8ff).multiplyScalar(4.0), transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false,
 })

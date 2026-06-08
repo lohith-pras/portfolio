@@ -414,7 +414,7 @@ export function CityWireframe() {
 
       {/* Building solid fills — rendered first to occlude road geometry behind them */}
       <mesh geometry={fillGeo}>
-        <meshBasicMaterial color={FILL_COLOR} polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} />
+        <meshStandardMaterial color={0x050a10} metalness={0.7} roughness={0.3} polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} />
       </mesh>
 
       {/* Building glass faces — dark cyan tint gives interior depth without breaking wireframe look */}
