@@ -4,7 +4,7 @@ import { type Locale } from '@/i18n/routing'
 import { HeroSection } from '@/components/HeroSection'
 import { AboutSection } from '@/components/AboutSection'
 import { ToolkitSection } from '@/components/ToolkitSection'
-import { ProjectsSection } from '@/components/ProjectsSection'
+import { HorizontalProjects } from '@/components/HorizontalProjects'
 import { ContactSection } from '@/components/ContactSection'
 import { R3FRoot } from '@/components/R3FRoot'
 import { DescentProvider } from '@/components/city/DescentContext'
@@ -35,7 +35,7 @@ export default async function Home({ params }: Props) {
           <AboutSection />
 
           {/* Selected Work: sticky-stack project index. WORK-01, WORK-02, WORK-03. */}
-          <ProjectsSection />
+          <HorizontalProjects />
 
           {/* Stack: capability ledger — supporting evidence, demoted below the work. */}
           <ToolkitSection />
