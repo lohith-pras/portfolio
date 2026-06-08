@@ -4,9 +4,9 @@ import { useRef } from 'react'
 import { useTranslations } from 'next-intl'
 
 const PROJECTS = [
-  { key: 'ni_agent', number: '01', category: 'AI Agents', githubUrl: '#' },
-  { key: 'mimo', number: '02', category: 'AI / ML', githubUrl: 'https://github.com/lohith-pras/mimo' },
-  { key: 'vlc', number: '03', category: 'Hardware', githubUrl: 'https://github.com/lohith-pras/vlc-v2v' },
+  { key: 'ni_agent', number: '01', category: 'AI Agents', githubUrl: '#', metric: 'Production deploy for NI Nigel' },
+  { key: 'mimo', number: '02', category: 'AI / ML', githubUrl: 'https://github.com/lohith-pras/mimo', metric: 'Lower MSE vs MMSE baseline at mid-SNR' },
+  { key: 'vlc', number: '03', category: 'Hardware', githubUrl: 'https://github.com/lohith-pras/vlc-v2v', metric: 'High-speed VLC link demonstrated at close range in direct sunlight' },
 ] as const
 
 export function HorizontalProjects() {
