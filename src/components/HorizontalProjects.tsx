@@ -1,10 +1,7 @@
 'use client'
 
-import { useRef, useEffect } from 'react'
+import { useRef } from 'react'
 import { useTranslations } from 'next-intl'
-import { gsap } from 'gsap'
-import { ScrollTrigger } from '@/lib/gsap'
-import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 const PROJECTS = [
   { key: 'ni_agent', number: '01', category: 'AI Agents', githubUrl: '#' },
@@ -16,37 +13,58 @@ export function HorizontalProjects() {
   const t = useTranslations('work')
   const tp = useTranslations('projects')
   
-  const wrapRef = useRef<HTMLDivElement>(null)
   const trackRef = useRef<HTMLDivElement>(null)
-  const reduced = useReducedMotion()
 
-  useEffect(() => {
-    if (reduced || !wrapRef.current || !trackRef.current) return
-    const ctx = gsap.context(() => {
-      gsap.to(trackRef.current, {
-        x: () => -(trackRef.current!.scrollWidth - window.innerWidth),
-        ease: 'none',
-        scrollTrigger: {
-          trigger: wrapRef.current,
-          start: 'top top',
-          end: () => `+=${trackRef.current!.scrollWidth}`,
-          pin: true,
-          scrub: 1,
-          invalidateOnRefresh: true,
-        },
-      })
-    }, wrapRef)
-    return () => ctx.revert()
-  }, [reduced])
+  const scrollPrev = () => {
+    if (trackRef.current) {
+      trackRef.current.scrollBy({ left: -window.innerWidth, behavior: 'smooth' })
+    }
+  }
+
+  const scrollNext = () => {
+    if (trackRef.current) {
+      trackRef.current.scrollBy({ left: window.innerWidth, behavior: 'smooth' })
+    }
+  }
 
   return (
-    <section ref={wrapRef} id="projects" className="relative z-10 bg-paper-2 overflow-hidden">
-      {/* Intro Header (Visible before pinning starts) */}
-      <div className="absolute top-12 left-6 md:left-16 z-20 mix-blend-difference pointer-events-none">
+    <section id="projects" className="relative z-10 bg-paper-2 overflow-hidden">
+      <style>{`
+        .hide-scrollbar::-webkit-scrollbar {
+          display: none;
+        }
+        .hide-scrollbar {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
+      
+      {/* Intro Header & Nav Arrows */}
+      <div className="absolute top-12 left-6 md:left-16 z-20 w-[calc(100%-3rem)] md:w-[calc(100%-8rem)] flex justify-between items-center pointer-events-none mix-blend-difference">
         <h2 className="hero-heading font-display text-white">{t('heading')}</h2>
+        
+        <div className="flex gap-4 pointer-events-auto">
+          <button 
+            onClick={scrollPrev}
+            aria-label="Previous Project"
+            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:scale-105 active:scale-95 transition-all backdrop-blur-md"
+          >
+            &larr;
+          </button>
+          <button 
+            onClick={scrollNext}
+            aria-label="Next Project"
+            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:scale-105 active:scale-95 transition-all backdrop-blur-md"
+          >
+            &rarr;
+          </button>
+        </div>
       </div>
 
-      <div ref={trackRef} className="flex h-[100dvh] items-center pt-24 pb-12 w-max">
+      <div 
+        ref={trackRef} 
+        className="flex h-[100dvh] items-center pt-24 pb-12 w-full overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth"
+      >
         {PROJECTS.map((p) => {
           const name = tp(`${p.key}.name`)
           const description = tp(`${p.key}.description`)
@@ -56,7 +74,7 @@ export function HorizontalProjects() {
           return (
             <div
               key={p.key}
-              className="w-[100vw] h-full shrink-0 flex items-center justify-center px-6 md:px-16"
+              className="w-[100vw] h-full shrink-0 flex items-center justify-center px-6 md:px-16 snap-center"
             >
               {/* Bento Grid */}
               <div className="w-full max-w-7xl h-full max-h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-4">
