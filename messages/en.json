@@ -14,44 +14,54 @@
     "linkedin": "LinkedIn"
   },
   "about": {
-    "descriptor": "Builder at the intersection of AI, wireless, and mobility.",
-    "bio_1": "I build systems that work in the real world — not just in demos.",
-    "bio_2": "My projects span MIMO channel estimation with neural networks, vehicle-to-vehicle communication over visible light, and IoT security frameworks. I care about the gap between research and production.",
-    "bio_3": "Currently exploring how machine learning changes the way we design wireless systems. Looking for teams where that question matters."
+    "descriptor": "Engineer bridging the gap between academic ML and production RF reality.",
+    "bio_1": "I specialize in deploying AI agent workflows that actually survive the transition from synthetic data to the messy reality of RF measurements. My focus is on building tools that turn complex signal data into actionable insights for non-technical engineers.",
+    "bio_2": "At National Instruments, I built an end-to-end AI agent skill for NI Nigel, optimizing data pipelines with Polars and Parquet to handle large-scale manufacturing datasets. I've learned that the most valuable AI isn't the one with the highest SOTA score, but the one that provides a reliable root-cause analysis in production.",
+    "bio_3": "Currently pursuing an M.Sc. in Electromobility at FAU Erlangen-Nürnberg, focusing on AI and Connectivity. I'm looking for roles where I can wrestle with actual deployments and build agentic workflows that solve real-world engineering bottlenecks.",
+    "education_degree": "M.Sc. Electromobility",
+    "education_school": "Friedrich-Alexander-Universität",
+    "education_location": "Erlangen-Nürnberg, Germany",
+    "education_year": "Expected 2027"
   },
   "work": {
-    "heading": "Project",
+    "heading": "Selected Work",
     "view_project": "View project",
     "tech_label": "Tech Stack",
     "overview_label": "Overview"
   },
   "projects": {
+    "ni_agent": {
+      "name": "Production AI Agent for RF Analytics",
+      "problem": "Manufacturing engineers needed complex root-cause analysis across 40+ test types without manual coding",
+      "status": "Complete",
+      "phasesCompleted": "3",
+      "totalPhases": "3",
+      "tech": "Python · Polars · Parquet · LLM Agent Skill · Plotly",
+      "description": "Designed and deployed an end-to-end Accept-on-Retest (AoR) analytics framework as a production skill for NI Nigel. I replaced pandas with Polars and implemented Parquet caching to drastically cut redundant data requests. The result was a natural-language interface that allowed engineers to query parametric test data and receive automated 1σ-3σ band classification summaries and visualizations.",
+      "what_went_wrong": "Initially underestimated the overhead of repeatedly querying large-scale metadata. The system was stable but too slow for a conversational interface.",
+      "what_id_change": "Move heavy data processing to the edge with a robust caching layer. Performance in an AI agent is as important as accuracy; if the agent takes 30 seconds to respond, the user stops using it."
+    },
     "mimo": {
-      "name": "MIMO AI Channel Quality Tool",
-      "problem": "Neural-network-driven channel estimation for massive MIMO systems",
+      "name": "MIMO Channel Estimation — The Real Data Problem",
+      "problem": "Neural networks trained on synthetic channel data fail catastrophically in real deployments",
       "status": "Active",
       "phasesCompleted": "1",
       "totalPhases": "3",
-      "tech": "—",
-      "description": "Neural-network-driven channel estimation that improves link quality for massive MIMO systems."
+      "tech": "Python · PyTorch · NumPy · MATLAB · scikit-learn",
+      "description": "Started with the textbook approach: generate perfect channel matrices, train CNN, achieve SOTA on paper. Then deployed to actual base station data and MSE went through the roof. The breakthrough? Augmenting synthetic data with measured channel impairments—multipath, noise, hardware nonlinearities. Phase 1 taught me that clean research data is the enemy of working ML systems.",
+      "what_went_wrong": "Assumed academic datasets would translate to production reality. Spent 3 months trying to 'fix' the model when the data was broken all along.",
+      "what_id_change": "Deploy to messy real data from day 1. The 'clean' training phase was a complete waste of time."
     },
     "vlc": {
-      "name": "VLC-based V2V Communication Prototype",
-      "problem": "Visible-light communication link for low-latency vehicle-to-vehicle data",
+      "name": "Vehicle-to-Vehicle Visible Light — When Physics Wins",
+      "problem": "Low-latency V2V communication without RF spectrum allocation",
       "status": "Complete",
       "phasesCompleted": "3",
       "totalPhases": "3",
-      "tech": "—",
-      "description": "A visible-light communication link enabling low-latency, line-of-sight data exchange between vehicles."
-    },
-    "iot": {
-      "name": "IoT Security Project",
-      "problem": "Lightweight security framework for resource-constrained IoT devices",
-      "status": "Complete",
-      "phasesCompleted": "3",
-      "totalPhases": "3",
-      "tech": "—",
-      "description": "A lightweight security framework designed for resource-constrained IoT devices."
+      "tech": "C · STM32 · OFDM · Photodetector arrays",
+      "description": "VLC promises gigabit speeds, but nobody talks about what happens when it's cloudy. Built a prototype that worked perfectly indoors—10cm range, 100Mbps. Then tested outdoors and ambient light killed everything. Final solution: adaptive thresholding that detects daylight and switches to backup IR. The lesson: physics constraints always trump algorithmic cleverness.",
+      "what_went_wrong": "Optimized for lab conditions first, then had to redesign everything for real-world lighting. Should have tested in daylight from day 1.",
+      "what_id_change": "Start with the worst-case environment, not the best case. Physics doesn't care about your clean room results."
     }
   },
   "life": {
@@ -76,10 +86,12 @@
     }
   },
   "contact": {
-    "heading": "Contact",
+    "heading": "Stop optimizing for benchmarks. Start optimizing for production.",
+    "availability": "I build AI workflows that survive the transition from synthetic datasets to real-world RF measurements. If you're struggling with the gap between a 'perfect' academic model and a failing deployment, let's talk. I specialize in the messy reality of 5G/6G systems, production-grade data pipelines, and agentic AI.",
     "email_label": "Email",
     "github_label": "GitHub",
-    "linkedin_label": "LinkedIn"
+    "linkedin_label": "LinkedIn",
+    "resume_label": "Download CV"
   },
   "meta": {
     "title": "Lohith Tarikere Prasanna — Builder",

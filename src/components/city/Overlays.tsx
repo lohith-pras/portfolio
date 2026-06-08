@@ -8,8 +8,8 @@ import { useDescent } from './DescentContext'
 import { PHASE, envelope, localProgress } from './phases'
 
 // Site palette — matches globals.css
-const ACCENT      = new THREE.Color(0xff1e00) // #FF1E00 — accent red (V2X links)
-const ACCENT_WARM  = new THREE.Color(0xff4500) // #FF4500 — orange-red (energy streams)
+const ACCENT      = new THREE.Color(0x9fe4ee) // pale cyan — V2X links
+const ACCENT_WARM  = new THREE.Color(0xeafaff) // near-white cyan — energy streams
 const NEURAL_Y = 16
 
 export function Overlays() {
@@ -102,7 +102,7 @@ export function Overlays() {
       {/* Beat 2 — AI neural plane */}
       <group ref={neural} visible={false}>
         <lineSegments geometry={neuralGeo}>
-          <lineBasicMaterial ref={neuralMat} color={0xff6633} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
+          <lineBasicMaterial ref={neuralMat} color={0x6fc4d4} transparent opacity={0} blending={THREE.AdditiveBlending} depthWrite={false} />
         </lineSegments>
       </group>
 

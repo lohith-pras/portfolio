@@ -1,0 +1,38 @@
+/* Hallmark · macrostructure: Marquee Hero → Manifesto → Index → Ledger · genre: atmospheric · design-system: design.md · designed-as-app
+ * tone: technical · austere · cinematic-dark · anchor hue: warm-red (oklch ~28°)
+ * Portable design tokens for portfolio_v2. Imported by src/app/globals.css token block.
+ */
+:root {
+  /* Color — dark cinematic, single warm-red accent */
+  --color-paper:      oklch(0.15 0 0);        /* ≈ #0A0A0A page base   */
+  --color-paper-2:    oklch(0.17 0 0);        /* ≈ #0C0C0C section base */
+  --color-ink:        oklch(0.95 0 0);        /* ≈ #F0F0F0 foreground   */
+  --color-ink-2:      oklch(0.72 0 0);        /* softened body ink      */
+  --color-muted:      oklch(0.55 0 0);        /* labels / eyebrows      */
+  --color-rule:       oklch(0.95 0 0 / 0.1);  /* hairline dividers      */
+  --color-accent:     oklch(0.63 0.25 28);    /* ≈ #FF1E00 warm-red     */
+  --color-accent-ink: oklch(0.15 0 0);        /* ink on accent fills    */
+  --color-focus:      oklch(0.63 0.25 28);    /* focus ring = accent    */
+
+  /* Type — Space Mono (display/mono) + Plus Jakarta Sans (body) */
+  --font-display: var(--font-space-mono), monospace;
+  --font-body:    var(--font-plus-jakarta), sans-serif;
+  --font-mono:    var(--font-space-mono), monospace;
+
+  /* Fluid type scale */
+  --text-hero:       clamp(2.5rem, 6.5vw, 6rem);
+  --text-heading:    clamp(2rem, 6vw, 4.5rem);
+  --text-subheading: clamp(1.5rem, 3.5vw, 3rem);
+  --text-body:       clamp(1rem, 2vw, 1.2rem);
+  --text-small:      clamp(0.8rem, 1.5vw, 0.95rem);
+
+  /* Spacing — fluid section rhythm (deliberately varied per section) */
+  --space-section-sm: clamp(4rem, 9vh, 7rem);
+  --space-section-lg: clamp(6rem, 14vh, 11rem);
+
+  /* Motion — confident deceleration, no bounce */
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --dur-short: 200ms;
+  --dur-mid: 600ms;
+}

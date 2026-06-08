@@ -3,7 +3,9 @@ import { setRequestLocale } from 'next-intl/server'
 import { type Locale } from '@/i18n/routing'
 import { HeroSection } from '@/components/HeroSection'
 import { AboutSection } from '@/components/AboutSection'
-import { ProjectsSection } from '@/components/ProjectsSection'
+import { ToolkitSection } from '@/components/ToolkitSection'
+import { HorizontalProjects } from '@/components/HorizontalProjects'
+import { ContactSection } from '@/components/ContactSection'
 import { R3FRoot } from '@/components/R3FRoot'
 import { DescentProvider } from '@/components/city/DescentContext'
 import { CityView } from '@/components/city/CityView'
@@ -20,7 +22,7 @@ export default async function Home({ params }: Props) {
 
   return (
     <DescentProvider>
-      <main className="relative min-h-screen bg-background text-foreground [overflow-x:clip] selection:bg-accent/30">
+      <main className="relative min-h-[100dvh] bg-background text-foreground selection:bg-accent/30">
         {/* CityView: Fixed full-bleed R3F View for the scroll-driven city descent. */}
         <CityView />
         <R3FRoot />
@@ -29,11 +31,17 @@ export default async function Home({ params }: Props) {
           {/* Hero section with scramble animation + contact links. HERO-02, HERO-03. */}
           <HeroSection />
 
-          {/* About section follows immediately after hero. */}
+          {/* Manifesto: type-led positioning statement + bio + credential. */}
           <AboutSection />
 
-          {/* Projects section with waveform divider and project cards. WORK-01, WORK-02, WORK-03. */}
-          <ProjectsSection />
+          {/* Selected Work: sticky-stack project index. WORK-01, WORK-02, WORK-03. */}
+          <HorizontalProjects />
+
+          {/* Stack: capability ledger — supporting evidence, demoted below the work. */}
+          <ToolkitSection />
+
+          {/* Contact section: CTA with links and availability statement. */}
+          <ContactSection />
         </div>
       </main>
     </DescentProvider>

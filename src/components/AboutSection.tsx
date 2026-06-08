@@ -1,64 +1,77 @@
 'use client'
 
-import dynamic from 'next/dynamic'
+import { useRef } from 'react'
 import { useTranslations } from 'next-intl'
-import { motion, useReducedMotion } from 'framer-motion'
+import { useGSAP } from '@gsap/react'
+import { gsap } from '@/lib/gsap'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 
-const ChibiView = dynamic(
-  () => import('./chibi/ChibiView').then((m) => m.ChibiView),
-  { ssr: false },
-)
-
+/**
+ * AboutSection — Manifesto beat.
+ *
+ * Type-led positioning statement (the thesis), bio at a readable measure, and a
+ * credential meta row. No 3D here — the manifesto leads on typography.
+ * See design.md § Macrostructure family (home → Manifesto).
+ */
 export function AboutSection() {
   const t = useTranslations('about')
-  const shouldReduce = useReducedMotion()
+  const reduce = useReducedMotion()
+  const ref = useRef<HTMLDivElement>(null)
 
-  const textVariants = {
-    hidden: { opacity: 0, y: shouldReduce ? 0 : 24, filter: shouldReduce ? 'blur(0px)' : 'blur(8px)' },
-    visible: { opacity: 1, y: 0, filter: 'blur(0px)' },
-  }
-
-  const imageVariants = {
-    hidden: { opacity: 0, scale: shouldReduce ? 1 : 0.96 },
-    visible: { opacity: 1, scale: 1 },
-  }
+  useGSAP(
+    () => {
+      if (reduce || !ref.current) return
+      
+      const elements = ref.current.querySelectorAll('.about-element')
+      
+      gsap.to(elements, {
+        opacity: 1,
+        y: 0,
+        stagger: 0.1,
+        ease: 'none',
+        scrollTrigger: { 
+          trigger: ref.current, 
+          start: 'top 80%', 
+          end: 'bottom 60%',
+          scrub: 1,
+        },
+      })
+    },
+    { scope: ref, dependencies: [reduce] },
+  )
 
   return (
-    <section id="about" className="relative z-10 min-h-[100svh] w-full flex items-center py-24 bg-[#0C0C0C]">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center px-6 md:px-16 max-w-7xl mx-auto w-full">
+    <section
+      id="about"
+      className="relative z-10 w-full bg-paper-2 py-32 md:py-48"
+    >
+      <div ref={ref} className="mx-auto w-full max-w-5xl px-6 md:px-16">
+        <div className="flex flex-col gap-[clamp(2rem,5vh,3.5rem)]">
+          {/* eyebrow */}
+          <span className="about-element font-mono text-[11px] uppercase tracking-[0.3em] text-muted opacity-20">
+            About
+          </span>
 
-        {/* Chibi — top on mobile, right on desktop */}
-        <motion.div
-          className="order-1 md:order-2 w-full max-w-[300px] mx-auto md:max-w-none"
-          style={{ aspectRatio: '3 / 4' }}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={imageVariants}
-          transition={{ type: 'spring', duration: shouldReduce ? 0 : 0.6, bounce: 0, delay: shouldReduce ? 0 : 0.1 }}
-        >
-          <ChibiView />
-        </motion.div>
-
-        {/* Text */}
-        <motion.div
-          className="order-2 md:order-1 flex flex-col justify-center gap-6"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.3 }}
-          variants={textVariants}
-          transition={{ type: 'spring', duration: shouldReduce ? 0 : 0.7, bounce: 0 }}
-        >
-          <h2 className="text-[clamp(2rem,4vw,3rem)] font-display font-bold text-accent leading-tight">
+          {/* thesis — oversized positioning statement, accent rule as signal marker */}
+          <h2 className="about-element font-display font-bold leading-[1.12] tracking-tight text-foreground text-[clamp(1.5rem,3.4vw,2.6rem)] max-w-[24ch] border-l-2 border-accent pl-5 md:pl-8 [text-wrap:balance] [overflow-wrap:anywhere] min-w-0 opacity-20">
             {t('descriptor')}
           </h2>
-          <div className="font-body text-foreground/80 leading-relaxed text-lg space-y-4">
-            <p>{t('bio_1')}</p>
-            <p>{t('bio_2')}</p>
-            <p>{t('bio_3')}</p>
-          </div>
-        </motion.div>
 
+          {/* bio — comfortable measure */}
+          <div className="font-body text-foreground/75 leading-relaxed text-[clamp(1rem,1.4vw,1.2rem)] max-w-[60ch] space-y-5 [text-wrap:pretty]">
+            <p className="about-element opacity-20">{t('bio_1')}</p>
+            <p className="about-element opacity-20">{t('bio_2')}</p>
+            <p className="about-element opacity-20">{t('bio_3')}</p>
+          </div>
+
+          {/* credential meta row */}
+          <div className="about-element flex flex-wrap items-center gap-x-8 gap-y-3 border-t border-rule pt-6 font-mono text-xs uppercase tracking-widest text-muted opacity-20">
+            <span className="text-foreground/80">{t('education_degree')}</span>
+            <span>{t('education_school')}</span>
+            <span>{t('education_location')}</span>
+            <span className="text-accent/80">{t('education_year')}</span>
+          </div>
+        </div>
       </div>
     </section>
   )

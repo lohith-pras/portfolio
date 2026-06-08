@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Space_Mono, Plus_Jakarta_Sans } from 'next/font/google'
+import { Space_Mono, Outfit } from 'next/font/google'
 import './globals.css'
 
 // FOUND-01: Fonts loaded via next/font/google — zero external network request,
@@ -11,10 +11,9 @@ const spaceMono = Space_Mono({
   display: 'swap',
 })
 
-const plusJakartaSans = Plus_Jakarta_Sans({
-  weight: ['300', '400', '500', '600', '700'],
+const outfit = Outfit({
   subsets: ['latin'],
-  variable: '--font-plus-jakarta',
+  variable: '--font-outfit',
   display: 'swap',
 })
 
@@ -36,7 +35,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceMono.variable} ${plusJakartaSans.variable}`}
+      className={`${spaceMono.variable} ${outfit.variable}`}
     >
       <body className="bg-background text-foreground antialiased">
         {children}

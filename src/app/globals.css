@@ -1,14 +1,23 @@
+/* Hallmark · design-system: design.md · genre: atmospheric · macrostructure: Marquee Hero → Manifesto → Index → Ledger
+ * tone: technical · austere · cinematic-dark · anchor hue: warm-red (oklch ~28°)
+ * Canonical tokens below mirror tokens.css. Reference by name — no raw hex in components.
+ */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 /* ─── CSS Custom Properties ─── */
 :root {
-  --color-bg: #0A0A0A;
-  --color-fg: #F0F0F0;
-  --color-accent: #FF1E00;
-  --color-accent-warm: #FF4500;
-  --color-accent-crimson: #C0001A;
+  /* ─── Canonical design tokens (OKLCH) — single source, mirrors tokens.css ─── */
+  --color-paper: oklch(0.15 0 0);      /* page base ≈ #0A0A0A    */
+  --color-paper-2: oklch(0.17 0 0);    /* section base ≈ #0C0C0C */
+  --color-ink: oklch(0.95 0 0);        /* foreground ≈ #F0F0F0   */
+  --color-ink-2: oklch(0.72 0 0);      /* softened body ink      */
+  --color-muted: oklch(0.55 0 0);      /* labels / eyebrows      */
+  --color-rule: oklch(0.95 0 0 / 0.1); /* hairline dividers      */
+  --color-accent: oklch(0.63 0.25 28); /* warm-red ≈ #FF1E00     */
+  --color-accent-ink: oklch(0.15 0 0); /* ink on accent fills    */
+  --color-focus: oklch(0.63 0.25 28);  /* focus ring = accent    */
 
   /* Fluid type scale — FOUND-02 */
   --type-hero: clamp(2.5rem, 6.5vw, 6rem);
@@ -21,12 +30,16 @@
   --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
   --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Section rhythm — deliberately varied (narrative vs supporting beats) */
+  --space-section-sm: clamp(4rem, 9vh, 7rem);
+  --space-section-lg: clamp(6rem, 14vh, 11rem);
 }
 
 /* ─── Base ─── */
 html {
-  background-color: #0A0A0A;
-  color: #F0F0F0;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -54,8 +67,8 @@ html.lenis body {
 
 body {
   min-height: 100svh;
-  background-color: #0A0A0A;
-  color: #F0F0F0;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
   font-family: var(--font-plus-jakarta), sans-serif;
   font-size: var(--type-body);
   line-height: 1.6;
@@ -84,12 +97,9 @@ body {
   line-height: 1.6;
 }
 
-/* ─── Gradient heading ─── */
+/* ─── Display heading — solid ink (gradient-text removed: AI tell + off-system) ─── */
 .hero-heading {
-  background: linear-gradient(180deg, #F0F0F0 0%, #666666 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: var(--color-ink);
 }
 
 /* ─── Font display utilities ─── */
@@ -127,8 +137,8 @@ body {
 
 /* ─── Selection ─── */
 ::selection {
-  background-color: #FF1E00;
-  color: #0A0A0A;
+  background-color: var(--color-accent);
+  color: var(--color-accent-ink);
 }
 
 /* ─── Scrollbar ─── */
@@ -136,14 +146,14 @@ body {
   width: 4px;
 }
 ::-webkit-scrollbar-track {
-  background: #0A0A0A;
+  background: var(--color-paper);
 }
 ::-webkit-scrollbar-thumb {
-  background: #333;
+  background: var(--color-rule);
   border-radius: 2px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #FF1E00;
+  background: var(--color-accent);
 }
 
 /* ─── Accessibility: Reduced Motion ─── */
@@ -226,28 +236,5 @@ body {
   right: 15%;
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-  pointer-events: none;
-}
-
-.glass {
-  position: relative;
-  overflow: hidden;
-  background: rgba(255, 255, 255, 0.05);
-  backdrop-filter: blur(40px) saturate(180%);
-  -webkit-backdrop-filter: blur(40px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.10);
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.12),
-    0 8px 32px rgba(0, 0, 0, 0.4),
-    0 2px 8px rgba(0, 0, 0, 0.2);
-}
-.glass::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 10%;
-  right: 10%;
-  height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.5), transparent);
   pointer-events: none;
 }
