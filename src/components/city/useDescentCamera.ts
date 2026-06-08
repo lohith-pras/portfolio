@@ -13,7 +13,7 @@ export function useDescentCamera() {
 
   // Read the camera off the per-frame state instead of useThree(): no extra
   // store subscription / re-render, and a stable hook order in CityScene.
-  useFrame(({ camera, clock }) => {
+  useFrame(({ camera, clock }, dt) => {
     if (!visible.current) return
 
     const t = clock.getElapsedTime()
@@ -23,8 +23,9 @@ export function useDescentCamera() {
     const driftX = Math.sin(t * 0.13) * 1.2
     const driftY = Math.cos(t * 0.11) * 0.8
 
-    // Mouse parallax — lerp toward target.
-    lerpedMouse.current.lerp(mouse.current, 0.05)
+    // Mouse parallax — framerate-independent lerp toward target.
+    const mouseAlpha = 1.0 - Math.exp(-3.0 * dt)
+    lerpedMouse.current.lerp(mouse.current, mouseAlpha)
     const mx = lerpedMouse.current.x * 4
     const my = lerpedMouse.current.y * 2.5
 
@@ -33,7 +34,8 @@ export function useDescentCamera() {
       pose.position[1] + driftY + my,
       pose.position[2],
     )
-    camera.position.lerp(camTarget.current, 0.12)
+    const camAlpha = 1.0 - Math.exp(-8.0 * dt)
+    camera.position.lerp(camTarget.current, camAlpha)
     lookTarget.current.set(pose.lookAt[0], pose.lookAt[1], pose.lookAt[2])
     camera.lookAt(lookTarget.current)
   })

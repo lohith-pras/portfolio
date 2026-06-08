@@ -3,7 +3,7 @@ import { useState, useEffect, useRef } from 'react'
 import { usePathname, Link } from '@/i18n/navigation'
 import { Mail, Heart } from 'lucide-react'
 import { useGSAP } from '@gsap/react'
-import { gsap } from '@/lib/gsap'
+import { gsap, ScrollTrigger } from '@/lib/gsap'
 
 export function NavbarDesktop() {
   const pathname = usePathname()
@@ -11,19 +11,18 @@ export function NavbarDesktop() {
   const [show, setShow] = useState(false)
   const navRef = useRef<HTMLElement>(null)
 
-  useEffect(() => {
-    const checkShow = () => {
-      const about = document.getElementById('about')
-      if (about) {
-        setShow(about.getBoundingClientRect().top <= window.innerHeight * 0.75)
-      } else {
-        // If there's no about section (e.g. on /life), just show it
-        setShow(true)
-      }
+  useGSAP(() => {
+    const about = document.getElementById('about')
+    if (about) {
+      ScrollTrigger.create({
+        trigger: about,
+        start: 'top 75%',
+        onEnter: () => setShow(true),
+        onLeaveBack: () => setShow(false),
+      })
+    } else {
+      setShow(true)
     }
-    checkShow()
-    window.addEventListener('scroll', checkShow, { passive: true })
-    return () => window.removeEventListener('scroll', checkShow)
   }, [])
 
   useGSAP(

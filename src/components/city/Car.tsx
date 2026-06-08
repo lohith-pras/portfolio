@@ -49,7 +49,8 @@ export function Car({ route, speed, offset }: { route: CarRoute; speed: number; 
     g.position.set(pos[0], pos[1], pos[2])
     _e.set(0, Math.atan2(-dir[2], dir[0]), 0)
     _q.setFromEuler(_e)
-    g.quaternion.slerp(_q, 0.15) // smooth turn-in at intersections
+    const turnAlpha = 1.0 - Math.exp(-10.0 * dt)
+    g.quaternion.slerp(_q, turnAlpha) // smooth, framerate-independent turn-in at intersections
 
     const spin = v * dt * WHEEL_SPIN
     for (const w of wheels.current) if (w) w.rotation.z += spin

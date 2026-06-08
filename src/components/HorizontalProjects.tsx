@@ -47,14 +47,14 @@ export function HorizontalProjects() {
           <button 
             onClick={scrollPrev}
             aria-label="Previous Project"
-            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:scale-105 active:scale-95 transition-all backdrop-blur-md"
+            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:scale-105 active:scale-95 transition-[transform,background-color,border-color] backdrop-blur-md"
           >
             &larr;
           </button>
           <button 
             onClick={scrollNext}
             aria-label="Next Project"
-            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:scale-105 active:scale-95 transition-all backdrop-blur-md"
+            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:scale-105 active:scale-95 transition-[transform,background-color,border-color] backdrop-blur-md"
           >
             &rarr;
           </button>

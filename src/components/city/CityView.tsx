@@ -1,11 +1,13 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { View, PerspectiveCamera } from '@react-three/drei'
 import { EffectComposer, Bloom } from '@react-three/postprocessing'
 import { CityScene } from './CityScene'
 import { useDescent } from './DescentContext'
 import { useDeviceTier } from './useRenderProfile'
+import { useGSAP } from '@gsap/react'
+import { gsap } from '@/lib/gsap'
 
 // City fades to black over the last stretch of the scroll, then content arrives.
 const FADE_START = 0.7
@@ -14,24 +16,27 @@ const FADE_END = 1.0
 export function CityView() {
   const reduced = useReducedMotion()
   const tier = useDeviceTier()
-  const { progress } = useDescent()
+  const { progress, visible } = useDescent()
   const fadeRef = useRef<HTMLDivElement>(null)
 
-  useEffect(() => {
+  useGSAP(() => {
     if (reduced) return
-    let raf = 0
+    let lastP = -1
     const tick = () => {
+      if (!visible.current) return
+      const p = progress.current
+      if (p === lastP) return
+      lastP = p
+      
       const el = fadeRef.current
       if (el) {
-        const p = progress.current
         const f = Math.min(1, Math.max(0, (p - FADE_START) / (FADE_END - FADE_START)))
         el.style.opacity = String(f)
       }
-      raf = requestAnimationFrame(tick)
     }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [progress, reduced])
+    gsap.ticker.add(tick)
+    return () => gsap.ticker.remove(tick)
+  }, [progress, visible, reduced])
 
   return (
     <div className="fixed inset-0 z-0 pointer-events-none" aria-hidden="true">

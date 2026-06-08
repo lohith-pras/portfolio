@@ -1,7 +1,9 @@
 'use client'
-import { useEffect, useRef } from 'react'
+import { useRef } from 'react'
 import { HeroTitle } from '@/components/HeroTitle'
 import { useDescent } from '@/components/city/DescentContext'
+import { useGSAP } from '@gsap/react'
+import { gsap } from '@/lib/gsap'
 
 /**
  * DescentTitle — reads progress via rAF and drives CSS on the title:
@@ -10,12 +12,16 @@ import { useDescent } from '@/components/city/DescentContext'
  */
 export function DescentTitle() {
   const wrap = useRef<HTMLDivElement>(null)
-  const { progress } = useDescent()
+  const { progress, visible } = useDescent()
 
-  useEffect(() => {
-    let raf = 0
+  useGSAP(() => {
+    let lastP = -1
     const tick = () => {
+      if (!visible.current) return
       const p = progress.current
+      if (p === lastP) return
+      lastP = p
+      
       const w = wrap.current
       if (w) {
         // Fade in over the first 15%, fade out over the last 30% (with the city).
@@ -23,11 +29,10 @@ export function DescentTitle() {
         const fadeOut = 1 - Math.min(1, Math.max(0, (p - 0.7) / 0.3))
         w.style.opacity = String(appear * fadeOut)
       }
-      raf = requestAnimationFrame(tick)
     }
-    raf = requestAnimationFrame(tick)
-    return () => cancelAnimationFrame(raf)
-  }, [progress])
+    gsap.ticker.add(tick)
+    return () => gsap.ticker.remove(tick)
+  }, [progress, visible])
 
   return (
     <>
