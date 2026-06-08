@@ -22,7 +22,7 @@ export default async function Home({ params }: Props) {
 
   return (
     <DescentProvider>
-      <main className="relative min-h-[100dvh] bg-background text-foreground overflow-x-hidden w-full max-w-full selection:bg-accent/30">
+      <main className="relative min-h-[100dvh] bg-background text-foreground selection:bg-accent/30">
         {/* CityView: Fixed full-bleed R3F View for the scroll-driven city descent. */}
         <CityView />
         <R3FRoot />

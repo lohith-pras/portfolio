@@ -29,7 +29,7 @@ export function HorizontalProjects() {
         scrollTrigger: {
           trigger: wrapRef.current,
           start: 'top top',
-          end: () => `+=${trackRef.current!.scrollWidth - window.innerWidth}`,
+          end: () => `+=${trackRef.current!.scrollWidth}`,
           pin: true,
           scrub: 1,
           invalidateOnRefresh: true,
