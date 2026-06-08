@@ -30,6 +30,17 @@
     "overview_label": "Überblick"
   },
   "projects": {
+    "ni_agent": {
+      "name": "Production AI Agent for RF Analytics",
+      "problem": "Manuelle Datenextraktion aus Testprotokollen",
+      "status": "Abgeschlossen",
+      "phasesCompleted": "3",
+      "totalPhases": "3",
+      "tech": "Python · Polars · Parquet · LLM Agent Skill · Plotly",
+      "description": "Entwurf und Bereitstellung eines End-to-End-Analyse-Frameworks (AoR) als Produktionsfähigkeit für NI Nigel. Ich ersetzte Pandas durch Polars und implementierte Parquet-Caching, um redundante Datenabfragen drastisch zu reduzieren. Das Ergebnis war eine natürlichsprachliche Schnittstelle, die es Ingenieuren ermöglichte, parametrische Testdaten abzufragen und automatisierte Bandklassifizierungszusammenfassungen und Visualisierungen zu erhalten.",
+      "what_went_wrong": "Zunächst die Geschwindigkeit des Agenten-Workflows überschätzt. Die Datenvorverarbeitung musste stark optimiert werden.",
+      "what_id_change": "Direkt mit Parquet und Polars beginnen."
+    },
     "mimo": {
       "name": "MIMO AI Channel Quality Tool",
       "problem": "Kanalschätzung durch neuronale Netze für massive MIMO-Systeme",
