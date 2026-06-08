@@ -19,7 +19,7 @@
     "bio_2": "At National Instruments, I built an end-to-end AI agent skill for NI Nigel, optimizing data pipelines with Polars and Parquet to handle large-scale manufacturing datasets. I've learned that the most valuable AI isn't the one with the highest SOTA score, but the one that provides a reliable root-cause analysis in production.",
     "bio_3": "Currently pursuing an M.Sc. in Electromobility at FAU Erlangen-Nürnberg, focusing on AI and Connectivity. I'm looking for roles where I can wrestle with actual deployments and build agentic workflows that solve real-world engineering bottlenecks.",
     "education_degree": "M.Sc. Electromobility",
-    "education_school": "FAU Erlangen-Nürnberg", 
+    "education_school": "Friedrich-Alexander-Universität",
     "education_location": "Erlangen-Nürnberg, Germany",
     "education_year": "Expected 2027"
   },
@@ -53,10 +53,10 @@
       "what_id_change": "Deploy to messy real data from day 1. The 'clean' training phase was a complete waste of time."
     },
     "vlc": {
-      "name": "Vehicle-to-Vehicle Visible Light — When Physics Wins", 
+      "name": "Vehicle-to-Vehicle Visible Light — When Physics Wins",
       "problem": "Low-latency V2V communication without RF spectrum allocation",
       "status": "Complete",
-      "phasesCompleted": "3", 
+      "phasesCompleted": "3",
       "totalPhases": "3",
       "tech": "C · STM32 · OFDM · Photodetector arrays",
       "description": "VLC promises gigabit speeds, but nobody talks about what happens when it's cloudy. Built a prototype that worked perfectly indoors—10cm range, 100Mbps. Then tested outdoors and ambient light killed everything. Final solution: adaptive thresholding that detects daylight and switches to backup IR. The lesson: physics constraints always trump algorithmic cleverness.",
@@ -89,7 +89,7 @@
     "heading": "Stop optimizing for benchmarks. Start optimizing for production.",
     "availability": "I build AI workflows that survive the transition from synthetic datasets to real-world RF measurements. If you're struggling with the gap between a 'perfect' academic model and a failing deployment, let's talk. I specialize in the messy reality of 5G/6G systems, production-grade data pipelines, and agentic AI.",
     "email_label": "Email",
-    "github_label": "GitHub", 
+    "github_label": "GitHub",
     "linkedin_label": "LinkedIn",
     "resume_label": "Download CV"
   },
