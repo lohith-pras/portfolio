@@ -74,13 +74,13 @@ export function HorizontalProjects() {
           return (
             <div
               key={p.key}
-              className="w-[100vw] h-full shrink-0 flex items-center justify-center px-6 md:px-16 snap-center"
+              className="w-[100vw] h-full shrink-0 flex items-center justify-center px-6 md:px-16 snap-center overflow-y-auto"
             >
               {/* Bento Grid */}
-              <div className="w-full max-w-7xl h-full max-h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-4">
+              <div className="w-full max-w-7xl h-auto lg:h-full lg:max-h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-4 py-8 lg:py-0">
                 
                 {/* Cell 1: Image (Col span 7) */}
-                <div className="lg:col-span-7 bg-white/[0.02] rounded-2xl overflow-hidden relative border border-white/5 group">
+                <div className="min-h-[240px] md:min-h-[300px] lg:min-h-0 lg:h-full lg:col-span-7 bg-white/[0.02] rounded-2xl overflow-hidden relative border border-white/5 group">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
                   <img
                     src={`/projects/${p.key}.png`}
