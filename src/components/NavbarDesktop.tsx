@@ -1,13 +1,15 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { usePathname, Link } from '@/i18n/navigation'
 import { Mail, Heart } from 'lucide-react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { useGSAP } from '@gsap/react'
+import { gsap } from '@/lib/gsap'
 
 export function NavbarDesktop() {
   const pathname = usePathname()
   const isLife = pathname === '/life'
   const [show, setShow] = useState(false)
+  const navRef = useRef<HTMLElement>(null)
 
   useEffect(() => {
     const checkShow = () => {
@@ -24,15 +26,26 @@ export function NavbarDesktop() {
     return () => window.removeEventListener('scroll', checkShow)
   }, [])
 
+  useGSAP(
+    () => {
+      const el = navRef.current
+      if (!el) return
+      gsap.set(el, { xPercent: -50 })
+      if (show) {
+        gsap.fromTo(el, { y: -100, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: 'power3.out' })
+      } else {
+        gsap.to(el, { y: -100, autoAlpha: 0, duration: 0.3, ease: 'power2.in' })
+      }
+    },
+    { dependencies: [show] },
+  )
+
   return (
-    <AnimatePresence>
-      {show && (
-        <motion.nav 
-          initial={{ y: -100, x: "-50%", opacity: 0 }}
-          animate={{ y: 0, x: "-50%", opacity: 1 }}
-          exit={{ y: -100, x: "-50%", opacity: 0 }}
-          className="fixed top-4 left-1/2 w-[calc(100%-4rem)] max-w-5xl h-14 hidden md:flex items-center justify-between px-8 z-50 glass-bar rounded-2xl"
-        >
+    <nav
+      ref={navRef}
+      style={{ opacity: 0 }}
+      className="fixed top-4 left-1/2 w-[calc(100%-4rem)] max-w-5xl h-14 hidden md:flex items-center justify-between px-8 z-50 glass-bar rounded-2xl"
+    >
           <Link href="/" className="link-wipe font-display font-bold text-foreground hover:text-accent transition-colors">
             L.T. Prasanna
           </Link>
@@ -44,13 +57,17 @@ export function NavbarDesktop() {
           <Heart size={14} />
           Life
           {isLife && (
-            <motion.span
-              layoutId="nav-indicator"
-              className="absolute bottom-0 left-0 right-0 h-px bg-accent"
-              transition={{ type: 'spring', duration: 0.4, bounce: 0 }}
-            />
+            <span className="absolute bottom-0 left-0 right-0 h-px bg-accent" />
           )}
         </Link>
+        <a
+          href="/Lohith_Prasanna_Resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-mono text-xs uppercase tracking-widest text-foreground/60 hover:text-accent transition-colors border border-foreground/20 hover:border-accent rounded-full px-3 py-1 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+        >
+          CV
+        </a>
         <div className="w-px h-4 bg-white/20" />
         <a
           href="mailto:lnlohith3@gmail.com"
@@ -82,8 +99,6 @@ export function NavbarDesktop() {
           </svg>
         </a>
       </div>
-        </motion.nav>
-      )}
-    </AnimatePresence>
+    </nav>
   )
 }

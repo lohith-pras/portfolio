@@ -1,26 +1,33 @@
 'use client'
 
-import { motion, AnimatePresence, useReducedMotion } from 'framer-motion'
+import { useRef, type ReactNode } from 'react'
+import { useGSAP } from '@gsap/react'
+import { gsap } from '@/lib/gsap'
 import { usePathname } from '@/i18n/navigation'
-import { ReactNode } from 'react'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 export function PageTransition({ children }: { children: ReactNode }) {
   const pathname = usePathname()
-  const shouldReduce = useReducedMotion()
+  const reduce = useReducedMotion()
+  const ref = useRef<HTMLDivElement>(null)
+
+  // Fade each route in on navigation (keyed remount per pathname).
+  useGSAP(
+    () => {
+      if (reduce || !ref.current) return
+      // Animate `top` (the wrapper is `position: relative`) rather than `y`.
+      // A transform — even GSAP's leftover identity matrix — would make this
+      // wrapper the containing block for the fixed full-bleed R3F canvas it
+      // contains, collapsing the canvas to full document height. `top` slides
+      // identically without establishing a containing block.
+      gsap.from(ref.current, { opacity: 0, top: 10, duration: 0.25, ease: 'power2.out' })
+    },
+    { dependencies: [pathname] },
+  )
 
   return (
-    <AnimatePresence mode="wait">
-      <motion.div key={pathname} className="min-h-screen flex flex-col relative">
-        <motion.div
-          initial={{ opacity: 0, y: shouldReduce ? 0 : 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: shouldReduce ? 0 : -10 }}
-          transition={{ duration: shouldReduce ? 0 : 0.25, ease: [0.16, 1, 0.3, 1] }}
-          className="flex-1 flex flex-col"
-        >
-          {children}
-        </motion.div>
-      </motion.div>
-    </AnimatePresence>
+    <div key={pathname} ref={ref} className="min-h-screen flex flex-col flex-1 relative">
+      {children}
+    </div>
   )
 }

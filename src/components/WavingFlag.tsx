@@ -1,7 +1,9 @@
 'use client'
 
 import { useRef } from 'react'
-import { useAnimationFrame, useReducedMotion } from 'framer-motion'
+import { useGSAP } from '@gsap/react'
+import { gsap } from '@/lib/gsap'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 interface WavingFlagProps {
   bgColor: string
@@ -30,17 +32,24 @@ export function WavingFlag({
   const stripsRef = useRef<(HTMLDivElement | null)[]>([])
   const isReducedMotion = useReducedMotion()
 
-  useAnimationFrame((t) => {
-    if (isReducedMotion) return
-    stripsRef.current.forEach((el, i) => {
-      if (!el) return
-      const tNorm = i / (STRIP_COUNT - 1)
-      const amplitude = tNorm * MAX_AMPLITUDE
-      const phase = tNorm * Math.PI * 2
-      const tSec = t * 0.001
-      el.style.transform = `translateX(${amplitude * Math.sin(SPEED * tSec + phase + phaseOffset)}px)`
-    })
-  })
+  // gsap.ticker drives the per-strip wave (time is in seconds).
+  useGSAP(
+    () => {
+      if (isReducedMotion) return
+      const tick = (time: number) => {
+        stripsRef.current.forEach((el, i) => {
+          if (!el) return
+          const tNorm = i / (STRIP_COUNT - 1)
+          const amplitude = tNorm * MAX_AMPLITUDE
+          const phase = tNorm * Math.PI * 2
+          el.style.transform = `translateX(${amplitude * Math.sin(SPEED * time + phase + phaseOffset)}px)`
+        })
+      }
+      gsap.ticker.add(tick)
+      return () => gsap.ticker.remove(tick)
+    },
+    { dependencies: [isReducedMotion, phaseOffset] },
+  )
 
   return (
     <div className="flex flex-col items-center">

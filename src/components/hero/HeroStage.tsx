@@ -1,12 +1,12 @@
 'use client'
 import { useRef, type ReactNode } from 'react'
-import { useReducedMotion } from 'framer-motion'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { useGSAP } from '@gsap/react'
 import { ScrollTrigger } from '@/lib/gsap'
 import { useDescent } from '@/components/city/DescentContext'
 import { REVEAL_END } from '@/components/city/phases'
 
-const PIN_VH = 500 // ≈500vh of scroll drives progress 0→1
+const PIN_VH = 300 // ≈300vh of scroll drives progress 0→1 (longer, slower descent)
 
 export function HeroStage({ children }: { children: ReactNode }) {
   const outerRef = useRef<HTMLDivElement>(null)

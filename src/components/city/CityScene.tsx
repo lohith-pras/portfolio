@@ -2,8 +2,6 @@
 import { useEffect } from 'react'
 import { useDescentCamera } from './useDescentCamera'
 import { useDescent } from './DescentContext'
-import { Porthole } from './Porthole'
-import { CloudField } from './CloudField'
 import { City } from './City'
 import { Vehicles } from './Vehicles'
 import { Drones } from './Drones'
@@ -32,8 +30,6 @@ export function CityScene() {
 
   return (
     <>
-      <Porthole />
-      <CloudField />
       <City />
       <Vehicles />
       <Drones />

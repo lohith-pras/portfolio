@@ -3,7 +3,9 @@ import { setRequestLocale } from 'next-intl/server'
 import { type Locale } from '@/i18n/routing'
 import { HeroSection } from '@/components/HeroSection'
 import { AboutSection } from '@/components/AboutSection'
+import { ToolkitSection } from '@/components/ToolkitSection'
 import { ProjectsSection } from '@/components/ProjectsSection'
+import { ContactSection } from '@/components/ContactSection'
 import { R3FRoot } from '@/components/R3FRoot'
 import { DescentProvider } from '@/components/city/DescentContext'
 import { CityView } from '@/components/city/CityView'
@@ -29,11 +31,17 @@ export default async function Home({ params }: Props) {
           {/* Hero section with scramble animation + contact links. HERO-02, HERO-03. */}
           <HeroSection />
 
-          {/* About section follows immediately after hero. */}
+          {/* Manifesto: type-led positioning statement + bio + credential. */}
           <AboutSection />
 
-          {/* Projects section with waveform divider and project cards. WORK-01, WORK-02, WORK-03. */}
+          {/* Selected Work: sticky-stack project index. WORK-01, WORK-02, WORK-03. */}
           <ProjectsSection />
+
+          {/* Stack: capability ledger — supporting evidence, demoted below the work. */}
+          <ToolkitSection />
+
+          {/* Contact section: CTA with links and availability statement. */}
+          <ContactSection />
         </div>
       </main>
     </DescentProvider>

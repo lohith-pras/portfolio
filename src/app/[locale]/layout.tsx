@@ -7,10 +7,39 @@ import { SmoothScroll } from '@/components/SmoothScroll'
 import { NavbarDesktop } from '@/components/NavbarDesktop'
 import { NavbarMobile } from '@/components/NavbarMobile'
 import { type ReactNode } from 'react'
+import { type Metadata } from 'next'
 
 type Props = {
   children: ReactNode
   params: Promise<{ locale: string }>
+}
+
+export const metadata: Metadata = {
+  metadataBase: new URL('https://lohithprasanna.dev'),
+  title: 'Lohith Tarikere Prasanna — Builder',
+  description: 'Builder with intent. AI, wireless, and mobility. MIMO, VLC, IoT security.',
+  openGraph: {
+    title: 'Lohith Tarikere Prasanna — Builder',
+    description: 'Builder with intent. AI, wireless, and mobility.',
+    url: 'https://lohithprasanna.dev',
+    siteName: 'Lohith Prasanna Portfolio',
+    images: [
+      {
+        url: '/og-image.png',
+        width: 1200,
+        height: 630,
+        alt: 'Lohith Tarikere Prasanna — Builder',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Lohith Tarikere Prasanna — Builder',
+    description: 'Builder with intent. AI, wireless, and mobility.',
+    images: ['/og-image.png'],
+  },
 }
 
 // generateStaticParams is CRITICAL for static rendering.
@@ -19,6 +48,7 @@ type Props = {
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
+
 
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params

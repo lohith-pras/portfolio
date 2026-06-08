@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 40" fill="none">
+  <!-- Red Bull Racing wordmark SVG in brand colors -->
+  <rect width="120" height="40" fill="none"/>
+  <!-- RBR "bull" horns icon -->
+  <path d="M10 28 C10 20 16 14 22 14 C26 14 28 17 28 20 C28 23 26 26 22 26 L18 26 L18 28 Z" fill="#FF1E00"/>
+  <path d="M30 28 C30 20 24 14 18 14 C14 14 12 17 12 20 C12 23 14 26 18 26 L22 26 L22 28 Z" fill="#001489"/>
+  <!-- RBR text -->
+  <text x="38" y="24" font-family="monospace" font-size="10" font-weight="700" fill="#F0F0F0" letter-spacing="1">RED BULL</text>
+  <text x="38" y="35" font-family="monospace" font-size="8" font-weight="400" fill="#FF1E00" letter-spacing="2">RACING</text>
+</svg>
