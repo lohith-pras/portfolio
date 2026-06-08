@@ -23,18 +23,13 @@ export function HorizontalProjects() {
   useEffect(() => {
     if (reduced || !wrapRef.current || !trackRef.current) return
     const ctx = gsap.context(() => {
-      // Calculate how far to scroll horizontally
-      // It's the total width of the track minus the viewport width.
-      const trackWidth = trackRef.current!.scrollWidth
-      const distance = trackWidth - window.innerWidth
-
       gsap.to(trackRef.current, {
-        x: -distance,
+        x: () => -(trackRef.current!.scrollWidth - window.innerWidth),
         ease: 'none',
         scrollTrigger: {
           trigger: wrapRef.current,
           start: 'top top',
-          end: () => `+=${distance}`, // 1px of vertical scroll = 1px of horizontal travel
+          end: () => `+=${trackRef.current!.scrollWidth - window.innerWidth}`,
           pin: true,
           scrub: 1,
           invalidateOnRefresh: true,
@@ -67,7 +62,7 @@ export function HorizontalProjects() {
               <div className="w-full max-w-7xl h-full max-h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-4">
                 
                 {/* Cell 1: Image (Col span 7) */}
-                <div className="lg:col-span-7 bg-ink rounded-2xl overflow-hidden relative border border-white/5 group">
+                <div className="lg:col-span-7 bg-white/[0.02] rounded-2xl overflow-hidden relative border border-white/5 group">
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
                   <img
                     src={`/projects/${p.key}.png`}
@@ -83,7 +78,7 @@ export function HorizontalProjects() {
                 <div className="lg:col-span-5 grid grid-rows-3 gap-4">
                   
                   {/* Top: Context */}
-                  <div className="row-span-2 bg-ink border border-white/5 rounded-2xl p-8 flex flex-col">
+                  <div className="row-span-2 bg-white/[0.02] border border-white/5 rounded-2xl p-8 flex flex-col">
                     <p className="text-xs font-mono uppercase tracking-[0.15em] text-foreground/50 mb-4">{p.category}</p>
                     <h3 className="text-2xl md:text-3xl leading-tight font-medium mb-6 text-foreground/90">{name}</h3>
                     <p className="text-sm md:text-base text-foreground/70 leading-relaxed mb-auto">
@@ -104,15 +99,21 @@ export function HorizontalProjects() {
                     </div>
                   </div>
 
-                  {/* Bottom: Link */}
-                  <div className="row-span-1">
+                  {/* Bottom: Link & Metric */}
+                  <div className="row-span-1 grid grid-cols-2 gap-4">
+                    {/* Metric / Tech cell */}
+                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex flex-col justify-center">
+                      <p className="text-sm text-foreground/50 mb-2">Highlight</p>
+                      <p className="font-medium text-foreground/90 leading-tight">{p.metric}</p>
+                    </div>
+
                     <a
                       href={p.githubUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="h-full bg-white text-black rounded-2xl p-8 flex flex-col justify-center items-center group transition-transform hover:scale-[0.98] duration-300"
+                      className="h-full bg-white text-black rounded-2xl p-6 flex flex-col justify-center items-center group transition-transform hover:scale-[0.98] duration-300"
                     >
-                      <span className="text-sm font-mono uppercase tracking-[0.1em] text-black/60 mb-2">View Source</span>
+                      <span className="text-sm font-mono uppercase tracking-[0.1em] text-black/60 mb-2 text-center">View Source</span>
                       <span className="font-display text-2xl group-hover:translate-x-1 transition-transform">&rarr;</span>
                     </a>
                   </div>
