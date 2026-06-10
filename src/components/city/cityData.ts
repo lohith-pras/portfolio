@@ -92,11 +92,10 @@ export function buildCity(seed: number): CityLayout {
       buildings.push({ x: cx, z: cz, w, d, h, twin: false, category, antenna, roofProp, shape, tier })
     }
   }
-  // Central hero tower — moved to the far end of the avenue so the road leads
-  // straight to it (vanishing-point landmark at the name reveal). Footprint
-  // trimmed to 2.6 so the inner avenue lanes clear it. Height sets maxH, so its
-  // crown lights up cyan at the gradient top.
-  buildings.push({ x: 0, z: -30, w: 2.6, d: 2.6, h: 54, twin: true, category: 'civic', antenna: true, shape: 'box' })
+  // Hero tower — stands off to the right of the avenue (camera-right = +X) as a
+  // dominant flanking landmark rather than blocking the road. Height sets maxH,
+  // so its crown lights up cyan at the gradient top.
+  buildings.push({ x: 20, z: -16, w: 3.4, d: 3.4, h: 54, twin: true, category: 'civic', antenna: true, shape: 'box' })
 
   // Promote a few tall central buildings to "twin" landmarks.
   buildings

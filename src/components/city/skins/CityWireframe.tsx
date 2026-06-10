@@ -17,6 +17,7 @@ const ANTENNA_COLOR   = new THREE.Color(0xff0000).multiplyScalar(3.0)
 const RING_COLOR      = new THREE.Color(0x4db8ff).multiplyScalar(2)
 const STAR_COLOR      = new THREE.Color(0x4db8ff).multiplyScalar(3)
 const ROOF_COLOR      = new THREE.Color(0x00ffcc).multiplyScalar(1.8)  // teal roof props
+const LANE_PAINT      = new THREE.Color(0xbdf0ff).multiplyScalar(2.2)  // bright cyan-white avenue lane paint
 
 const ROAD_HW = 2.5   // wider grid road half-width to accommodate extra space
 
@@ -348,38 +349,37 @@ export function CityWireframe() {
     return geo
   }, [layout])
 
-  // ── Avenue lane divider lines (dashed) ───────────────────────────────────────
+  // ── Avenue lane dividers — dashed paint stripes (real width, not 1px lines) ───
   const avenueDividerGeo = useMemo(() => {
     const av = layout.avenue
     const H = layout.half
     const lx = av.laneXs
-    // Compute divider X positions: center double-line (x=±0.18),
-    // and midpoints between inner/outer lane pairs
-    const outerLeftX  = (lx[0] + lx[1]) / 2  // between lane 0 & 1
-    const outerRightX = (lx[2] + lx[3]) / 2  // between lane 2 & 3
-    const dividers: number[] = [
-      -0.18, 0.18,   // center median — two lines
-      outerLeftX,
-      outerRightX,
-    ]
+    // Three lane boundaries for the four lanes: center (between inner lanes) and
+    // the two midpoints between each inner/outer pair.
+    const dividers = [0, (lx[0] + lx[1]) / 2, (lx[2] + lx[3]) / 2]
 
-    const dashLen = 1.5
-    const gapLen  = 1.5
+    const dashLen = 2.2
+    const gapLen  = 2.2
     const step    = dashLen + gapLen
+    const halfW   = 0.14 // stripe half-width
     const pts: number[] = []
+    const idx: number[] = []
+    let o = 0
 
     for (const x of dividers) {
       let z = -H
       while (z + dashLen <= H) {
-        const zEnd = Math.min(z + dashLen, H)
-        pts.push(x, 0.02, z)
-        pts.push(x, 0.02, zEnd)
+        const zEnd = z + dashLen
+        pts.push(x - halfW, 0.025, z, x + halfW, 0.025, z, x + halfW, 0.025, zEnd, x - halfW, 0.025, zEnd)
+        idx.push(o, o + 1, o + 2, o, o + 2, o + 3)
+        o += 4
         z += step
       }
     }
 
     const geo = new THREE.BufferGeometry()
     geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3))
+    geo.setIndex(idx)
     return geo
   }, [layout])
 
@@ -595,10 +595,10 @@ export function CityWireframe() {
         />
       </mesh>
 
-      {/* Avenue lane dividers — dashed cyan lines */}
-      <lineSegments geometry={avenueDividerGeo}>
-        <lineBasicMaterial color={ROAD_COLOR} transparent opacity={0.9} blending={THREE.AdditiveBlending} depthWrite={false} />
-      </lineSegments>
+      {/* Avenue lane dividers — bright dashed paint stripes */}
+      <mesh geometry={avenueDividerGeo}>
+        <meshBasicMaterial color={LANE_PAINT} transparent opacity={0.95} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </mesh>
 
       {/* Avenue neon curb edges — bright continuous lines at the avenue borders */}
       <lineSegments geometry={avenueCurbGeo}>

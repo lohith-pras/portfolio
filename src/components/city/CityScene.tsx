@@ -4,7 +4,6 @@ import { useDescentCamera } from './useDescentCamera'
 import { useDescent } from './DescentContext'
 import { useDeviceTier } from './useRenderProfile'
 import { City } from './City'
-import { Vehicles } from './Vehicles'
 import { Drones } from './Drones'
 import { Overlays } from './Overlays'
 import { AvenueTraffic } from './AvenueTraffic'
@@ -56,7 +55,6 @@ export function CityScene() {
       )}
       <Environment preset="night" />
       <City />
-      <Vehicles />
       <AvenueTraffic />
       <Drones />
       <Overlays />

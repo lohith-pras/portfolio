@@ -29,7 +29,7 @@ export function useDescentCamera() {
     // Phase-aware: parallax is tiny top-down (p=0), large at street level (p>=0.65).
     const p = progress.current
     const parallaxScale = THREE.MathUtils.clamp(
-      THREE.MathUtils.mapLinear(p, 0, 0.65, 2, 10), 2, 10,
+      THREE.MathUtils.mapLinear(p, 0, 0.65, 1.5, 5), 1.5, 5,
     )
     const mx = lerpedMouse.current.x * parallaxScale
     const my = lerpedMouse.current.y * parallaxScale * 0.6
