@@ -49,11 +49,21 @@ const droneEdges = new THREE.EdgesGeometry(droneGeo)
 
 const _pos = new THREE.Vector3()
 
+import { Clone, useGLTF } from '@react-three/drei'
+import { ASSETS } from './ModelLoader'
+import { useState } from 'react'
+
 export function Drone({ curve, speed, offset }: { curve: THREE.CatmullRomCurve3; speed: number; offset: number }) {
   const { progress, visible } = useDescent()
   const group = useRef<THREE.Group>(null)
   const t = useRef(offset)
   const len = useMemo(() => curve.getLength(), [curve])
+
+  const [hovered, setHovered] = useState(false)
+  const targetScale = hovered ? 1.5 : 1.0
+  const currentScale = useRef(targetScale)
+
+  const { scene: droneModel } = useGLTF(ASSETS.drone)
 
   useFrame((state, dt) => {
     const g = group.current
@@ -70,15 +80,20 @@ export function Drone({ curve, speed, offset }: { curve: THREE.CatmullRomCurve3;
     // Slow rotation
     g.rotation.x += dt * 0.5
     g.rotation.y += dt * 0.7
+    
+    currentScale.current = THREE.MathUtils.damp(currentScale.current, targetScale, 6.0, dt)
+    g.scale.setScalar(currentScale.current)
 
     FRESNEL.uniforms.time.value = state.clock.elapsedTime
   })
 
   return (
-    <group ref={group}>
-      <mesh geometry={droneGeo} material={FILL} />
-      <mesh geometry={droneGeo} material={FRESNEL} />
-      <lineSegments geometry={droneEdges} material={EDGE} />
+    <group 
+      ref={group}
+      onPointerOver={(e) => { e.stopPropagation(); setHovered(true) }}
+      onPointerOut={() => setHovered(false)}
+    >
+      <Clone object={droneModel} scale={[0.5, 0.5, 0.5]} />
     </group>
   )
 }

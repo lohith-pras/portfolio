@@ -7,6 +7,8 @@ import { Vehicles } from './Vehicles'
 import { Drones } from './Drones'
 import { Overlays } from './Overlays'
 
+import { Environment } from '@react-three/drei'
+
 export function CityScene() {
   const { mouse, visible } = useDescent()
   useDescentCamera()
@@ -31,7 +33,18 @@ export function CityScene() {
   return (
     <>
       <ambientLight intensity={0.5} />
-      <directionalLight position={[10, 20, 10]} intensity={1.5} color="#4db8ff" />
+      <directionalLight 
+        position={[10, 20, 10]} 
+        intensity={1.5} 
+        color="#4db8ff" 
+        castShadow 
+        shadow-camera-left={-40}
+        shadow-camera-right={40}
+        shadow-camera-top={40}
+        shadow-camera-bottom={-40}
+        shadow-bias={-0.0005}
+      />
+      <Environment preset="night" />
       <City />
       <Vehicles />
       <Drones />

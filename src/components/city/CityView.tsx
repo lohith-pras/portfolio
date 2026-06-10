@@ -1,8 +1,8 @@
 'use client'
-import { useRef } from 'react'
+import { useRef, Suspense } from 'react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { View, PerspectiveCamera } from '@react-three/drei'
-import { EffectComposer, Bloom } from '@react-three/postprocessing'
+import { EffectComposer, Bloom, DepthOfField } from '@react-three/postprocessing'
 import { CityScene } from './CityScene'
 import { useDescent } from './DescentContext'
 import { useDeviceTier } from './useRenderProfile'
@@ -43,10 +43,15 @@ export function CityView() {
       <View style={{ width: '100%', height: '100%' }}>
         {/* Iso pose framing the 8×8 grid; useDescentCamera drives it each frame. */}
         <PerspectiveCamera makeDefault position={[0, 34, 58]} fov={65} near={0.1} far={1200} />
-        <CityScene key={reduced ? 'static' : 'live'} />
+        <Suspense fallback={null}>
+          <CityScene key={reduced ? 'static' : 'live'} />
+        </Suspense>
         <EffectComposer>
           {tier === 'high' ? (
-            <Bloom luminanceThreshold={0.2} mipmapBlur intensity={1.5} />
+            <>
+              <Bloom luminanceThreshold={0.2} mipmapBlur intensity={1.5} />
+              <DepthOfField focusDistance={0.02} focalLength={0.15} bokehScale={2} height={480} />
+            </>
           ) : (
             // Low tier: skip mipmapBlur, render bloom at quarter res — big GPU saving.
             <Bloom luminanceThreshold={0.25} intensity={1.0} resolutionX={256} resolutionY={256} />
