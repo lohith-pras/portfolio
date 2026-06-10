@@ -12,11 +12,11 @@ const KEYS: Key[] = [
   { p: PHASE.porthole[0], pos: [0, 90, 40], look: [0, 5, 10] },   // angled top-down, city reads as circuit board
   { p: 0.12,              pos: [0, 65, 55], look: [0, 8, 0] },    // swoop begins
   { p: PHASE.clouds[0],   pos: [0, 35, 65], look: [0, 10, -2] },  // descending fast (0.30 ≈ clouds start)
-  { p: PHASE.reveal[0],   pos: [0, 18, 58], look: [0, 10, -5] },  // near street level (0.50 = reveal start)
-  { p: PHASE.reveal[1],   pos: [0, 8, 52],  look: [0, 8, -8] },   // STREET LEVEL — name reveal beat (0.65)
-  { p: PHASE.beat1[1],    pos: [-8, 9, 50], look: [-2, 8, -8] },  // drift left (0.77)
-  { p: PHASE.beat2[1],    pos: [6, 8, 48],  look: [2, 8, -8] },   // drift right (0.89)
-  { p: PHASE.beat3[1],    pos: [0, 8, 46],  look: [0, 7, -10] },  // settle (1.00)
+  { p: PHASE.reveal[0],   pos: [0, 18, 58], look: [0, 8, -6] },   // near street level, easing onto the avenue (0.50)
+  { p: PHASE.reveal[1],   pos: [0, 11, 50], look: [0, 4, 0] },    // STREET LEVEL — looking down the avenue, name reveal (0.65)
+  { p: PHASE.beat1[1],    pos: [-5, 9, 46], look: [-1, 3, -10] }, // drift left, dropping toward the road (0.77)
+  { p: PHASE.beat2[1],    pos: [5, 8, 44],  look: [1, 3, -14] },  // drift right (0.89)
+  { p: PHASE.beat3[1],    pos: [0, 6, 42],  look: [0, 2, -24] },  // low down the avenue — cars stream toward the far tower (1.00)
 ]
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t

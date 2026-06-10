@@ -19,6 +19,12 @@ export interface Building {
   }
 }
 export interface Charger { x: number; z: number }
+/** Central four-lane avenue running along Z (camera-forward), carved through the grid. */
+export interface Avenue {
+  halfWidth: number     // half the cleared road band (world units), x ∈ [-hw, hw]
+  laneXs: number[]      // x-position of each lane centerline
+  dirs: number[]        // travel direction per lane along Z: +1 toward +Z, -1 toward -Z
+}
 export interface CityLayout {
   half: number          // half-extent of the city square (world units)
   cell: number          // block size
@@ -26,6 +32,7 @@ export interface CityLayout {
   roadsX: number[]      // z-positions of roads running along X
   roadsZ: number[]      // x-positions of roads running along Z
   chargers: Charger[]
+  avenue: Avenue        // central hero avenue
 }
 
 const ROOF_PROPS: RoofProp[] = ['tank', 'vent', 'helipad']
@@ -46,8 +53,19 @@ export function buildCity(seed: number): CityLayout {
   const lines: number[] = []
   for (let i = 0; i <= blocks; i++) lines.push(-half + i * cell)
 
+  // Central avenue: clear the two middle building columns so a four-lane road
+  // runs the full Z depth through x≈0. Camera descends to street level looking
+  // down it. halfWidth spans those two cleared cells.
+  const AVENUE_COLS = [blocks / 2 - 1, blocks / 2] // bx = 5, 6 for blocks=12
+  const avenue: Avenue = {
+    halfWidth: cell,
+    laneXs: [-cell * 0.84, -cell * 0.375, cell * 0.375, cell * 0.84],
+    dirs: [1, 1, -1, -1],
+  }
+
   const buildings: Building[] = []
   for (let bx = 0; bx < blocks; bx++) {
+    if (AVENUE_COLS.includes(bx)) continue // carved for the avenue
     for (let bz = 0; bz < blocks; bz++) {
       if (r() < 0.1) continue // gaps / plazas — fewer, so the grid reads dense
       const cx = -half + bx * cell + cell / 2
@@ -74,9 +92,11 @@ export function buildCity(seed: number): CityLayout {
       buildings.push({ x: cx, z: cz, w, d, h, twin: false, category, antenna, roofProp, shape, tier })
     }
   }
-  // Central hero tower — the dominant landmark the descent frames at the name
-  // reveal. Its height sets maxH, so its crown lights up cyan at the gradient top.
-  buildings.push({ x: 0, z: 0, w: 3.4, d: 3.4, h: 54, twin: true, category: 'civic', antenna: true, shape: 'box' })
+  // Central hero tower — moved to the far end of the avenue so the road leads
+  // straight to it (vanishing-point landmark at the name reveal). Footprint
+  // trimmed to 2.6 so the inner avenue lanes clear it. Height sets maxH, so its
+  // crown lights up cyan at the gradient top.
+  buildings.push({ x: 0, z: -30, w: 2.6, d: 2.6, h: 54, twin: true, category: 'civic', antenna: true, shape: 'box' })
 
   // Promote a few tall central buildings to "twin" landmarks.
   buildings
@@ -90,5 +110,5 @@ export function buildCity(seed: number): CityLayout {
     chargers.push({ x: range(r, -half, half), z: range(r, -half, half) })
   }
 
-  return { half, cell, buildings, roadsX: lines, roadsZ: lines, chargers }
+  return { half, cell, buildings, roadsX: lines, roadsZ: lines, chargers, avenue }
 }

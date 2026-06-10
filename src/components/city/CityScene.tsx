@@ -7,6 +7,7 @@ import { City } from './City'
 import { Vehicles } from './Vehicles'
 import { Drones } from './Drones'
 import { Overlays } from './Overlays'
+import { AvenueTraffic } from './AvenueTraffic'
 
 import { Environment } from '@react-three/drei'
 
@@ -56,6 +57,7 @@ export function CityScene() {
       <Environment preset="night" />
       <City />
       <Vehicles />
+      <AvenueTraffic />
       <Drones />
       <Overlays />
     </>

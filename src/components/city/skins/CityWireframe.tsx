@@ -338,6 +338,66 @@ export function CityWireframe() {
     return geo
   }, [layout])
 
+  // ── Avenue road surface ──────────────────────────────────────────────────────
+  const avenueSurfaceGeo = useMemo(() => {
+    const av = layout.avenue
+    const H = layout.half
+    const w = av.halfWidth * 2
+    const h = H * 2
+    const geo = new THREE.PlaneGeometry(w, h)
+    return geo
+  }, [layout])
+
+  // ── Avenue lane divider lines (dashed) ───────────────────────────────────────
+  const avenueDividerGeo = useMemo(() => {
+    const av = layout.avenue
+    const H = layout.half
+    const lx = av.laneXs
+    // Compute divider X positions: center double-line (x=±0.18),
+    // and midpoints between inner/outer lane pairs
+    const outerLeftX  = (lx[0] + lx[1]) / 2  // between lane 0 & 1
+    const outerRightX = (lx[2] + lx[3]) / 2  // between lane 2 & 3
+    const dividers: number[] = [
+      -0.18, 0.18,   // center median — two lines
+      outerLeftX,
+      outerRightX,
+    ]
+
+    const dashLen = 1.5
+    const gapLen  = 1.5
+    const step    = dashLen + gapLen
+    const pts: number[] = []
+
+    for (const x of dividers) {
+      let z = -H
+      while (z + dashLen <= H) {
+        const zEnd = Math.min(z + dashLen, H)
+        pts.push(x, 0.02, z)
+        pts.push(x, 0.02, zEnd)
+        z += step
+      }
+    }
+
+    const geo = new THREE.BufferGeometry()
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3))
+    return geo
+  }, [layout])
+
+  // ── Avenue neon curb edges ────────────────────────────────────────────────────
+  const avenueCurbGeo = useMemo(() => {
+    const av = layout.avenue
+    const H = layout.half
+    const pts: number[] = [
+      -av.halfWidth, 0.05, -H,
+      -av.halfWidth, 0.05,  H,
+       av.halfWidth, 0.05, -H,
+       av.halfWidth, 0.05,  H,
+    ]
+    const geo = new THREE.BufferGeometry()
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3))
+    return geo
+  }, [layout])
+
   // ── Orbital ring — horizontal circle above the skyline ───────────────────────
   const orbitalRingGeo = useMemo(() => {
     const curve = new THREE.EllipseCurve(0, 0, 26, 26, 0, Math.PI * 2, false, 0)
@@ -516,6 +576,33 @@ export function CityWireframe() {
       {/* Window glow streaks — vertical light on tall buildings */}
       <lineSegments geometry={glowGeo}>
         <lineBasicMaterial color={GLOW_COLOR} transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </lineSegments>
+
+      {/* Avenue road surface — dark asphalt quad sitting above the grid road */}
+      <mesh
+        geometry={avenueSurfaceGeo}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0.012, 0]}
+        receiveShadow
+      >
+        <meshStandardMaterial
+          color={0x0a1018}
+          metalness={0.4}
+          roughness={0.5}
+          polygonOffset
+          polygonOffsetFactor={-3}
+          polygonOffsetUnits={-3}
+        />
+      </mesh>
+
+      {/* Avenue lane dividers — dashed cyan lines */}
+      <lineSegments geometry={avenueDividerGeo}>
+        <lineBasicMaterial color={ROAD_COLOR} transparent opacity={0.9} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </lineSegments>
+
+      {/* Avenue neon curb edges — bright continuous lines at the avenue borders */}
+      <lineSegments geometry={avenueCurbGeo}>
+        <lineBasicMaterial color={ROAD_COLOR} transparent opacity={1.0} blending={THREE.AdditiveBlending} depthWrite={false} />
       </lineSegments>
 
       {/* Orbital ring + stars — rotates slowly around Y axis */}
