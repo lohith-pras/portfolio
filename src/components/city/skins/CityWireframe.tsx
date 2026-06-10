@@ -17,7 +17,6 @@ const ANTENNA_COLOR   = new THREE.Color(0xff0000).multiplyScalar(3.0)
 const RING_COLOR      = new THREE.Color(0x4db8ff).multiplyScalar(2)
 const STAR_COLOR      = new THREE.Color(0x4db8ff).multiplyScalar(3)
 const ROOF_COLOR      = new THREE.Color(0x00ffcc).multiplyScalar(1.8)  // teal roof props
-const LANE_PAINT      = new THREE.Color(0xbdf0ff).multiplyScalar(4.0)  // bright cyan-white avenue lane paint
 
 const ROAD_HW = 2.5   // wider grid road half-width to accommodate extra space
 
@@ -349,41 +348,6 @@ export function CityWireframe() {
     return geo
   }, [layout])
 
-  // ── Avenue lane dividers — dashed paint stripes (real width, not 1px lines) ───
-  const avenueDividerGeo = useMemo(() => {
-    const av = layout.avenue
-    const H = layout.half
-    const lx = av.laneXs
-    // Three lane boundaries for the four lanes: center (between inner lanes) and
-    // the two midpoints between each inner/outer pair.
-    const dividers = [0, (lx[0] + lx[1]) / 2, (lx[2] + lx[3]) / 2]
-
-    const dashLen = 2.6
-    const gapLen  = 2.0
-    const step    = dashLen + gapLen
-    const halfW   = 0.28 // stripe half-width
-    const Y       = 0.06 // sits clearly above the road surface
-    const pts: number[] = []
-    const idx: number[] = []
-    let o = 0
-
-    for (const x of dividers) {
-      let z = -H
-      while (z + dashLen <= H) {
-        const zEnd = z + dashLen
-        pts.push(x - halfW, Y, z, x + halfW, Y, z, x + halfW, Y, zEnd, x - halfW, Y, zEnd)
-        idx.push(o, o + 1, o + 2, o, o + 2, o + 3)
-        o += 4
-        z += step
-      }
-    }
-
-    const geo = new THREE.BufferGeometry()
-    geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3))
-    geo.setIndex(idx)
-    return geo
-  }, [layout])
-
   // ── Avenue neon curb edges ────────────────────────────────────────────────────
   const avenueCurbGeo = useMemo(() => {
     const av = layout.avenue
@@ -635,23 +599,6 @@ export function CityWireframe() {
           polygonOffset
           polygonOffsetFactor={-3}
           polygonOffsetUnits={-3}
-        />
-      </mesh>
-
-      {/* Avenue lane dividers — bright dashed paint stripes (polygon-offset so the
-          asphalt surface below can't win the depth test and hide them) */}
-      <mesh geometry={avenueDividerGeo} renderOrder={2}>
-        <meshBasicMaterial
-          color={LANE_PAINT}
-          side={THREE.DoubleSide}
-          transparent
-          opacity={1.0}
-          blending={THREE.AdditiveBlending}
-          depthWrite={false}
-          depthTest={false}
-          polygonOffset
-          polygonOffsetFactor={-6}
-          polygonOffsetUnits={-6}
         />
       </mesh>
 
