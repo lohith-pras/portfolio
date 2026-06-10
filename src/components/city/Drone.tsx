@@ -5,6 +5,19 @@ import * as THREE from 'three'
 import { useDescent } from './DescentContext'
 import { PHASE } from './phases'
 
+// Damped harmonic oscillator: produces natural spring motion with acceleration and decay.
+class Spring {
+  pos = 0
+  vel = 0
+  target = 0
+  constructor(private k = 8, private d = 3) {}
+  update(dt: number) {
+    this.vel += (-this.k * (this.pos - this.target) - this.d * this.vel) * dt
+    this.pos += this.vel * dt
+    return this.pos
+  }
+}
+
 // Shared assets — one allocation reused across every drone instance.
 const FILL = new THREE.MeshStandardMaterial({ color: 0x0a1420, metalness: 0.8, roughness: 0.2 })
 const EDGE = new THREE.LineBasicMaterial({
@@ -58,6 +71,7 @@ export function Drone({ curve, speed, offset }: { curve: THREE.CatmullRomCurve3;
   const group = useRef<THREE.Group>(null)
   const t = useRef(offset)
   const len = useMemo(() => curve.getLength(), [curve])
+  const hoverSpring = useRef(new Spring(8, 3))
 
   const [hovered, setHovered] = useState(false)
   const targetScale = hovered ? 1.5 : 1.0
@@ -73,8 +87,9 @@ export function Drone({ curve, speed, offset }: { curve: THREE.CatmullRomCurve3;
     t.current = (t.current + (speed * dt) / len) % 1
     curve.getPointAt(t.current, _pos)
 
-    // Gentle altitude bob layered on the path.
-    const bob = Math.sin(state.clock.elapsedTime * 1.5 + offset * 6) * 1.5
+    // Gentle altitude bob with spring physics: oscillator springs toward a moving target.
+    hoverSpring.current.target = Math.sin(state.clock.elapsedTime * 0.4 + offset * 6) * 1.5
+    const bob = hoverSpring.current.update(dt)
     g.position.set(_pos.x, _pos.y + bob, _pos.z)
 
     // Slow rotation

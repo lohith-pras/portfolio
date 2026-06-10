@@ -9,13 +9,14 @@ export interface CamPose { position: Vec3; lookAt: Vec3 }
 // city itself so it's visible from p=0.)
 interface Key { p: number; pos: Vec3; look: Vec3 }
 const KEYS: Key[] = [
-  { p: PHASE.porthole[0], pos: [0, 58, 86],  look: [0, 10, -4] },  // high establishing over the dense city
-  { p: PHASE.enter[1],    pos: [0, 44, 76],  look: [0, 12, -5] },  // descending in, centred on the tower
-  { p: PHASE.clouds[1],   pos: [0, 32, 66],  look: [0, 15, -6] },  // dropping toward the immersive across-view
-  { p: PHASE.reveal[1],   pos: [0, 26, 60],  look: [0, 16, -7] },  // IMMERSIVE — across the city, tower centred (name reveal)
-  { p: PHASE.beat1[1],    pos: [-8, 25, 58], look: [-2, 15, -7] }, // gentle drift left (city fading out)
-  { p: PHASE.beat2[1],    pos: [6, 24, 56],  look: [2, 15, -7] },  // drift right
-  { p: PHASE.beat3[1],    pos: [0, 23, 54],  look: [0, 14, -8] },  // settle centred, low
+  { p: PHASE.porthole[0], pos: [0, 90, 40], look: [0, 5, 10] },   // angled top-down, city reads as circuit board
+  { p: 0.12,              pos: [0, 65, 55], look: [0, 8, 0] },    // swoop begins
+  { p: PHASE.clouds[0],   pos: [0, 35, 65], look: [0, 10, -2] },  // descending fast (0.30 ≈ clouds start)
+  { p: PHASE.reveal[0],   pos: [0, 18, 58], look: [0, 10, -5] },  // near street level (0.50 = reveal start)
+  { p: PHASE.reveal[1],   pos: [0, 8, 52],  look: [0, 8, -8] },   // STREET LEVEL — name reveal beat (0.65)
+  { p: PHASE.beat1[1],    pos: [-8, 9, 50], look: [-2, 8, -8] },  // drift left (0.77)
+  { p: PHASE.beat2[1],    pos: [6, 8, 48],  look: [2, 8, -8] },   // drift right (0.89)
+  { p: PHASE.beat3[1],    pos: [0, 8, 46],  look: [0, 7, -10] },  // settle (1.00)
 ]
 
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t
