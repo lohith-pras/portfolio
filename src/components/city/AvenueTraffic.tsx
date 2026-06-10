@@ -1,7 +1,7 @@
 'use client'
 import { useMemo } from 'react'
 import { buildCity, CITY_SEED } from './cityData'
-import { buildAvenueRoutes, buildCarRoutes } from './carRoutes'
+import { buildAvenueRoutes, buildRingRoute } from './carRoutes'
 import { useDeviceTier } from './useRenderProfile'
 import { mulberry32, range } from '@/lib/rng'
 import { Car } from './Car'
@@ -10,13 +10,14 @@ export function AvenueTraffic() {
   const tier = useDeviceTier()
   const layout = useMemo(() => buildCity(CITY_SEED), [])
 
-  // Avenue: dense slow stream down the four lanes. Grid: ambient cars looping
-  // the side streets so traffic fills the whole city, not just the avenue.
+  // Two non-intersecting flows: the central avenue (parallel lanes) and a single
+  // perimeter highway loop around the city edge. No shared intersections, so
+  // traffic stays clean.
   const avenueRoutes = useMemo(() => buildAvenueRoutes(layout), [layout])
-  const gridRoutes = useMemo(() => buildCarRoutes(layout, tier === 'high' ? 8 : 3), [layout, tier])
+  const ringRoute = useMemo(() => buildRingRoute(layout), [layout])
 
-  const avenueCount = tier === 'high' ? 16 : 6
-  const gridCount = tier === 'high' ? 10 : 4
+  const avenueCount = tier === 'high' ? 7 : 3
+  const ringCount = tier === 'high' ? 4 : 2
 
   const avenueAgents = useMemo(() => {
     const r = mulberry32(0xA4E0)
@@ -27,22 +28,21 @@ export function AvenueTraffic() {
     }))
   }, [avenueCount, avenueRoutes])
 
-  const gridAgents = useMemo(() => {
+  const ringAgents = useMemo(() => {
     const r = mulberry32(0x6D17)
-    return Array.from({ length: gridCount }, () => ({
-      route: gridRoutes[Math.floor(range(r, 0, gridRoutes.length))],
-      offset: r(),
-      speed: range(r, 4, 7),
+    return Array.from({ length: ringCount }, (_, i) => ({
+      offset: (i / ringCount + range(r, -0.03, 0.03) + 1) % 1, // spread around the perimeter
+      speed: range(r, 5, 8),
     }))
-  }, [gridCount, gridRoutes])
+  }, [ringCount])
 
   return (
     <>
       {avenueAgents.map((a, i) => (
         <Car key={`av${i}`} route={a.route} speed={a.speed} offset={a.offset} />
       ))}
-      {gridAgents.map((a, i) => (
-        <Car key={`gr${i}`} route={a.route} speed={a.speed} offset={a.offset} />
+      {ringAgents.map((a, i) => (
+        <Car key={`rg${i}`} route={ringRoute} speed={a.speed} offset={a.offset} />
       ))}
     </>
   )

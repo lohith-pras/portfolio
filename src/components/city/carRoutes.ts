@@ -72,6 +72,20 @@ export function buildAvenueRoutes(city: CityLayout): CarRoute[] {
 }
 
 /**
+ * Perimeter highway: one clean rectangle loop around the city's outer edge, just
+ * outside the building footprints. Single direction, never self-intersects.
+ */
+export function buildRingRoute(city: CityLayout): CarRoute {
+  const e = city.half + 1 // just beyond the outermost buildings
+  return makeRoute([
+    [-e, 0, -e],
+    [e, 0, -e],
+    [e, 0, e],
+    [-e, 0, e],
+  ])
+}
+
+/**
  * Sample a route by travelled distance (wraps). Returns position, unit heading
  * on XZ, and `u` (0..1 fraction along the current segment, for speed easing).
  */
