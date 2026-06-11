@@ -5,6 +5,7 @@ import { useTranslations } from 'next-intl'
 import { useGSAP } from '@gsap/react'
 import { gsap } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useParallax } from '@/hooks/useParallax'
 
 /**
  * AboutSection — Manifesto beat.
@@ -18,6 +19,10 @@ export function AboutSection() {
   const reduce = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const numeralRef = useRef<HTMLSpanElement>(null)
+
+  // Ghost numeral drifts slower than the page — editorial depth layer.
+  useParallax(numeralRef, 60, ref)
 
   // Existing scrub reveal — opacity on all .about-element nodes
   useGSAP(
@@ -82,6 +87,7 @@ export function AboutSection() {
           <div className="relative">
             {/* ghost numeral 01 — editorial depth layer */}
             <span
+              ref={numeralRef}
               aria-hidden="true"
               className="pointer-events-none select-none absolute -top-8 -left-5 font-mono font-bold leading-none text-foreground/[0.035] text-[clamp(5rem,14vw,13rem)] -z-10"
             >

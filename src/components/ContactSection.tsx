@@ -3,14 +3,19 @@
 import { useRef } from 'react'
 import { useTranslations } from 'next-intl'
 import { useGSAP } from '@gsap/react'
-import { gsap } from '@/lib/gsap'
+import { gsap, SplitText } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useParallax } from '@/hooks/useParallax'
 
 export function ContactSection() {
   const t = useTranslations('contact')
   const reduce = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
+  const numeralRef = useRef<HTMLSpanElement>(null)
+
+  // Ghost numeral drifts slower than the page — editorial depth layer.
+  useParallax(numeralRef, 80, ref)
 
   // Existing section reveal — whole container fades/slides in
   useGSAP(
@@ -27,26 +32,31 @@ export function ContactSection() {
     { scope: ref, dependencies: [reduce] },
   )
 
-  // Clip-path line reveal on the section heading
+  // SplitText line-mask reveal on the closing heading — each line rises out
+  // from behind a clip, staggered. Split after fonts settle so line breaks are
+  // measured against final glyphs. Reverts on cleanup to restore the raw node.
   useGSAP(
     () => {
       if (reduce || !headingRef.current) return
-      gsap.fromTo(
-        headingRef.current,
-        { clipPath: 'inset(0 0 100% 0)', y: 12, willChange: 'clip-path' },
-        {
-          clipPath: 'inset(0 0 0% 0)',
-          y: 0,
-          duration: 0.5,
+      let split: SplitText | undefined
+      let tween: gsap.core.Tween | undefined
+      let killed = false
+      document.fonts.ready.then(() => {
+        if (killed || !headingRef.current) return
+        split = SplitText.create(headingRef.current, { type: 'lines', mask: 'lines' })
+        tween = gsap.from(split.lines, {
+          yPercent: 110,
+          duration: 0.8,
+          stagger: 0.12,
           ease: 'power3.out',
-          onComplete: () => gsap.set(headingRef.current, { willChange: 'auto' }),
-          scrollTrigger: {
-            trigger: headingRef.current,
-            start: 'top 85%',
-            once: true,
-          },
-        },
-      )
+          scrollTrigger: { trigger: headingRef.current, start: 'top 85%', once: true },
+        })
+      })
+      return () => {
+        killed = true
+        tween?.kill()
+        split?.revert()
+      }
     },
     { dependencies: [reduce] },
   )
@@ -61,16 +71,17 @@ export function ContactSection() {
   return (
     <section
       id="contact"
-      className="relative z-10 bg-paper border-t border-rule px-6 md:px-16 py-[var(--space-section-lg)]"
+      className="relative z-10 flex min-h-screen w-full items-center bg-paper border-t border-rule px-6 md:px-16 py-16"
     >
-      <div className="max-w-5xl mx-auto w-full">
-        <div ref={ref} className="flex flex-col gap-12">
+      <div className="max-w-7xl mx-auto w-full">
+        <div ref={ref} className="flex flex-col gap-[clamp(2.5rem,6vh,4rem)]">
           {/* Heading with ghost numeral */}
           <div className="relative">
             {/* ghost numeral 04 — editorial depth layer */}
             <span
+              ref={numeralRef}
               aria-hidden="true"
-              className="pointer-events-none select-none absolute -top-8 -left-4 font-mono font-bold leading-none text-foreground/[0.035] text-[clamp(6rem,18vw,16rem)] -z-10"
+              className="pointer-events-none select-none absolute -top-14 -left-5 font-mono font-bold leading-none text-foreground/[0.035] text-[clamp(7rem,18vw,18rem)] -z-10"
             >
               04
             </span>
@@ -78,15 +89,14 @@ export function ContactSection() {
             {/* heading — receives clip-path reveal */}
             <h2
               ref={headingRef}
-              className="relative font-display text-[clamp(2.5rem,6vw,5rem)] leading-none tracking-tight text-foreground"
-              style={reduce ? undefined : { clipPath: 'inset(0 0 100% 0)' }}
+              className="relative font-display text-[clamp(2.75rem,7vw,6rem)] leading-none tracking-tight text-foreground"
             >
               {t('heading')}
             </h2>
           </div>
 
           {/* Availability */}
-          <p className="font-body text-foreground/60 text-lg max-w-xl">
+          <p className="font-body text-foreground/60 text-xl md:text-2xl leading-relaxed max-w-2xl">
             {t('availability')}
           </p>
 
@@ -97,7 +107,7 @@ export function ContactSection() {
                 key={label}
                 href={href}
                 {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                className="group inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3 font-mono text-sm uppercase tracking-widest text-foreground hover:border-accent hover:text-accent transition-colors duration-200 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                className="group inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3 font-mono text-sm uppercase tracking-widest text-foreground hover:border-accent hover:text-accent motion-safe:hover:-translate-y-0.5 transition-[color,border-color,transform] duration-200 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
               >
                 {label}
                 <span aria-hidden="true" className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-[opacity,transform] duration-200">

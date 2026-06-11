@@ -6,6 +6,7 @@ import { useGSAP } from '@gsap/react'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
 import { getLenis } from '@/lib/lenis'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useParallax } from '@/hooks/useParallax'
 
 /**
  * Project index — list on the left, a detail panel pinned on the right. On desktop
@@ -36,6 +37,12 @@ export function HorizontalProjects() {
   const listRef = useRef<HTMLDivElement>(null)
   const eyebrowRef = useRef<HTMLSpanElement>(null)
   const detailRef = useRef<HTMLDivElement>(null)
+  const numeralRef = useRef<HTMLSpanElement>(null)
+  const ruleRef = useRef<HTMLDivElement>(null)
+
+  // Ghost numeral drifts across the whole pinned band — the one element still
+  // moving while the section holds, so the depth read is strongest here.
+  useParallax(numeralRef, 120, outerRef)
 
   const [activeIndex, setActiveIndex] = useState(0)
   const active = PROJECTS[activeIndex]
@@ -103,6 +110,21 @@ export function HorizontalProjects() {
     { scope: sectionRef, dependencies: [reduce] },
   )
 
+  // Head rule draws in from the left as the section head enters.
+  useGSAP(
+    () => {
+      if (reduce || !ruleRef.current) return
+      gsap.from(ruleRef.current, {
+        scaleX: 0,
+        transformOrigin: 'left center',
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: ruleRef.current, start: 'top 85%', once: true },
+      })
+    },
+    { dependencies: [reduce] },
+  )
+
   // Clip-path line reveal on the eyebrow.
   useGSAP(
     () => {
@@ -123,14 +145,15 @@ export function HorizontalProjects() {
     { dependencies: [reduce] },
   )
 
-  // Crossfade the detail panel whenever the active project changes.
+  // Materialize the detail panel whenever the active project changes —
+  // blur + slight scale reads as "coming into focus", not just fading.
   useGSAP(
     () => {
       if (reduce || !detailRef.current) return
       gsap.fromTo(
         detailRef.current,
-        { opacity: 0, y: 12 },
-        { opacity: 1, y: 0, duration: 0.4, ease: 'power3.out' },
+        { opacity: 0, y: 12, scale: 0.99, filter: 'blur(6px)' },
+        { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.45, ease: 'power3.out' },
       )
     },
     { dependencies: [activeIndex] },
@@ -152,6 +175,7 @@ export function HorizontalProjects() {
             <div className="mb-12 flex items-baseline gap-4 md:mb-16">
               <div className="relative">
                 <span
+                  ref={numeralRef}
                   aria-hidden="true"
                   className="pointer-events-none absolute -left-3 -top-10 -z-10 select-none font-mono text-[clamp(6rem,18vw,16rem)] font-bold leading-none text-foreground/[0.035]"
                 >
@@ -165,7 +189,7 @@ export function HorizontalProjects() {
                   {t('heading')}
                 </span>
               </div>
-              <div className="h-px flex-1 bg-rule" />
+              <div ref={ruleRef} className="h-px flex-1 bg-rule" />
             </div>
 
             {/* split — list left, detail right (stacks on mobile) */}
@@ -210,7 +234,7 @@ export function HorizontalProjects() {
               <div className="lg:pl-4">
                 <div ref={detailRef}>
                   {/* cover */}
-                  <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-white/10">
+                  <div className="group/cover relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-white/10">
                     <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white/[0.06] to-transparent">
                       <span className="font-mono text-7xl font-bold text-white/10">{active.number}</span>
                     </div>
@@ -219,7 +243,7 @@ export function HorizontalProjects() {
                       src={active.image}
                       alt={name}
                       loading="lazy"
-                      className="absolute inset-0 h-full w-full object-cover"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out motion-safe:group-hover/cover:scale-[1.04]"
                       onError={(e) => {
                         e.currentTarget.style.opacity = '0'
                       }}
@@ -235,7 +259,7 @@ export function HorizontalProjects() {
                       {tech.map((item) => (
                         <span
                           key={item}
-                          className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[11px] text-foreground/70"
+                          className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[11px] text-foreground/70 transition-colors duration-200 hover:border-white/25 hover:text-foreground/90"
                         >
                           {item}
                         </span>

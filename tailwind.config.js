@@ -21,7 +21,7 @@ module.exports = {
         rule: 'var(--color-rule)',
       },
       fontFamily: {
-        display: ['var(--font-space-mono)', 'monospace'],
+        display: ['var(--font-jetbrains-mono)', 'monospace'],
         body: ['var(--font-outfit)', 'sans-serif'],
         life: ['var(--font-courier-prime)', 'monospace'],
         mono: ['var(--font-space-mono)', 'monospace'],
