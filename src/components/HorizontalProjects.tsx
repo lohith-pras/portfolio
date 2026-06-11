@@ -1,146 +1,290 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { useGSAP } from '@gsap/react'
+import { gsap, ScrollTrigger } from '@/lib/gsap'
+import { getLenis } from '@/lib/lenis'
+import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useParallax } from '@/hooks/useParallax'
 
+/**
+ * Project index — list on the left, a detail panel pinned on the right. On desktop
+ * the whole block pins and scrubs: scrolling advances the active project (~1 screen
+ * each). Clicking a row scrolls to its band so click and scroll stay in sync. On
+ * mobile (or reduced motion) it's a plain tap-to-switch stack.
+ *
+ * Only isac_drl has a public repo, so only its panel shows View Source. `image`
+ * falls back to a numbered placeholder if the cover is missing.
+ */
 const PROJECTS = [
-  { key: 'ni_agent', number: '01', category: 'AI Agents', githubUrl: '#', metric: 'Production deploy for NI Nigel' },
-  { key: 'mimo', number: '02', category: 'AI / ML', githubUrl: 'https://github.com/lohith-pras/mimo', metric: 'Lower MSE vs MMSE baseline at mid-SNR' },
-  { key: 'vlc', number: '03', category: 'Hardware', githubUrl: 'https://github.com/lohith-pras/vlc-v2v', metric: 'High-speed VLC link demonstrated at close range in direct sunlight' },
+  { key: 'ni_agent', number: '01', category: 'AI Agents', year: '2026', href: null,                                      image: '/projects/ni_agent.png' },
+  { key: 'isac_drl', number: '02', category: 'Deep RL',   year: '2025', href: 'https://github.com/lohith-pras/isac-drl', image: '/projects/isac_drl.png' },
+  { key: 'vlc',      number: '03', category: 'Hardware',  year: '2023', href: null,                                      image: '/projects/vlc.png' },
+  { key: 'iot',      number: '04', category: 'Embedded',  year: '2023', href: null,                                      image: '/projects/iot.png' },
 ] as const
+
+const N = PROJECTS.length
+const DESKTOP = '(min-width: 1024px)'
 
 export function HorizontalProjects() {
   const t = useTranslations('work')
   const tp = useTranslations('projects')
-  
-  const trackRef = useRef<HTMLDivElement>(null)
+  const reduce = useReducedMotion()
 
-  const scrollPrev = () => {
-    if (trackRef.current) {
-      trackRef.current.scrollBy({ left: -window.innerWidth, behavior: 'smooth' })
+  const sectionRef = useRef<HTMLElement>(null)
+  const outerRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
+  const eyebrowRef = useRef<HTMLSpanElement>(null)
+  const detailRef = useRef<HTMLDivElement>(null)
+  const numeralRef = useRef<HTMLSpanElement>(null)
+  const ruleRef = useRef<HTMLDivElement>(null)
+
+  // Ghost numeral drifts across the whole pinned band — the one element still
+  // moving while the section holds, so the depth read is strongest here.
+  useParallax(numeralRef, 120, outerRef)
+
+  const [activeIndex, setActiveIndex] = useState(0)
+  const active = PROJECTS[activeIndex]
+
+  // Scroll-driven active project: pin via sticky CSS, read progress → index.
+  useGSAP(
+    () => {
+      if (reduce) return
+      const mm = gsap.matchMedia()
+      mm.add(DESKTOP, () => {
+        const outer = outerRef.current
+        if (!outer) return
+        outer.style.height = `${N * 100}vh`
+        const st = ScrollTrigger.create({
+          trigger: outer,
+          start: 'top top',
+          end: 'bottom bottom',
+          onUpdate: (self) => {
+            const idx = Math.min(N - 1, Math.floor(self.progress * N))
+            setActiveIndex((prev) => (prev === idx ? prev : idx))
+          },
+        })
+        return () => {
+          st.kill()
+          outer.style.height = ''
+        }
+      })
+      return () => mm.revert()
+    },
+    { scope: sectionRef, dependencies: [reduce] },
+  )
+
+  // Click a row → on desktop scroll to its band (keeps scroll/active synced);
+  // on mobile just switch and bring the panel into view.
+  const select = (i: number) => {
+    const isDesktop = typeof window !== 'undefined' && window.matchMedia(DESKTOP).matches
+    if (isDesktop && !reduce && outerRef.current) {
+      const top = window.scrollY + outerRef.current.getBoundingClientRect().top
+      const dist = outerRef.current.offsetHeight - window.innerHeight
+      const y = top + ((i + 0.5) / N) * dist
+      // Scroll through Lenis when it's running so the scrub follows smoothly;
+      // fall back to ScrollToPlugin if Lenis is unavailable.
+      const lenis = getLenis()
+      if (lenis) lenis.scrollTo(y, { duration: 0.8 })
+      else gsap.to(window, { scrollTo: y, duration: 0.6, ease: 'power2.inOut' })
+    } else {
+      setActiveIndex(i)
+      detailRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
     }
   }
 
-  const scrollNext = () => {
-    if (trackRef.current) {
-      trackRef.current.scrollBy({ left: window.innerWidth, behavior: 'smooth' })
-    }
-  }
+  // Stagger the rows up on first view.
+  useGSAP(
+    () => {
+      if (reduce || !listRef.current) return
+      gsap.from(listRef.current.children, {
+        opacity: 0,
+        y: 24,
+        duration: 0.5,
+        stagger: 0.08,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: listRef.current, start: 'top 80%', once: true },
+      })
+    },
+    { scope: sectionRef, dependencies: [reduce] },
+  )
+
+  // Head rule draws in from the left as the section head enters.
+  useGSAP(
+    () => {
+      if (reduce || !ruleRef.current) return
+      gsap.from(ruleRef.current, {
+        scaleX: 0,
+        transformOrigin: 'left center',
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: { trigger: ruleRef.current, start: 'top 85%', once: true },
+      })
+    },
+    { dependencies: [reduce] },
+  )
+
+  // Clip-path line reveal on the eyebrow.
+  useGSAP(
+    () => {
+      if (reduce || !eyebrowRef.current) return
+      gsap.fromTo(
+        eyebrowRef.current,
+        { clipPath: 'inset(0 0 100% 0)', y: 12, willChange: 'clip-path' },
+        {
+          clipPath: 'inset(0 0 0% 0)',
+          y: 0,
+          duration: 0.5,
+          ease: 'power3.out',
+          onComplete: () => gsap.set(eyebrowRef.current, { willChange: 'auto' }),
+          scrollTrigger: { trigger: eyebrowRef.current, start: 'top 85%', once: true },
+        },
+      )
+    },
+    { dependencies: [reduce] },
+  )
+
+  // Materialize the detail panel whenever the active project changes —
+  // blur + slight scale reads as "coming into focus", not just fading.
+  useGSAP(
+    () => {
+      if (reduce || !detailRef.current) return
+      gsap.fromTo(
+        detailRef.current,
+        { opacity: 0, y: 12, scale: 0.99, filter: 'blur(6px)' },
+        { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.45, ease: 'power3.out' },
+      )
+    },
+    { dependencies: [activeIndex] },
+  )
+
+  const name = tp(`${active.key}.name`)
+  const description = tp(`${active.key}.description`)
+  const problem = tp(`${active.key}.problem`)
+  const tech = tp(`${active.key}.tech`).split('·').map((s) => s.trim()).filter(Boolean)
 
   return (
-    <section id="projects" className="relative z-10 bg-paper-2 overflow-hidden">
-      <style>{`
-        .hide-scrollbar::-webkit-scrollbar {
-          display: none;
-        }
-        .hide-scrollbar {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
-        }
-      `}</style>
-      
-      {/* Intro Header & Nav Arrows */}
-      <div className="absolute top-12 left-6 md:left-16 z-20 w-[calc(100%-3rem)] md:w-[calc(100%-8rem)] flex justify-between items-center pointer-events-none mix-blend-difference">
-        <h2 className="hero-heading font-display text-white">{t('heading')}</h2>
-        
-        <div className="flex gap-4 pointer-events-auto">
-          <button 
-            onClick={scrollPrev}
-            aria-label="Previous Project"
-            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:scale-105 active:scale-95 transition-all backdrop-blur-md"
-          >
-            &larr;
-          </button>
-          <button 
-            onClick={scrollNext}
-            aria-label="Next Project"
-            className="w-12 h-12 flex items-center justify-center rounded-full bg-white/10 border border-white/20 text-white hover:bg-white/20 hover:scale-105 active:scale-95 transition-all backdrop-blur-md"
-          >
-            &rarr;
-          </button>
-        </div>
-      </div>
+    <section id="projects" ref={sectionRef} className="relative z-10 bg-paper-2">
+      {/* outer gains height on desktop (set in JS) to create the scrub distance */}
+      <div ref={outerRef}>
+        {/* inner pins via sticky on desktop; normal flow on mobile */}
+        <div className="px-6 py-[var(--space-section-lg)] md:px-16 lg:sticky lg:top-0 lg:flex lg:h-screen lg:items-center lg:overflow-hidden lg:py-0">
+          <div className="mx-auto w-full max-w-6xl">
+            {/* section head — eyebrow + rule + ghost numeral 02 */}
+            <div className="mb-12 flex items-baseline gap-4 md:mb-16">
+              <div className="relative">
+                <span
+                  ref={numeralRef}
+                  aria-hidden="true"
+                  className="pointer-events-none absolute -left-3 -top-10 -z-10 select-none font-mono text-[clamp(6rem,18vw,16rem)] font-bold leading-none text-foreground/[0.035]"
+                >
+                  02
+                </span>
+                <span
+                  ref={eyebrowRef}
+                  className="relative font-mono text-[11px] uppercase tracking-[0.3em] text-muted"
+                  style={reduce ? undefined : { clipPath: 'inset(0 0 100% 0)' }}
+                >
+                  {t('heading')}
+                </span>
+              </div>
+              <div ref={ruleRef} className="h-px flex-1 bg-rule" />
+            </div>
 
-      <div 
-        ref={trackRef} 
-        className="flex h-[100dvh] items-center pt-24 pb-12 w-full overflow-x-auto snap-x snap-mandatory hide-scrollbar scroll-smooth"
-      >
-        {PROJECTS.map((p) => {
-          const name = tp(`${p.key}.name`)
-          const description = tp(`${p.key}.description`)
-          const techString = tp(`${p.key}.tech`)
-          const techArray = techString.split(',').map((t) => t.trim())
-          
-          return (
-            <div
-              key={p.key}
-              className="w-[100vw] h-full shrink-0 flex items-center justify-center px-6 md:px-16 snap-center overflow-y-auto"
-            >
-              {/* Bento Grid */}
-              <div className="w-full max-w-7xl h-auto lg:h-full lg:max-h-[80vh] grid grid-cols-1 lg:grid-cols-12 gap-4 py-8 lg:py-0">
-                
-                {/* Cell 1: Image (Col span 7) */}
-                <div className="min-h-[240px] md:min-h-[300px] lg:min-h-0 lg:h-full lg:col-span-7 bg-white/[0.02] rounded-2xl overflow-hidden relative border border-white/5 group">
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10" />
-                  <img
-                    src={`/projects/${p.key}.png`}
-                    alt={name}
-                    className="object-cover w-full h-full opacity-70 transition-transform duration-1000 group-hover:scale-[1.03] group-hover:opacity-90"
-                  />
-                  <div className="absolute bottom-8 left-8 z-20">
-                    <div className="font-display text-6xl text-white/90 drop-shadow-lg">{p.number}</div>
+            {/* split — list left, detail right (stacks on mobile) */}
+            <div className="grid grid-cols-1 gap-x-12 gap-y-10 lg:grid-cols-2">
+              {/* left: project list */}
+              <div ref={listRef}>
+                {PROJECTS.map((p, i) => {
+                  const isActive = i === activeIndex
+                  return (
+                    <button
+                      key={p.key}
+                      type="button"
+                      onClick={() => select(i)}
+                      aria-pressed={isActive}
+                      className="group grid w-full grid-cols-[2.5rem_1fr_auto] items-baseline gap-4 border-t border-rule py-6 text-left transition-colors duration-300 last:border-b focus-visible:outline-none md:py-7"
+                    >
+                      <span className={`font-mono text-xs transition-colors duration-300 ${isActive ? 'text-accent' : 'text-muted group-hover:text-accent'}`}>
+                        {p.number}
+                      </span>
+                      <span className="min-w-0">
+                        <span
+                          className={`block font-display text-[clamp(1.3rem,2.6vw,2rem)] leading-tight transition-[color,transform] duration-300 ${
+                            isActive
+                              ? 'translate-x-2 text-foreground'
+                              : 'text-foreground/60 group-hover:translate-x-2 group-hover:text-foreground'
+                          }`}
+                        >
+                          {tp(`${p.key}.name`)}
+                        </span>
+                      </span>
+                      <span className="flex items-baseline gap-3 whitespace-nowrap font-mono text-[11px] uppercase tracking-widest text-muted">
+                        <span className="hidden sm:inline">{p.category}</span>
+                        <span className="hidden text-rule sm:inline">·</span>
+                        <span>{p.year}</span>
+                      </span>
+                    </button>
+                  )
+                })}
+              </div>
+
+              {/* right: detail panel */}
+              <div className="lg:pl-4">
+                <div ref={detailRef}>
+                  {/* cover */}
+                  <div className="group/cover relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-white/10">
+                    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white/[0.06] to-transparent">
+                      <span className="font-mono text-7xl font-bold text-white/10">{active.number}</span>
+                    </div>
+                    <img
+                      key={active.key}
+                      src={active.image}
+                      alt={name}
+                      loading="lazy"
+                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out motion-safe:group-hover/cover:scale-[1.04]"
+                      onError={(e) => {
+                        e.currentTarget.style.opacity = '0'
+                      }}
+                    />
                   </div>
-                </div>
 
-                {/* Cell 2 & 3: Info & Actions (Col span 5) */}
-                <div className="lg:col-span-5 grid grid-rows-3 gap-4">
-                  
-                  {/* Top: Context */}
-                  <div className="row-span-2 bg-white/[0.02] border border-white/5 rounded-2xl p-8 flex flex-col">
-                    <p className="text-xs font-mono uppercase tracking-[0.15em] text-foreground/50 mb-4">{p.category}</p>
-                    <h3 className="text-2xl md:text-3xl leading-tight font-medium mb-6 text-foreground/90">{name}</h3>
-                    <p className="text-sm md:text-base text-foreground/70 leading-relaxed mb-auto">
-                      {description}
-                    </p>
-                    
-                    <div className="mt-6 flex flex-wrap gap-2">
-                      {techArray.slice(0, 4).map((tech) => (
-                        <span key={tech} className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-foreground/80">
-                          {tech}
+                  {/* meta + copy */}
+                  <div className="mt-6 flex flex-col gap-5">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent/80">{problem}</p>
+                    <p className="text-sm leading-relaxed text-foreground/75 [text-wrap:pretty]">{description}</p>
+
+                    <div className="flex flex-wrap gap-2">
+                      {tech.map((item) => (
+                        <span
+                          key={item}
+                          className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[11px] text-foreground/70 transition-colors duration-200 hover:border-white/25 hover:text-foreground/90"
+                        >
+                          {item}
                         </span>
                       ))}
-                      {techArray.length > 4 && (
-                        <span className="px-3 py-1 bg-white/5 border border-white/10 rounded-full text-xs text-foreground/50">
-                          +{techArray.length - 4}
+                    </div>
+
+                    {active.href && (
+                      <a
+                        href={active.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group/btn mt-1 inline-flex w-fit items-center gap-2 rounded-full border border-foreground/20 px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-foreground transition-colors duration-200 hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                      >
+                        View Source
+                        <span aria-hidden="true" className="transition-transform duration-200 group-hover/btn:translate-x-0.5">
+                          ↗
                         </span>
-                      )}
-                    </div>
+                      </a>
+                    )}
                   </div>
-
-                  {/* Bottom: Link & Metric */}
-                  <div className="row-span-1 grid grid-cols-2 gap-4">
-                    {/* Metric / Tech cell */}
-                    <div className="bg-white/[0.02] border border-white/5 rounded-2xl p-6 flex flex-col justify-center">
-                      <p className="text-sm text-foreground/50 mb-2">Highlight</p>
-                      <p className="font-medium text-foreground/90 leading-tight">{p.metric}</p>
-                    </div>
-
-                    <a
-                      href={p.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="h-full bg-white text-black rounded-2xl p-6 flex flex-col justify-center items-center group transition-transform hover:scale-[0.98] duration-300"
-                    >
-                      <span className="text-sm font-mono uppercase tracking-[0.1em] text-black/60 mb-2 text-center">View Source</span>
-                      <span className="font-display text-2xl group-hover:translate-x-1 transition-transform">&rarr;</span>
-                    </a>
-                  </div>
-
                 </div>
               </div>
             </div>
-          )
-        })}
+          </div>
+        </div>
       </div>
     </section>
   )

@@ -47,6 +47,45 @@ export function buildCarRoutes(city: CityLayout, n: number, seed = 0xCA12): CarR
 }
 
 /**
+ * Avenue routes: long thin rectangle loops straddling the central avenue so cars
+ * stream straight down its lanes in both directions. Each loop pairs a +Z lane
+ * with a -Z lane; the U-turn connectors sit at z=±(half+6), beyond the skyline and
+ * buried in fog, so only the straight lane legs read on screen.
+ */
+export function buildAvenueRoutes(city: CityLayout): CarRoute[] {
+  const { laneXs } = city.avenue
+  const H2 = city.half + 6
+  // Pair outer lanes (laneXs[0] +Z / laneXs[3] -Z) and inner lanes (1 / 2).
+  const pairs: [number, number][] = [
+    [laneXs[0], laneXs[3]],
+    [laneXs[1], laneXs[2]],
+  ]
+  return pairs.map(([leftX, rightX]) =>
+    // right lane runs +H2→-H2 (-Z), left lane runs -H2→+H2 (+Z); closed loop.
+    makeRoute([
+      [rightX, 0, H2],
+      [rightX, 0, -H2],
+      [leftX, 0, -H2],
+      [leftX, 0, H2],
+    ]),
+  )
+}
+
+/**
+ * Perimeter highway: one clean rectangle loop around the city's outer edge, just
+ * outside the building footprints. Single direction, never self-intersects.
+ */
+export function buildRingRoute(city: CityLayout): CarRoute {
+  const e = city.half + 1 // just beyond the outermost buildings
+  return makeRoute([
+    [-e, 0, -e],
+    [e, 0, -e],
+    [e, 0, e],
+    [-e, 0, e],
+  ])
+}
+
+/**
  * Sample a route by travelled distance (wraps). Returns position, unit heading
  * on XZ, and `u` (0..1 fraction along the current segment, for speed easing).
  */

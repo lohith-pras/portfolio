@@ -1,75 +1,70 @@
 # CLAUDE.md
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+## Graphify (Primary Navigation)
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+Graph auto-loads at session start via hook. Use it — don't re-derive what the graph already knows.
 
-## 1. Think Before Coding
+**ALWAYS use graphify when:**
+- Exploring unfamiliar code or asked "where is X"
+- Any cross-file question ("how does X relate to Y")
+- Before reading source files you haven't seen this session
+- Before running grep/find on the codebase
+- Starting any multi-file task
 
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
+**Commands:**
+```bash
+graphify query "<question>"          # find nodes by concept
+graphify path "<A>" "<B>"            # trace relationship between two things
+graphify explain "<concept>"         # explain a node in context
+graphify update .                    # refresh graph after code changes (no API cost)
+```
 
-Before implementing:
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
+**Files:**
+- `graphify-out/GRAPH_REPORT.md` — god nodes, communities, surprising connections
+- `graphify-out/wiki/index.md` — if exists, navigate it instead of reading raw files
 
-## 2. Simplicity First
+Run `graphify update .` after modifying code to keep graph current.
 
-**Minimum code that solves the problem. Nothing speculative.**
+---
 
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
+## Coding Guidelines
 
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+### 1. Think Before Coding
 
-## 3. Surgical Changes
+State assumptions explicitly. If multiple interpretations exist, present them — don't pick silently. If simpler approach exists, say so. If something is unclear, stop and ask.
 
-**Touch only what you must. Clean up only your own mess.**
+### 2. Simplicity First
 
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
+Minimum code that solves the problem. Nothing speculative.
 
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
+- No features beyond what was asked
+- No abstractions for single-use code
+- No "flexibility" that wasn't requested
+- No error handling for impossible scenarios
 
-The test: Every changed line should trace directly to the user's request.
+If you write 200 lines and it could be 50, rewrite it.
 
-## 4. Goal-Driven Execution
+### 3. Surgical Changes
 
-**Define success criteria. Loop until verified.**
+Touch only what you must. Clean up only your own mess.
 
-Transform tasks into verifiable goals:
+- Don't "improve" adjacent code, comments, or formatting
+- Don't refactor things that aren't broken
+- Match existing style even if you'd do it differently
+- If you notice unrelated dead code, mention it — don't delete it
+- Remove imports/variables/functions YOUR changes made unused; leave pre-existing dead code alone
+
+Every changed line should trace directly to the request.
+
+### 4. Goal-Driven Execution
+
+Transform tasks into verifiable goals before starting:
+
 - "Add validation" → "Write tests for invalid inputs, then make them pass"
 - "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
 
 For multi-step tasks, state a brief plan:
 ```
 1. [Step] → verify: [check]
 2. [Step] → verify: [check]
-3. [Step] → verify: [check]
 ```
-
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
-
----
-
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
-
-## graphify
-
-This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
-
-Rules:
-- ALWAYS read graphify-out/GRAPH_REPORT.md before reading any source files, running grep/glob searches, or answering codebase questions. The graph is your primary map of the codebase.
-- IF graphify-out/wiki/index.md EXISTS, navigate it instead of reading raw files
-- For cross-module "how does X relate to Y" questions, prefer `graphify query "<question>"`, `graphify path "<A>" "<B>"`, or `graphify explain "<concept>"` over grep — these traverse the graph's EXTRACTED + INFERRED edges instead of scanning files
-- After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).

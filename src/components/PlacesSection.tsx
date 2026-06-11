@@ -14,7 +14,7 @@ function ProgressDots({ active, count }: { active: number; count: number }) {
       {Array.from({ length: count }).map((_, i) => (
         <div
           key={i}
-          className="h-2 rounded-full transition-all duration-300 ease-out"
+          className="h-2 rounded-full transition-[width,background-color] duration-300 ease-out"
           style={{
             width: i === active ? 24 : 8,
             backgroundColor: i === active ? 'var(--color-accent)' : 'rgba(255,255,255,0.25)',

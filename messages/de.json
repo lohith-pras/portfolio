@@ -14,14 +14,14 @@
     "linkedin": "LinkedIn"
   },
   "about": {
-    "descriptor": "Entwickler an der Schnittstelle von KI, drahtloser Kommunikation und Mobilität.",
-    "bio_1": "Ich baue Systeme, die in der realen Welt funktionieren — nicht nur in Demos.",
-    "bio_2": "Meine Projekte umfassen MIMO-Kanalschätzung mit neuronalen Netzen, Fahrzeug-zu-Fahrzeug-Kommunikation über sichtbares Licht und IoT-Sicherheits-Frameworks. Mir ist die Lücke zwischen Forschung und Produktion wichtig.",
-    "bio_3": "Derzeit untersuche ich, wie maschinelles Lernen die Art und Weise verändert, wie wir drahtlose Systeme entwerfen. Offen für Forschungs- und ML/Wireless-Stellen in Deutschland oder remote.",
-    "education_degree": "M.Sc. Kommunikationstechnik",
-    "education_school": "Technische Universität Dresden",
-    "education_location": "Dresden, Deutschland",
-    "education_year": "Voraussichtlich 2026"
+    "descriptor": "Ich baue KI-Agenten-Workflows für RF-Messsysteme — dort, wo unsaubere reale Signaldaten auf LLM-Tooling treffen.",
+    "bio_1": "Meine Arbeit liegt in der Lücke zwischen einem Modell, das auf synthetischen Daten funktioniert, und einem, das echten Messungen standhält. Ich baue Werkzeuge, die komplexe Signal- und Testdaten in Antworten verwandeln, die auch nicht-technische Ingenieure direkt abfragen können.",
+    "bio_2": "Bei National Instruments in Dresden habe ich eine End-to-End Accept-on-Retest-Analyse-Skill für NI Nigel gebaut — Polars statt pandas, Parquet-Caching und eine eigene 1σ–3σ-Bandklassifizierung von Grund auf. Fertigungsingenieure nutzten sie in der Produktion für Root-Cause-Analysen von Testdaten, ganz ohne Code.",
+    "bio_3": "Ich studiere M.Sc. Elektromobilität an der FAU Erlangen-Nürnberg mit Schwerpunkt KI & Connectivity. Ich suche Stellen in agentischer KI, RF/Wireless oder Production ML — am liebsten dort, wo die Arbeit wirklich bei echten Nutzern landet.",
+    "education_degree": "M.Sc. Elektromobilität",
+    "education_school": "Friedrich-Alexander-Universität",
+    "education_location": "Erlangen-Nürnberg, Deutschland",
+    "education_year": "Voraussichtlich 2027"
   },
   "work": {
     "heading": "Ausgewählte Projekte",
@@ -32,47 +32,47 @@
   "projects": {
     "ni_agent": {
       "name": "Production AI Agent for RF Analytics",
-      "problem": "Manuelle Datenextraktion aus Testprotokollen",
+      "problem": "Fertigungsingenieure brauchten Root-Cause-Analysen über 30–40 Testtypen ohne zu programmieren",
       "status": "Abgeschlossen",
       "phasesCompleted": "3",
       "totalPhases": "3",
-      "tech": "Python · Polars · Parquet · LLM Agent Skill · Plotly",
-      "description": "Entwurf und Bereitstellung eines End-to-End-Analyse-Frameworks (AoR) als Produktionsfähigkeit für NI Nigel. Ich ersetzte Pandas durch Polars und implementierte Parquet-Caching, um redundante Datenabfragen drastisch zu reduzieren. Das Ergebnis war eine natürlichsprachliche Schnittstelle, die es Ingenieuren ermöglichte, parametrische Testdaten abzufragen und automatisierte Bandklassifizierungszusammenfassungen und Visualisierungen zu erhalten.",
-      "what_went_wrong": "Zunächst die Geschwindigkeit des Agenten-Workflows überschätzt. Die Datenvorverarbeitung musste stark optimiert werden.",
-      "what_id_change": "Direkt mit Parquet und Polars beginnen."
+      "tech": "Python · Polars · Parquet · Agent Skill · Plotly",
+      "description": "Zwei Projekte bei National Instruments in Dresden. Erstens ein auf euklidischer Distanz basierender Ranking-Algorithmus für parametrische Testdaten, erweitert von Einzeltest- auf testunabhängigen Betrieb über 30–40 VST-Testtypen. Zweitens eine End-to-End Accept-on-Retest-Analyse-Skill für NI Nigel: Polars statt pandas, Parquet-Caching und eine eigene 1σ–3σ-Bandklassifizierung, die Ergebnisse in echte Fehler, marginale Fehler und Rauschen aufteilt. Ingenieure fragten sie in natürlicher Sprache ab und erhielten Root-Cause-Zusammenfassungen mit Plotly-Visualisierungen — ganz ohne Code.",
+      "what_went_wrong": "Zunächst den Overhead wiederholter Abfragen großer Metadaten unterschätzt. Stabil, aber zu langsam für eine Konversationsschnittstelle.",
+      "what_id_change": "Schwere Datenverarbeitung von Anfang an hinter eine robuste Caching-Schicht legen. Bei einem KI-Agenten ist Latenz so wichtig wie Genauigkeit."
     },
-    "mimo": {
-      "name": "MIMO AI Channel Quality Tool",
-      "problem": "Kanalschätzung durch neuronale Netze für massive MIMO-Systeme",
+    "isac_drl": {
+      "name": "ISAC Beamforming via Deep RL",
+      "problem": "Die Abwägung zwischen Kommunikationsdurchsatz und Sensing-Genauigkeit im mmWave-ISAC hat keine geschlossene Lösung",
       "status": "Aktiv",
       "phasesCompleted": "1",
       "totalPhases": "3",
-      "tech": "Python · PyTorch · NumPy · MATLAB · scikit-learn",
-      "description": "Kanalschätzung durch neuronale Netze, die die Verbindungsqualität für massive MIMO-Systeme verbessert. Trainiert auf synthetischen Kanalmatrizen; zielt auf niedrigeren MSE als die MMSE-Baseline bei mittlerem SNR.",
-      "what_went_wrong": "Fälschlicherweise angenommen, dass akademische Datensätze sich auf die Produktionsrealität übertragen lassen. 3 Monate damit verbracht, das Modell zu reparieren, obwohl die Daten von Anfang an fehlerhaft waren.",
-      "what_id_change": "Von Tag 1 an mit echten, unvollständigen Daten arbeiten. Die 'saubere' Trainingsphase war reine Zeitverschwendung."
+      "tech": "Python · PyTorch · Stable-Baselines3 · Gymnasium · CVXPY",
+      "description": "Ein DDPG-Agent lernt, einen MIMO-Beamformer im mmWave-ISAC (Integrated Sensing and Communication) zu steuern und Kommunikationsdurchsatz gegen Sensing-Genauigkeit end-to-end abzuwägen. Kanalmodell: Saleh-Valenzuela-Cluster-mmWave-Ausbreitung; Mobilität nach 3GPP Release 16 NR-V2X. Die Policy bildet rohe Kanalbeobachtungen auf Beamforming-Gewichte ab und zeichnet die Pareto-Kurve zwischen Sensing und Kommunikation, mit konvexen Baselines in CVXPY.",
+      "what_went_wrong": "",
+      "what_id_change": ""
     },
     "vlc": {
-      "name": "VLC-based V2V Communication Prototype",
-      "problem": "VLC-Verbindung für fahrzeugübergreifende Daten mit geringer Latenz",
+      "name": "Vehicle-to-Vehicle Visible Light",
+      "problem": "Latenzarme V2V-Kommunikation ohne RF-Spektrumzuweisung",
       "status": "Abgeschlossen",
       "phasesCompleted": "3",
       "totalPhases": "3",
-      "tech": "C · Arduino · ESP32 · OFDM · Photodetector arrays",
-      "description": "Eine Verbindung über sichtbares Licht für latenzarmen Datenaustausch zwischen Fahrzeugen in Sichtlinie. Hohe Übertragungsrate bei kurzem Abstand unter Umgebungslicht mit eigenem PHY-Layer demonstriert.",
-      "what_went_wrong": "Zuerst für Laborbedingungen optimiert, um dann alles für reale Lichtverhältnisse neu zu entwerfen. Hätte von Tag 1 an bei Tageslicht testen sollen.",
+      "tech": "C · STM32 · OOK · Turbo Coding · MATLAB",
+      "description": "Ein STM32-basierter Fahrzeug-zu-Fahrzeug-Prototyp mit OOK-Modulation und Turbo-Coding zur Vorwärtsfehlerkorrektur, um die BER in verrauschten optischen Kanälen zu senken. LED-Treiberschaltung in Multisim auf Spannungsstabilität simuliert; ein MPPT-Algorithmus in MATLAB für einen solarbetriebenen Transceiver modelliert. Das Schwierige war nicht die Verbindung — es war das Umgebungslicht, das den Fotodetektor überflutete und adaptive Schwellenwerte erzwang.",
+      "what_went_wrong": "Zuerst für Laborbedingungen optimiert, dann alles für reale Lichtverhältnisse neu entworfen. Hätte von Tag 1 an bei Tageslicht testen sollen.",
       "what_id_change": "Mit der schlechtesten statt der besten Umgebung beginnen. Die Physik schert sich nicht um Laborergebnisse."
     },
     "iot": {
-      "name": "IoT Security Framework",
-      "problem": "Leichtgewichtiges Sicherheits-Framework für ressourcenbeschränkte IoT-Geräte",
+      "name": "Secure IoT Data Transfer",
+      "problem": "Verschlüsselte Sensortelemetrie auf einem ressourcenbeschränkten Mikrocontroller",
       "status": "Abgeschlossen",
       "phasesCompleted": "3",
       "totalPhases": "3",
-      "tech": "C · MbedTLS · MQTT · FreeRTOS · STM32",
-      "description": "Ein leichtgewichtiges gegenseitiges Authentifizierungs- und verschlüsseltes Kanal-Framework für ressourcenbeschränkte IoT-Geräte. Läuft mit minimalem RAM und geringem Handshake-Overhead.",
-      "what_went_wrong": "Mit akademischer Krypto-Reinheit statt Produktionspragmatismus an die Sache herangegangen. Perfekte Kryptografie ist nutzlos, wenn Benutzer sie wegen der Leistung deaktivieren.",
-      "what_id_change": "Zuerst mit den Produktionsbedingungen beginnen und dann herausfinden, welche Sicherheit innerhalb dieser Grenzen tatsächlich realisierbar ist."
+      "tech": "C · ESP32 · AES-128 · MQTT · SPIFFS",
+      "description": "Ein ESP32-basierter IoT-Knoten für verschlüsselte Sensordaten in Echtzeit über MQTT, mit AES-128-Verschlüsselung am Edge. SPIFFS übernahm das sichere Schlüsselmanagement und die persistente Geräteauthentifizierung, sodass der Knoten nach einem Neustart wieder eine vertrauenswürdige Sitzung aufbauen konnte.",
+      "what_went_wrong": "",
+      "what_id_change": ""
     }
   },
   "life": {

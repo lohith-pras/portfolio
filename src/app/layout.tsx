@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { Space_Mono, Outfit } from 'next/font/google'
+import { Space_Mono, JetBrains_Mono, Outfit } from 'next/font/google'
 import './globals.css'
 
 // FOUND-01: Fonts loaded via next/font/google — zero external network request,
@@ -8,6 +8,15 @@ const spaceMono = Space_Mono({
   weight: ['400', '700'],
   subsets: ['latin'],
   variable: '--font-space-mono',
+  display: 'swap',
+})
+
+// Display face — JetBrains Mono. Headings + hero name.
+// Space Mono is kept for small technical labels (eyebrows, ledger, tuner).
+const jetbrainsMono = JetBrains_Mono({
+  weight: ['400', '500', '700'],
+  subsets: ['latin'],
+  variable: '--font-jetbrains-mono',
   display: 'swap',
 })
 
@@ -35,7 +44,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceMono.variable} ${outfit.variable}`}
+      className={`${spaceMono.variable} ${jetbrainsMono.variable} ${outfit.variable}`}
     >
       <body className="bg-background text-foreground antialiased">
         {children}

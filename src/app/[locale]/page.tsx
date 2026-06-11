@@ -9,6 +9,7 @@ import { ContactSection } from '@/components/ContactSection'
 import { R3FRoot } from '@/components/R3FRoot'
 import { DescentProvider } from '@/components/city/DescentContext'
 import { CityView } from '@/components/city/CityView'
+import { SectionSpine } from '@/components/SectionSpine'
 
 type Props = {
   params: Promise<{ locale: string }>
@@ -26,6 +27,7 @@ export default async function Home({ params }: Props) {
         {/* CityView: Fixed full-bleed R3F View for the scroll-driven city descent. */}
         <CityView />
         <R3FRoot />
+        <SectionSpine />
 
         <div className="flex flex-col">
           {/* Hero section with scramble animation + contact links. HERO-02, HERO-03. */}

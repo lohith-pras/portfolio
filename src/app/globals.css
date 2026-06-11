@@ -104,7 +104,7 @@ body {
 
 /* ─── Font display utilities ─── */
 .font-display {
-  font-family: var(--font-space-mono), monospace;
+  font-family: var(--font-jetbrains-mono), monospace;
 }
 
 .font-body {

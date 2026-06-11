@@ -3,25 +3,25 @@ import { useState, useEffect, useRef } from 'react'
 import { Link, usePathname } from '@/i18n/navigation'
 import { Heart, Mail, Home } from 'lucide-react'
 import { useGSAP } from '@gsap/react'
-import { gsap } from '@/lib/gsap'
+import { gsap, ScrollTrigger } from '@/lib/gsap'
 
 export function NavbarMobile() {
   const pathname = usePathname()
   const [show, setShow] = useState(false)
   const navRef = useRef<HTMLElement>(null)
 
-  useEffect(() => {
-    const checkShow = () => {
-      const about = document.getElementById('about')
-      if (about) {
-        setShow(about.getBoundingClientRect().top <= window.innerHeight * 0.75)
-      } else {
-        setShow(true)
-      }
+  useGSAP(() => {
+    const about = document.getElementById('about')
+    if (about) {
+      ScrollTrigger.create({
+        trigger: about,
+        start: 'top 75%',
+        onEnter: () => setShow(true),
+        onLeaveBack: () => setShow(false),
+      })
+    } else {
+      setShow(true)
     }
-    checkShow()
-    window.addEventListener('scroll', checkShow, { passive: true })
-    return () => window.removeEventListener('scroll', checkShow)
   }, [])
 
   useGSAP(

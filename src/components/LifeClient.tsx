@@ -27,7 +27,7 @@ export function LifeClient() {
       <section>
         <h1 className="font-display font-bold text-heading leading-none tracking-[-0.02em] mb-8">Life.</h1>
         <p className="text-xl text-white/80 leading-relaxed max-w-2xl">
-          Beyond the screen, I explore the world through travel, capture moments, and obsess over the details of good design and engineering.
+          Away from the editor: I follow Formula 1 religiously, back RCB every IPL season, shoot photos when I remember to leave the desk, and lose hours to mechanical keyboards and good typography.
         </p>
       </section>
 
@@ -47,7 +47,7 @@ export function LifeClient() {
         <div className="glass-card rounded-xl p-6">
           <h2 className="text-2xl font-bold mb-6">Current Obsessions</h2>
           <ul className="flex flex-wrap gap-2">
-            {['Local LLMs', 'Next.js 15 Static Rendering', 'GSAP ScrollTrigger', 'Intercepting Routes'].map((o) => (
+            {['Local LLMs', 'Deep RL', 'Agentic workflows', 'Learning German'].map((o) => (
               <li key={o} className="list-none">
                 <span className="font-mono text-xs px-3 py-1.5 rounded-full border border-accent/20 text-accent/70 bg-accent/[0.04] hover:border-accent/50 hover:text-accent transition-colors duration-150 cursor-default">
                   {o}

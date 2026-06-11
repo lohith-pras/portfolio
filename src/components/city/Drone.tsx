@@ -5,8 +5,21 @@ import * as THREE from 'three'
 import { useDescent } from './DescentContext'
 import { PHASE } from './phases'
 
+// Damped harmonic oscillator: produces natural spring motion with acceleration and decay.
+class Spring {
+  pos = 0
+  vel = 0
+  target = 0
+  constructor(private k = 8, private d = 3) {}
+  update(dt: number) {
+    this.vel += (-this.k * (this.pos - this.target) - this.d * this.vel) * dt
+    this.pos += this.vel * dt
+    return this.pos
+  }
+}
+
 // Shared assets — one allocation reused across every drone instance.
-const FILL = new THREE.MeshBasicMaterial({ color: 0x0a1420 })
+const FILL = new THREE.MeshStandardMaterial({ color: 0x0a1420, metalness: 0.8, roughness: 0.2 })
 const EDGE = new THREE.LineBasicMaterial({
   color: new THREE.Color(0x4db8ff).multiplyScalar(3.0), transparent: true, opacity: 0.9, blending: THREE.AdditiveBlending, depthWrite: false,
 })
@@ -49,11 +62,22 @@ const droneEdges = new THREE.EdgesGeometry(droneGeo)
 
 const _pos = new THREE.Vector3()
 
+import { Clone, useGLTF } from '@react-three/drei'
+import { ASSETS } from './ModelLoader'
+import { useState } from 'react'
+
 export function Drone({ curve, speed, offset }: { curve: THREE.CatmullRomCurve3; speed: number; offset: number }) {
   const { progress, visible } = useDescent()
   const group = useRef<THREE.Group>(null)
   const t = useRef(offset)
   const len = useMemo(() => curve.getLength(), [curve])
+  const hoverSpring = useRef(new Spring(8, 3))
+
+  const [hovered, setHovered] = useState(false)
+  const targetScale = hovered ? 1.5 : 1.0
+  const currentScale = useRef(targetScale)
+
+  const { scene: droneModel } = useGLTF(ASSETS.drone)
 
   useFrame((state, dt) => {
     const g = group.current
@@ -63,22 +87,28 @@ export function Drone({ curve, speed, offset }: { curve: THREE.CatmullRomCurve3;
     t.current = (t.current + (speed * dt) / len) % 1
     curve.getPointAt(t.current, _pos)
 
-    // Gentle altitude bob layered on the path.
-    const bob = Math.sin(state.clock.elapsedTime * 1.5 + offset * 6) * 1.5
+    // Gentle altitude bob with spring physics: oscillator springs toward a moving target.
+    hoverSpring.current.target = Math.sin(state.clock.elapsedTime * 0.4 + offset * 6) * 1.5
+    const bob = hoverSpring.current.update(dt)
     g.position.set(_pos.x, _pos.y + bob, _pos.z)
 
     // Slow rotation
     g.rotation.x += dt * 0.5
     g.rotation.y += dt * 0.7
+    
+    currentScale.current = THREE.MathUtils.damp(currentScale.current, targetScale, 6.0, dt)
+    g.scale.setScalar(currentScale.current)
 
     FRESNEL.uniforms.time.value = state.clock.elapsedTime
   })
 
   return (
-    <group ref={group}>
-      <mesh geometry={droneGeo} material={FILL} />
-      <mesh geometry={droneGeo} material={FRESNEL} />
-      <lineSegments geometry={droneEdges} material={EDGE} />
+    <group 
+      ref={group}
+      onPointerOver={(e) => { e.stopPropagation(); setHovered(true) }}
+      onPointerOut={() => setHovered(false)}
+    >
+      <Clone object={droneModel} scale={[0.5, 0.5, 0.5]} />
     </group>
   )
 }

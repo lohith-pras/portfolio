@@ -2,6 +2,7 @@
 import { useMemo, useRef } from 'react'
 import { useFrame } from '@react-three/fiber'
 import * as THREE from 'three'
+import { MeshReflectorMaterial } from '@react-three/drei'
 import { buildCity, CITY_SEED } from '../cityData'
 import { useDescent } from '../DescentContext'
 
@@ -48,17 +49,37 @@ export function CityWireframe() {
   // ── Grid road edge curbs ─────────────────────────────────────────────────────
   const roadEdgeGeo = useMemo(() => {
     const pts: number[] = []
+    const indices: number[] = []
+    let o = 0
     const H = layout.half
+    const curbW = 0.15
+    const addCurb = (x0: number, z0: number, x1: number, z1: number) => {
+      // A simple thick quad for the curb
+      const dx = x1 - x0, dz = z1 - z0
+      const len = Math.hypot(dx, dz)
+      const nx = -dz / len * curbW, nz = dx / len * curbW
+      pts.push(
+        x0 - nx, 0.05, z0 - nz,
+        x1 - nx, 0.05, z1 - nz,
+        x1 + nx, 0.05, z1 + nz,
+        x0 + nx, 0.05, z0 + nz
+      )
+      indices.push(o, o+1, o+2, o, o+2, o+3)
+      o += 4
+    }
+
     for (const z of layout.roadsX) {
-      pts.push(-H, 0.01, z - ROAD_HW, H, 0.01, z - ROAD_HW)
-      pts.push(-H, 0.01, z + ROAD_HW, H, 0.01, z + ROAD_HW)
+      addCurb(-H, z - ROAD_HW, H, z - ROAD_HW)
+      addCurb(-H, z + ROAD_HW, H, z + ROAD_HW)
     }
     for (const x of layout.roadsZ) {
-      pts.push(x - ROAD_HW, 0.01, -H, x - ROAD_HW, 0.01, H)
-      pts.push(x + ROAD_HW, 0.01, -H, x + ROAD_HW, 0.01, H)
+      addCurb(x - ROAD_HW, -H, x - ROAD_HW, H)
+      addCurb(x + ROAD_HW, -H, x + ROAD_HW, H)
     }
     const geo = new THREE.BufferGeometry()
     geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3))
+    geo.setIndex(indices)
+    geo.computeVertexNormals()
     return geo
   }, [layout])
 
@@ -83,21 +104,39 @@ export function CityWireframe() {
   // ── Crosswalk stripes ────────────────────────────────────────────────────────
   const crosswalkGeo = useMemo(() => {
     const pts: number[] = []
+    const indices: number[] = []
+    let o = 0
     const w = ROAD_HW
     const n = 5
+    const addRect = (x0: number, z0: number, x1: number, z1: number) => {
+      const dx = x1 - x0, dz = z1 - z0
+      const len = Math.hypot(dx, dz)
+      const nx = -dz / len * 0.15, nz = dx / len * 0.15
+      pts.push(
+        x0 - nx, 0.02, z0 - nz,
+        x1 - nx, 0.02, z1 - nz,
+        x1 + nx, 0.02, z1 + nz,
+        x0 + nx, 0.02, z0 + nz
+      )
+      indices.push(o, o+1, o+2, o, o+2, o+3)
+      o += 4
+    }
+
     for (const z of layout.roadsX) {
       for (const x of layout.roadsZ) {
         for (let i = 0; i < n; i++) {
           const off = -w + 0.22 + (i / (n - 1)) * (2 * w - 0.44)
-          pts.push(x + off, 0.02, z - w - 0.9, x + off, 0.02, z - w - 0.18)
-          pts.push(x + off, 0.02, z + w + 0.18, x + off, 0.02, z + w + 0.9)
-          pts.push(x + w + 0.18, 0.02, z + off, x + w + 0.9, 0.02, z + off)
-          pts.push(x - w - 0.9, 0.02, z + off, x - w - 0.18, 0.02, z + off)
+          addRect(x + off, z - w - 0.9, x + off, z - w - 0.18)
+          addRect(x + off, z + w + 0.18, x + off, z + w + 0.9)
+          addRect(x + w + 0.18, z + off, x + w + 0.9, z + off)
+          addRect(x - w - 0.9, z + off, x - w - 0.18, z + off)
         }
       }
     }
     const geo = new THREE.BufferGeometry()
     geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3))
+    geo.setIndex(indices)
+    geo.computeVertexNormals()
     return geo
   }, [layout])
 
@@ -299,6 +338,73 @@ export function CityWireframe() {
     return geo
   }, [layout])
 
+  // ── Avenue road surface ──────────────────────────────────────────────────────
+  const avenueSurfaceGeo = useMemo(() => {
+    const av = layout.avenue
+    const H = layout.half
+    const w = av.halfWidth * 2
+    const h = H * 2
+    const geo = new THREE.PlaneGeometry(w, h)
+    return geo
+  }, [layout])
+
+  // ── Avenue neon curb edges ────────────────────────────────────────────────────
+  const avenueCurbGeo = useMemo(() => {
+    const av = layout.avenue
+    const H = layout.half
+    const pts: number[] = [
+      -av.halfWidth, 0.05, -H,
+      -av.halfWidth, 0.05,  H,
+       av.halfWidth, 0.05, -H,
+       av.halfWidth, 0.05,  H,
+    ]
+    const geo = new THREE.BufferGeometry()
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3))
+    return geo
+  }, [layout])
+
+  // ── Perimeter ring road — outer highway band looping the city edge ───────────
+  const ringRoadGeo = useMemo(() => {
+    const E = layout.half + 1
+    const HW = 2.5
+    const o = E + HW, n = E - HW
+    const positions: number[] = []
+    const indices: number[] = []
+    let v = 0
+    const rect = (x0: number, x1: number, z0: number, z1: number) => {
+      positions.push(x0, 0.011, z0, x1, 0.011, z0, x1, 0.011, z1, x0, 0.011, z1)
+      indices.push(v, v + 1, v + 2, v, v + 2, v + 3); v += 4
+    }
+    rect(-o, o, n, o)    // top edge band
+    rect(-o, o, -o, -n)  // bottom edge band
+    rect(-o, -n, -n, n)  // left edge band
+    rect(n, o, -n, n)    // right edge band
+    const geo = new THREE.BufferGeometry()
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3))
+    geo.setIndex(indices)
+    geo.computeVertexNormals()
+    return geo
+  }, [layout])
+
+  // ── Perimeter ring neon curbs — inner + outer glowing edge rectangles ────────
+  const ringCurbGeo = useMemo(() => {
+    const E = layout.half + 1
+    const HW = 2.5
+    const o = E + HW, n = E - HW
+    const pts: number[] = []
+    const loop = (h: number) => {
+      const c: [number, number][] = [[-h, -h], [h, -h], [h, h], [-h, h]]
+      for (let i = 0; i < 4; i++) {
+        const a = c[i], b = c[(i + 1) % 4]
+        pts.push(a[0], 0.05, a[1], b[0], 0.05, b[1])
+      }
+    }
+    loop(n); loop(o)
+    const geo = new THREE.BufferGeometry()
+    geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3))
+    return geo
+  }, [layout])
+
   // ── Orbital ring — horizontal circle above the skyline ───────────────────────
   const orbitalRingGeo = useMemo(() => {
     const curve = new THREE.EllipseCurve(0, 0, 26, 26, 0, Math.PI * 2, false, 0)
@@ -407,14 +513,26 @@ export function CityWireframe() {
   return (
     <group ref={group}>
       {/* Ground plane */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
         <planeGeometry args={[layout.half * 2.4, layout.half * 2.4]} />
-        <meshBasicMaterial color={GROUND_COLOR} />
+        <MeshReflectorMaterial 
+          blur={[300, 100]} 
+          resolution={1024} 
+          mixBlur={1} 
+          mixStrength={40} 
+          roughness={0.6} 
+          depthScale={1.2} 
+          minDepthThreshold={0.4} 
+          maxDepthThreshold={1.4} 
+          color="#050a10" 
+          metalness={0.5} 
+          mirror={0.5} 
+        />
       </mesh>
 
       {/* Building solid fills — rendered first to occlude road geometry behind them */}
-      <mesh geometry={fillGeo}>
-        <meshBasicMaterial color={FILL_COLOR} polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} />
+      <mesh geometry={fillGeo} castShadow receiveShadow>
+        <meshStandardMaterial color={0x050a10} metalness={0.7} roughness={0.3} polygonOffset polygonOffsetFactor={1} polygonOffsetUnits={1} />
       </mesh>
 
       {/* Building glass faces — dark cyan tint gives interior depth without breaking wireframe look */}
@@ -428,23 +546,23 @@ export function CityWireframe() {
       </mesh>
 
       {/* Grid road fill bands */}
-      <mesh geometry={roadFillGeo}>
-        <meshBasicMaterial color={ROAD_FILL} transparent opacity={0.8} blending={THREE.AdditiveBlending} depthWrite={false} />
+      <mesh geometry={roadFillGeo} receiveShadow>
+        <meshStandardMaterial color={0x111111} roughness={0.8} metalness={0.1} polygonOffset polygonOffsetFactor={-1} polygonOffsetUnits={-1} />
       </mesh>
 
       {/* Grid road edge curbs */}
-      <lineSegments geometry={roadEdgeGeo}>
-        <lineBasicMaterial color={ROAD_COLOR} transparent opacity={0.95} blending={THREE.AdditiveBlending} depthWrite={false} />
-      </lineSegments>
+      <mesh geometry={roadEdgeGeo} receiveShadow castShadow>
+        <meshStandardMaterial color={0x333333} roughness={0.9} />
+      </mesh>
 
       {/* Crosswalk stripes at intersections */}
-      <lineSegments geometry={crosswalkGeo}>
-        <lineBasicMaterial color={INTERSECT_COLOR} transparent opacity={0.65} blending={THREE.AdditiveBlending} depthWrite={false} />
-      </lineSegments>
+      <mesh geometry={crosswalkGeo} receiveShadow>
+        <meshStandardMaterial color={0xdddddd} roughness={0.9} metalness={0} />
+      </mesh>
 
       {/* Intersection hotspot pads */}
-      <mesh geometry={nodeGeo}>
-        <meshBasicMaterial color={INTERSECT_COLOR} transparent opacity={0.15} blending={THREE.AdditiveBlending} depthWrite={false} />
+      <mesh geometry={nodeGeo} receiveShadow>
+        <meshStandardMaterial color={0x222222} roughness={0.9} polygonOffset polygonOffsetFactor={-2} />
       </mesh>
 
       {/* Building wireframe edges — vertex colors give red→cyan height gradient */}
@@ -465,6 +583,36 @@ export function CityWireframe() {
       {/* Window glow streaks — vertical light on tall buildings */}
       <lineSegments geometry={glowGeo}>
         <lineBasicMaterial color={GLOW_COLOR} transparent opacity={0.5} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </lineSegments>
+
+      {/* Avenue road surface — dark asphalt quad sitting above the grid road */}
+      <mesh
+        geometry={avenueSurfaceGeo}
+        rotation={[-Math.PI / 2, 0, 0]}
+        position={[0, 0.012, 0]}
+        receiveShadow
+      >
+        <meshStandardMaterial
+          color={0x0a1018}
+          metalness={0.4}
+          roughness={0.5}
+          polygonOffset
+          polygonOffsetFactor={-3}
+          polygonOffsetUnits={-3}
+        />
+      </mesh>
+
+      {/* Avenue neon curb edges — bright continuous lines at the avenue borders */}
+      <lineSegments geometry={avenueCurbGeo}>
+        <lineBasicMaterial color={ROAD_COLOR} transparent opacity={1.0} blending={THREE.AdditiveBlending} depthWrite={false} />
+      </lineSegments>
+
+      {/* Perimeter ring road — outer highway band + glowing curbs */}
+      <mesh geometry={ringRoadGeo} receiveShadow>
+        <meshStandardMaterial color={0x0a1018} metalness={0.4} roughness={0.5} polygonOffset polygonOffsetFactor={-2} polygonOffsetUnits={-2} />
+      </mesh>
+      <lineSegments geometry={ringCurbGeo}>
+        <lineBasicMaterial color={ROAD_COLOR} transparent opacity={0.9} blending={THREE.AdditiveBlending} depthWrite={false} />
       </lineSegments>
 
       {/* Orbital ring + stars — rotates slowly around Y axis */}
