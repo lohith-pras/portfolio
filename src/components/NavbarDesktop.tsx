@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
 import { usePathname, Link } from '@/i18n/navigation'
-import { Mail, Heart } from 'lucide-react'
+import { Mail, Heart, Menu, X } from 'lucide-react'
 import { useGSAP } from '@gsap/react'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
 
@@ -9,6 +9,7 @@ export function NavbarDesktop() {
   const pathname = usePathname()
   const isLife = pathname === '/life'
   const [show, setShow] = useState(false)
+  const [open, setOpen] = useState(false)
   const navRef = useRef<HTMLElement>(null)
 
   useGSAP(() => {
@@ -29,26 +30,46 @@ export function NavbarDesktop() {
     () => {
       const el = navRef.current
       if (!el) return
-      gsap.set(el, { xPercent: -50 })
       if (show) {
         gsap.fromTo(el, { y: -100, autoAlpha: 0 }, { y: 0, autoAlpha: 1, duration: 0.5, ease: 'power3.out' })
       } else {
         gsap.to(el, { y: -100, autoAlpha: 0, duration: 0.3, ease: 'power2.in' })
+        setOpen(false)
       }
     },
     { dependencies: [show] },
   )
 
+  // Close on Escape or click outside
+  useEffect(() => {
+    if (!open) return
+    const onKey = (e: KeyboardEvent) => e.key === 'Escape' && setOpen(false)
+    const onDown = (e: MouseEvent) => {
+      if (navRef.current && !navRef.current.contains(e.target as Node)) setOpen(false)
+    }
+    document.addEventListener('keydown', onKey)
+    document.addEventListener('mousedown', onDown)
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('mousedown', onDown)
+    }
+  }, [open])
+
   return (
     <nav
       ref={navRef}
       style={{ opacity: 0 }}
-      className="fixed top-4 left-1/2 w-[calc(100%-4rem)] max-w-5xl h-14 hidden md:flex items-center justify-between px-8 z-50 glass-bar rounded-2xl"
+      className="fixed top-4 right-8 h-14 hidden md:flex items-center justify-end gap-2 z-50"
     >
-          <Link href="/" className="link-wipe font-display font-bold text-foreground hover:text-accent transition-colors">
-            L.T. Prasanna
-          </Link>
-      <div className="flex items-center gap-6">
+      {/* Expandable options — width/opacity collapse */}
+      <div
+        className={`flex items-center overflow-hidden glass-bar rounded-full transition-[max-width,opacity,padding] duration-300 ease-out ${
+          open ? 'max-w-2xl opacity-100 px-5 gap-6' : 'max-w-0 opacity-0 px-0 gap-0'
+        }`}
+      >
+        <Link href="/" className="link-wipe font-display font-bold text-foreground hover:text-accent transition-colors whitespace-nowrap">
+          L.T. Prasanna
+        </Link>
         <Link
           href="/life"
           className={`relative flex items-center gap-2 font-mono text-sm text-foreground/80 hover:text-accent transition-colors pb-1 ${isLife ? '' : 'link-wipe'}`}
@@ -98,6 +119,17 @@ export function NavbarDesktop() {
           </svg>
         </a>
       </div>
+
+      {/* Toggle — always visible */}
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-label={open ? 'Close menu' : 'Open menu'}
+        className="grid place-items-center h-14 w-14 shrink-0 glass-bar rounded-full text-foreground/80 hover:text-accent transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+      >
+        {open ? <X size={20} /> : <Menu size={20} />}
+      </button>
     </nav>
   )
 }
