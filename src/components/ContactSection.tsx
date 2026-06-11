@@ -10,7 +10,9 @@ export function ContactSection() {
   const t = useTranslations('contact')
   const reduce = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)
+  const headingRef = useRef<HTMLHeadingElement>(null)
 
+  // Existing section reveal — whole container fades/slides in
   useGSAP(
     () => {
       if (reduce || !ref.current) return
@@ -23,6 +25,30 @@ export function ContactSection() {
       })
     },
     { scope: ref, dependencies: [reduce] },
+  )
+
+  // Clip-path line reveal on the section heading
+  useGSAP(
+    () => {
+      if (reduce || !headingRef.current) return
+      gsap.fromTo(
+        headingRef.current,
+        { clipPath: 'inset(0 0 100% 0)', y: 12, willChange: 'clip-path' },
+        {
+          clipPath: 'inset(0 0 0% 0)',
+          y: 0,
+          duration: 0.5,
+          ease: 'power3.out',
+          onComplete: () => gsap.set(headingRef.current, { willChange: 'auto' }),
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: 'top 85%',
+            once: true,
+          },
+        },
+      )
+    },
+    { dependencies: [reduce] },
   )
 
   const links = [
@@ -39,10 +65,25 @@ export function ContactSection() {
     >
       <div className="max-w-5xl mx-auto w-full">
         <div ref={ref} className="flex flex-col gap-12">
-          {/* Heading */}
-          <h2 className="font-display text-[clamp(2.5rem,6vw,5rem)] leading-none tracking-tight text-foreground">
-            {t('heading')}
-          </h2>
+          {/* Heading with ghost numeral */}
+          <div className="relative">
+            {/* ghost numeral 04 — editorial depth layer */}
+            <span
+              aria-hidden="true"
+              className="pointer-events-none select-none absolute -top-8 -left-4 font-mono font-bold leading-none text-foreground/[0.035] text-[clamp(6rem,18vw,16rem)] -z-10"
+            >
+              04
+            </span>
+
+            {/* heading — receives clip-path reveal */}
+            <h2
+              ref={headingRef}
+              className="relative font-display text-[clamp(2.5rem,6vw,5rem)] leading-none tracking-tight text-foreground"
+              style={reduce ? undefined : { clipPath: 'inset(0 0 100% 0)' }}
+            >
+              {t('heading')}
+            </h2>
+          </div>
 
           {/* Availability */}
           <p className="font-body text-foreground/60 text-lg max-w-xl">
@@ -72,7 +113,7 @@ export function ContactSection() {
               Lohith Tarikere Prasanna · {new Date().getFullYear()}
             </span>
             <span className="font-mono text-xs uppercase tracking-widest text-muted">
-              Dresden, Germany
+              Nürnberg, Germany
             </span>
           </div>
         </div>

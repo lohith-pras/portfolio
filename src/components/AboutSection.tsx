@@ -17,27 +17,53 @@ export function AboutSection() {
   const t = useTranslations('about')
   const reduce = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)
+  const headingRef = useRef<HTMLHeadingElement>(null)
 
+  // Existing scrub reveal — opacity on all .about-element nodes
   useGSAP(
     () => {
       if (reduce || !ref.current) return
-      
+
       const elements = ref.current.querySelectorAll('.about-element')
-      
+
       gsap.to(elements, {
         opacity: 1,
         y: 0,
         stagger: 0.1,
         ease: 'none',
-        scrollTrigger: { 
-          trigger: ref.current, 
-          start: 'top 80%', 
+        scrollTrigger: {
+          trigger: ref.current,
+          start: 'top 80%',
           end: 'bottom 60%',
           scrub: 1,
         },
       })
     },
     { scope: ref, dependencies: [reduce] },
+  )
+
+  // Clip-path line reveal on the thesis heading — separate pass, fires once
+  useGSAP(
+    () => {
+      if (reduce || !headingRef.current) return
+      gsap.fromTo(
+        headingRef.current,
+        { clipPath: 'inset(0 0 100% 0)', y: 12, willChange: 'clip-path' },
+        {
+          clipPath: 'inset(0 0 0% 0)',
+          y: 0,
+          duration: 0.5,
+          ease: 'power3.out',
+          onComplete: () => gsap.set(headingRef.current, { willChange: 'auto' }),
+          scrollTrigger: {
+            trigger: headingRef.current,
+            start: 'top 85%',
+            once: true,
+          },
+        },
+      )
+    },
+    { dependencies: [reduce] },
   )
 
   return (
@@ -52,10 +78,25 @@ export function AboutSection() {
             About
           </span>
 
-          {/* thesis — oversized positioning statement, accent rule as signal marker */}
-          <h2 className="about-element font-display font-bold leading-[1.12] tracking-tight text-foreground text-[clamp(1.5rem,3.4vw,2.6rem)] max-w-[24ch] border-l-2 border-accent pl-5 md:pl-8 [text-wrap:balance] [overflow-wrap:anywhere] min-w-0 opacity-20">
-            {t('descriptor')}
-          </h2>
+          {/* thesis — clip-path reveal wrapper with ghost numeral */}
+          <div className="relative">
+            {/* ghost numeral 01 — editorial depth layer */}
+            <span
+              aria-hidden="true"
+              className="pointer-events-none select-none absolute -top-6 -left-4 font-mono font-bold leading-none text-foreground/[0.035] text-[clamp(6rem,18vw,16rem)] -z-10"
+            >
+              01
+            </span>
+
+            {/* thesis h2 — receives clip-path reveal; also a scrub .about-element */}
+            <h2
+              ref={headingRef}
+              className="about-element relative font-display font-bold leading-[1.12] tracking-tight text-foreground text-[clamp(1.5rem,3.4vw,2.6rem)] max-w-[24ch] border-l-2 border-accent pl-5 md:pl-8 [text-wrap:balance] [overflow-wrap:anywhere] min-w-0 opacity-20"
+              style={reduce ? undefined : { clipPath: 'inset(0 0 100% 0)' }}
+            >
+              {t('descriptor')}
+            </h2>
+          </div>
 
           {/* bio — comfortable measure */}
           <div className="font-body text-foreground/75 leading-relaxed text-[clamp(1rem,1.4vw,1.2rem)] max-w-[60ch] space-y-5 [text-wrap:pretty]">

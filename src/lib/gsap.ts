@@ -5,12 +5,13 @@
 // Registering inside a hook (useEffect/useGSAP) re-registers every render — PITFALL.
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { ScrollToPlugin } from 'gsap/ScrollToPlugin'
 import { DrawSVGPlugin } from 'gsap/DrawSVGPlugin'
 import { ScrambleTextPlugin } from 'gsap/ScrambleTextPlugin'
 
 if (typeof window !== 'undefined') {
-  gsap.registerPlugin(ScrollTrigger, DrawSVGPlugin, ScrambleTextPlugin)
+  gsap.registerPlugin(ScrollTrigger, ScrollToPlugin, DrawSVGPlugin, ScrambleTextPlugin)
 }
 
-export { gsap, ScrollTrigger, DrawSVGPlugin, ScrambleTextPlugin }
+export { gsap, ScrollTrigger, ScrollToPlugin, DrawSVGPlugin, ScrambleTextPlugin }
 

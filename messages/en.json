@@ -14,10 +14,10 @@
     "linkedin": "LinkedIn"
   },
   "about": {
-    "descriptor": "Engineer bridging the gap between academic ML and production RF reality.",
-    "bio_1": "I specialize in deploying AI agent workflows that actually survive the transition from synthetic data to the messy reality of RF measurements. My focus is on building tools that turn complex signal data into actionable insights for non-technical engineers.",
-    "bio_2": "At National Instruments, I built an end-to-end AI agent skill for NI Nigel, optimizing data pipelines with Polars and Parquet to handle large-scale manufacturing datasets. I've learned that the most valuable AI isn't the one with the highest SOTA score, but the one that provides a reliable root-cause analysis in production.",
-    "bio_3": "Currently pursuing an M.Sc. in Electromobility at FAU Erlangen-Nürnberg, focusing on AI and Connectivity. I'm looking for roles where I can wrestle with actual deployments and build agentic workflows that solve real-world engineering bottlenecks.",
+    "descriptor": "I build AI agent workflows for RF measurement systems — where messy real-world signal data meets LLM tooling.",
+    "bio_1": "My work lives in the gap between a model that works on synthetic data and one that holds up on real measurements. I build tools that turn complex signal and test data into answers non-technical engineers can query directly.",
+    "bio_2": "At National Instruments in Dresden, I built an end-to-end Accept-on-Retest analytics skill for NI Nigel — benchmarking Polars over pandas, adding Parquet caching, and writing custom 1σ–3σ band classification from scratch. Manufacturing engineers used it in production to run root-cause analysis on test data with no code.",
+    "bio_3": "I'm pursuing an M.Sc. in Electromobility at FAU Erlangen-Nürnberg, majoring in AI & Connectivity. Looking for roles in agentic AI, RF/wireless, or production ML — ideally where the work actually ships to real users.",
     "education_degree": "M.Sc. Electromobility",
     "education_school": "Friedrich-Alexander-Universität",
     "education_location": "Erlangen-Nürnberg, Germany",
@@ -32,36 +32,47 @@
   "projects": {
     "ni_agent": {
       "name": "Production AI Agent for RF Analytics",
-      "problem": "Manufacturing engineers needed complex root-cause analysis across 40+ test types without manual coding",
+      "problem": "Manufacturing engineers needed root-cause analysis across 30–40 test types without writing code",
       "status": "Complete",
       "phasesCompleted": "3",
       "totalPhases": "3",
-      "tech": "Python · Polars · Parquet · LLM Agent Skill · Plotly",
-      "description": "Designed and deployed an end-to-end Accept-on-Retest (AoR) analytics framework as a production skill for NI Nigel. I replaced pandas with Polars and implemented Parquet caching to drastically cut redundant data requests. The result was a natural-language interface that allowed engineers to query parametric test data and receive automated 1σ-3σ band classification summaries and visualizations.",
+      "tech": "Python · Polars · Parquet · Agent Skill · Plotly",
+      "description": "Two projects at National Instruments, Dresden. First, a Euclidean-distance ranking algorithm for parametric test data, extended from single-test to test-agnostic operation across 30–40 VST test types. Second, an end-to-end Accept-on-Retest analytics skill for NI Nigel: Polars over pandas, Parquet caching, and custom 1σ–3σ band classification splitting outcomes into real failures, marginal failures, and noise. Engineers queried it in natural language and got root-cause summaries with Plotly visualisations — no code required.",
       "what_went_wrong": "Initially underestimated the overhead of repeatedly querying large-scale metadata. The system was stable but too slow for a conversational interface.",
-      "what_id_change": "Move heavy data processing to the edge with a robust caching layer. Performance in an AI agent is as important as accuracy; if the agent takes 30 seconds to respond, the user stops using it."
+      "what_id_change": "Move heavy data processing behind a robust caching layer from the start. In an AI agent, latency is as important as accuracy — if it takes 30 seconds to respond, people stop using it."
     },
-    "mimo": {
-      "name": "MIMO Channel Estimation — The Real Data Problem",
-      "problem": "Neural networks trained on synthetic channel data fail catastrophically in real deployments",
+    "isac_drl": {
+      "name": "ISAC Beamforming via Deep RL",
+      "problem": "Balancing communication throughput against sensing accuracy in mmWave ISAC has no closed-form solution",
       "status": "Active",
       "phasesCompleted": "1",
       "totalPhases": "3",
-      "tech": "Python · PyTorch · NumPy · MATLAB · scikit-learn",
-      "description": "Started with the textbook approach: generate perfect channel matrices, train CNN, achieve SOTA on paper. Then deployed to actual base station data and MSE went through the roof. The breakthrough? Augmenting synthetic data with measured channel impairments—multipath, noise, hardware nonlinearities. Phase 1 taught me that clean research data is the enemy of working ML systems.",
-      "what_went_wrong": "Assumed academic datasets would translate to production reality. Spent 3 months trying to 'fix' the model when the data was broken all along.",
-      "what_id_change": "Deploy to messy real data from day 1. The 'clean' training phase was a complete waste of time."
+      "tech": "Python · PyTorch · Stable-Baselines3 · Gymnasium · CVXPY",
+      "description": "A DDPG agent learns to steer a MIMO beamformer in mmWave ISAC (Integrated Sensing and Communication), trading communication throughput against sensing accuracy end-to-end. Channel model: Saleh-Valenzuela clustered mmWave propagation; mobility from 3GPP Release 16 NR-V2X. The policy maps raw channel observations to beamforming weights and traces out the Pareto curve between sensing and communication, with convex baselines computed in CVXPY.",
+      "what_went_wrong": "",
+      "what_id_change": ""
     },
     "vlc": {
-      "name": "Vehicle-to-Vehicle Visible Light — When Physics Wins",
+      "name": "Vehicle-to-Vehicle Visible Light",
       "problem": "Low-latency V2V communication without RF spectrum allocation",
       "status": "Complete",
       "phasesCompleted": "3",
       "totalPhases": "3",
-      "tech": "C · STM32 · OFDM · Photodetector arrays",
-      "description": "VLC promises gigabit speeds, but nobody talks about what happens when it's cloudy. Built a prototype that worked perfectly indoors—10cm range, 100Mbps. Then tested outdoors and ambient light killed everything. Final solution: adaptive thresholding that detects daylight and switches to backup IR. The lesson: physics constraints always trump algorithmic cleverness.",
-      "what_went_wrong": "Optimized for lab conditions first, then had to redesign everything for real-world lighting. Should have tested in daylight from day 1.",
-      "what_id_change": "Start with the worst-case environment, not the best case. Physics doesn't care about your clean room results."
+      "tech": "C · STM32 · OOK · Turbo Coding · MATLAB",
+      "description": "An STM32-based vehicle-to-vehicle prototype using OOK optical modulation with Turbo coding for forward error correction to cut BER in noisy optical channels. LED driver circuitry simulated in Multisim for voltage stability; an MPPT algorithm modelled in MATLAB for a solar-powered transceiver. The hard part wasn't the link — it was ambient daylight swamping the photodetector, which forced adaptive thresholding.",
+      "what_went_wrong": "Optimized for lab conditions first, then had to redesign for real-world lighting. Should have tested in daylight from day 1.",
+      "what_id_change": "Start with the worst-case environment, not the best case. Physics doesn't care about your clean-room results."
+    },
+    "iot": {
+      "name": "Secure IoT Data Transfer",
+      "problem": "Encrypted sensor telemetry on a resource-constrained microcontroller",
+      "status": "Complete",
+      "phasesCompleted": "3",
+      "totalPhases": "3",
+      "tech": "C · ESP32 · AES-128 · MQTT · SPIFFS",
+      "description": "An ESP32-based IoT node for real-time encrypted sensor data over MQTT, with AES-128 encryption applied at the edge. SPIFFS handled secure key management and persistent device authentication so the node could re-establish a trusted session after a power cycle.",
+      "what_went_wrong": "",
+      "what_id_change": ""
     }
   },
   "life": {
@@ -86,8 +97,8 @@
     }
   },
   "contact": {
-    "heading": "Stop optimizing for benchmarks. Start optimizing for production.",
-    "availability": "I build AI workflows that survive the transition from synthetic datasets to real-world RF measurements. If you're struggling with the gap between a 'perfect' academic model and a failing deployment, let's talk. I specialize in the messy reality of 5G/6G systems, production-grade data pipelines, and agentic AI.",
+    "heading": "Let's work together.",
+    "availability": "M.Sc. student in Germany, open to internships and roles in agentic AI, RF/wireless, or production ML. The fastest way to reach me is email — I read everything.",
     "email_label": "Email",
     "github_label": "GitHub",
     "linkedin_label": "LinkedIn",
