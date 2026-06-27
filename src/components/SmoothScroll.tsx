@@ -15,8 +15,6 @@ export function SmoothScroll() {
   const isHome = pathname === '/'
 
   useEffect(() => {
-    // Disabled on homepage to allow native CSS scroll snapping,
-    // and under prefers-reduced-motion (native scroll, no interpolation).
     if (isHome || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const lenis = new Lenis({

@@ -33,7 +33,7 @@ export function LifeClient() {
 
       <section className="grid md:grid-cols-2 gap-12">
         <div className="glass-card rounded-xl p-6">
-          <h2 className="text-2xl font-bold mb-6">Hobbies</h2>
+          <h2 className="text-2xl font-bold font-display mb-6">Hobbies</h2>
           <ul className="flex flex-wrap gap-2">
             {['Photography', 'Minimalist Design', 'Mechanical Keyboards', 'F1 Racing'].map((h) => (
               <li key={h} className="list-none">
@@ -45,7 +45,7 @@ export function LifeClient() {
           </ul>
         </div>
         <div className="glass-card rounded-xl p-6">
-          <h2 className="text-2xl font-bold mb-6">Current Obsessions</h2>
+          <h2 className="text-2xl font-bold font-display mb-6">Current Obsessions</h2>
           <ul className="flex flex-wrap gap-2">
             {['Local LLMs', 'Deep RL', 'Agentic workflows', 'Learning German'].map((o) => (
               <li key={o} className="list-none">
@@ -59,7 +59,7 @@ export function LifeClient() {
       </section>
 
       <section>
-        <h2 className="text-2xl font-bold mb-6">In the Stands</h2>
+        <h2 className="text-2xl font-bold font-display mb-6">In the Stands</h2>
         <div className="flex gap-6">
           <WavingFlag
             bgColor="#001489"

@@ -6,6 +6,7 @@ import { PageTransition } from '@/components/PageTransition'
 import { SmoothScroll } from '@/components/SmoothScroll'
 import { GrainCanvas } from '@/components/GrainCanvas'
 import { IntroLoader } from '@/components/IntroLoader'
+import { Navbar } from '@/components/Navbar'
 import { type ReactNode } from 'react'
 import { type Metadata } from 'next'
 
@@ -71,6 +72,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       <SmoothScroll />
       <GrainCanvas />
       <IntroLoader />
+      <Navbar />
       <PageTransition>
         {children}
       </PageTransition>

@@ -2,6 +2,7 @@
 
 import { useEffect, useRef } from 'react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { usePathname } from '@/i18n/navigation'
 
 /**
  * GrainCanvas — animated red-tinted film grain spanning the whole page.
@@ -24,8 +25,11 @@ const ALPHA_MAX = 18 // per-pixel max alpha (~0.07) — subtle on pure black
 export function GrainCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const reduce = useReducedMotion()
+  const pathname = usePathname()
 
   useEffect(() => {
+    if (pathname === '/life') return
+
     const canvas = canvasRef.current
     if (!canvas) return
     const ctx = canvas.getContext('2d')
@@ -86,7 +90,11 @@ export function GrainCanvas() {
       window.removeEventListener('resize', resize)
       if (raf) cancelAnimationFrame(raf)
     }
-  }, [reduce])
+  }, [reduce, pathname])
+
+  if (pathname === '/life') {
+    return null
+  }
 
   return (
     <canvas
