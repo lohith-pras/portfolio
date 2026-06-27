@@ -100,12 +100,12 @@ export function ContactSection() {
             <p className="font-mono text-xs text-accent uppercase tracking-[0.5em] mb-4">
               {t('eyebrow')}
             </p>
-            <h1
+            <h2
               ref={headingRef}
               className="relative font-body font-extrabold text-[clamp(2.5rem,8vw,6rem)] leading-[0.9] tracking-tighter text-beige max-w-4xl"
             >
               {t('heading')}
-            </h1>
+            </h2>
           </div>
 
           {/* Body Text & Form */}

@@ -44,18 +44,22 @@ export function PlacesSection() {
         const outer = outerRef.current
         if (!track || !outer) return
 
-        const st = ScrollTrigger.create({
-          trigger: outer,
-          start: 'top top',
-          end: 'bottom bottom',
-          scrub: reduce ? true : 1,
-          onUpdate: (self) => {
-            const p = self.progress
-            gsap.set(track, { xPercent: (-100 * (n - 1) * p) / n })
-            setActive(Math.min(n - 1, Math.floor(p * n)))
-            if (hintRef.current) {
-              hintRef.current.style.opacity = String(gsap.utils.clamp(0, 1, 1 - p / 0.1))
-            }
+        const tween = gsap.to(track, {
+          xPercent: (-100 * (n - 1)) / n,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: outer,
+            start: 'top top',
+            end: 'bottom bottom',
+            scrub: reduce ? true : 1,
+            onUpdate: (self) => {
+              const p = self.progress
+              const nextActive = Math.min(n - 1, Math.floor(p * n))
+              setActive((prev) => (prev !== nextActive ? nextActive : prev))
+              if (hintRef.current) {
+                hintRef.current.style.opacity = String(gsap.utils.clamp(0, 1, 1 - p / 0.1))
+              }
+            },
           },
         })
 
@@ -66,7 +70,7 @@ export function PlacesSection() {
             : gsap.to(arrowRef.current, { x: 8, repeat: -1, yoyo: true, duration: 0.75, ease: 'sine.inOut' })
 
         return () => {
-          st.kill()
+          tween.kill()
           bob?.kill()
         }
       })

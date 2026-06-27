@@ -1,8 +1,6 @@
 'use client'
 
 import { useRef } from 'react'
-import { useGSAP } from '@gsap/react'
-import { gsap } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 
 interface WavingFlagProps {
@@ -32,25 +30,6 @@ export function WavingFlag({
   const stripsRef = useRef<(HTMLDivElement | null)[]>([])
   const isReducedMotion = useReducedMotion()
 
-  // gsap.ticker drives the per-strip wave (time is in seconds).
-  useGSAP(
-    () => {
-      if (isReducedMotion) return
-      const tick = (time: number) => {
-        stripsRef.current.forEach((el, i) => {
-          if (!el) return
-          const tNorm = i / (STRIP_COUNT - 1)
-          const amplitude = tNorm * MAX_AMPLITUDE
-          const phase = tNorm * Math.PI * 2
-          el.style.transform = `translateX(${amplitude * Math.sin(SPEED * time + phase + phaseOffset)}px)`
-        })
-      }
-      gsap.ticker.add(tick)
-      return () => gsap.ticker.remove(tick)
-    },
-    { dependencies: [isReducedMotion, phaseOffset] },
-  )
-
   return (
     <div className="flex flex-col items-center">
       {/* Hanging rod */}
@@ -63,46 +42,64 @@ export function WavingFlag({
       />
       {/* Banner strips */}
       <div style={{ width: BANNER_WIDTH, height: BANNER_HEIGHT }}>
-        {Array.from({ length: STRIP_COUNT }).map((_, i) => (
-          <div
-            key={i}
-            ref={(el) => { stripsRef.current[i] = el }}
-            style={{ overflow: 'hidden', height: STRIP_HEIGHT, position: 'relative', backgroundColor: bgColor, willChange: 'transform' }}
-          >
-            {/* Full banner content, clipped by parent overflow:hidden */}
+        {Array.from({ length: STRIP_COUNT }).map((_, i) => {
+          const tNorm = i / (STRIP_COUNT - 1)
+          const amplitude = tNorm * MAX_AMPLITUDE
+          const phase = tNorm * Math.PI * 2
+          const delay = -((phase + phaseOffset) / SPEED)
+
+          return (
             <div
-              style={{
-                position: 'absolute',
-                top: -i * STRIP_HEIGHT,
-                left: 0,
-                width: BANNER_WIDTH,
-                height: BANNER_HEIGHT,
-                backgroundColor: bgColor,
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                padding: '12px 8px',
+              key={i}
+              ref={(el) => {
+                stripsRef.current[i] = el
               }}
+              className="motion-safe:animate-[flag-wave_4.18879s_linear_infinite]"
+              style={{
+                overflow: 'hidden',
+                height: STRIP_HEIGHT,
+                position: 'relative',
+                backgroundColor: bgColor,
+                willChange: isReducedMotion ? undefined : 'transform',
+                '--wave-amplitude': `${amplitude}px`,
+                animationDelay: `${delay}s`,
+              } as React.CSSProperties}
             >
-              <img
-                src={logoUrl}
-                alt={logoAlt}
-                style={{ width: '100%', objectFit: 'contain', maxHeight: 110 }}
-              />
-              <span
+              {/* Full banner content, clipped by parent overflow:hidden */}
+              <div
                 style={{
-                  color: accentColor,
-                  fontSize: '2rem',
-                  fontWeight: 900,
-                  lineHeight: 1,
+                  position: 'absolute',
+                  top: -i * STRIP_HEIGHT,
+                  left: 0,
+                  width: BANNER_WIDTH,
+                  height: BANNER_HEIGHT,
+                  backgroundColor: bgColor,
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                  padding: '12px 8px',
                 }}
               >
-                {number}
-              </span>
+                <img
+                  src={logoUrl}
+                  alt={logoAlt}
+                  style={{ width: '100%', objectFit: 'contain', maxHeight: 110 }}
+                />
+                <span
+                  style={{
+                    color: accentColor,
+                    fontSize: '2rem',
+                    fontWeight: 900,
+                    lineHeight: 1,
+                  }}
+                >
+                  {number}
+                </span>
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

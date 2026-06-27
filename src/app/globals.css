@@ -358,4 +358,20 @@ html.has-scroll-snap #contact-container {
   border-radius: 50%;
 }
 
+/* ─── Waving Flag Keyframes ─── */
+@keyframes flag-wave {
+  0%, 100% {
+    transform: translateX(0px);
+  }
+  25% {
+    transform: translateX(var(--wave-amplitude));
+  }
+  50% {
+    transform: translateX(0px);
+  }
+  75% {
+    transform: translateX(calc(-1 * var(--wave-amplitude)));
+  }
+}
+
 

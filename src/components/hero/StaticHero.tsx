@@ -77,8 +77,7 @@ export function StaticHero() {
     <section
       ref={sectionRef}
       id="hero"
-      className="relative h-screen w-full overflow-hidden"
-      style={{ backgroundColor: '#0A0A0A' }}
+      className="relative h-screen w-full overflow-hidden bg-background"
     >
       {/* Content overlay */}
       <div className="relative z-10 flex h-full w-full flex-col items-center justify-center gap-8 px-6 text-center">

@@ -288,10 +288,8 @@ export function HorizontalProjects() {
     updateCoords()
 
     window.addEventListener('resize', updateCoords)
-    window.addEventListener('scroll', updateCoords, { passive: true })
     return () => {
       window.removeEventListener('resize', updateCoords)
-      window.removeEventListener('scroll', updateCoords)
     }
   }, [hoveredKey])
 
@@ -301,7 +299,7 @@ export function HorizontalProjects() {
     <section
       id="projects"
       ref={sectionRef}
-      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0A0A0A] py-16 md:py-0"
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-background py-16 md:py-0"
     >
       {/* WebGL background shader (Radar Sweep) */}
       <canvas
@@ -413,7 +411,7 @@ export function HorizontalProjects() {
                 )}
                 {/* Blip Object Code Tag */}
                 <span
-                  className={`absolute -top-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200 font-mono text-[9px] text-beige bg-[#0A0A0A] px-2 py-0.5 border border-rule whitespace-nowrap z-40 pointer-events-none`}
+                  className={`absolute -top-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200 font-mono text-[9px] text-beige bg-background px-2 py-0.5 border border-rule whitespace-nowrap z-40 pointer-events-none`}
                 >
                   {p.id}
                 </span>

@@ -85,11 +85,11 @@ export function AboutSection() {
         {/* Main identity block */}
         <div className="about-block" style={reduce ? undefined : { opacity: 0 }}>
           {/* Large display intro */}
-          <p className="font-display mx-auto mb-10 max-w-[20ch] text-[clamp(2.6rem,6.5vw,3.9rem)] font-bold leading-[1.1] tracking-[-0.04em] text-beige uppercase">
+          <h2 className="font-display mx-auto mb-10 max-w-[20ch] text-[clamp(2.6rem,6.5vw,3.9rem)] font-bold leading-[1.1] tracking-[-0.04em] text-beige uppercase">
             {t('intro_a')}{' '}
             <span className="text-accent">{t('intro_location')}</span>
             {t('intro_b')}
-          </p>
+          </h2>
 
           {/* Body paragraphs */}
           <div className="mx-auto max-w-[640px] space-y-8">
