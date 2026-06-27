@@ -4,8 +4,8 @@ import { routing, type Locale } from '@/i18n/routing'
 import { PageTransition } from '@/components/PageTransition'
 
 import { SmoothScroll } from '@/components/SmoothScroll'
-import { NavbarDesktop } from '@/components/NavbarDesktop'
-import { NavbarMobile } from '@/components/NavbarMobile'
+import { GrainCanvas } from '@/components/GrainCanvas'
+import { IntroLoader } from '@/components/IntroLoader'
 import { type ReactNode } from 'react'
 import { type Metadata } from 'next'
 
@@ -62,9 +62,15 @@ export default async function LocaleLayout({ children, params }: Props) {
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:border focus:border-accent focus:bg-paper focus:px-5 focus:py-2.5 focus:font-mono focus:text-sm focus:uppercase focus:tracking-widest focus:text-accent"
+      >
+        Skip to content
+      </a>
       <SmoothScroll />
-      <NavbarDesktop />
-      <NavbarMobile />
+      <GrainCanvas />
+      <IntroLoader />
       <PageTransition>
         {children}
       </PageTransition>

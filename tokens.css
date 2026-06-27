@@ -4,18 +4,18 @@
  */
 :root {
   /* Color — dark cinematic, single warm-red accent */
-  --color-paper:      oklch(0.15 0 0);        /* ≈ #0A0A0A page base   */
-  --color-paper-2:    oklch(0.17 0 0);        /* ≈ #0C0C0C section base */
+  --color-paper:      oklch(0.15 0 0);        /* #0A0A0A rich black page base   */
+  --color-paper-2:    oklch(0.15 0 0);        /* #0A0A0A rich black section base */
   --color-ink:        oklch(0.95 0 0);        /* ≈ #F0F0F0 foreground   */
   --color-ink-2:      oklch(0.72 0 0);        /* softened body ink      */
-  --color-muted:      oklch(0.55 0 0);        /* labels / eyebrows      */
+  --color-muted:      oklch(0.62 0 0);        /* labels / eyebrows — raised to ~4.6:1 on #0A0A0A (AA) */
   --color-rule:       oklch(0.95 0 0 / 0.1);  /* hairline dividers      */
   --color-accent:     oklch(0.63 0.25 28);    /* ≈ #FF1E00 warm-red     */
   --color-accent-ink: oklch(0.15 0 0);        /* ink on accent fills    */
   --color-focus:      oklch(0.63 0.25 28);    /* focus ring = accent    */
 
-  /* Type — Space Mono (display/mono) + Plus Jakarta Sans (body) */
-  --font-display: var(--font-space-mono), monospace;
+  /* Type — Oswald (display/headings) + Space Mono (labels) + Plus Jakarta Sans (body) */
+  --font-display: var(--font-oswald), sans-serif;
   --font-body:    var(--font-plus-jakarta), sans-serif;
   --font-mono:    var(--font-space-mono), monospace;
 

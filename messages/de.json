@@ -9,70 +9,128 @@
   },
   "hero": {
     "name": "Lohith Tarikere Prasanna",
+    "eyebrow": "M.Sc. Elektromobilität · Python-Entwickler",
+    "cta_story": "Meine Story",
+    "cta_hello": "Hallo sagen",
     "contact_email": "lnlohith3@gmail.com",
     "github": "GitHub",
     "linkedin": "LinkedIn"
   },
   "about": {
-    "descriptor": "Ich baue KI-Agenten-Workflows für RF-Messsysteme — dort, wo unsaubere reale Signaldaten auf LLM-Tooling treffen.",
-    "bio_1": "Meine Arbeit liegt in der Lücke zwischen einem Modell, das auf synthetischen Daten funktioniert, und einem, das echten Messungen standhält. Ich baue Werkzeuge, die komplexe Signal- und Testdaten in Antworten verwandeln, die auch nicht-technische Ingenieure direkt abfragen können.",
-    "bio_2": "Bei National Instruments in Dresden habe ich eine End-to-End Accept-on-Retest-Analyse-Skill für NI Nigel gebaut — Polars statt pandas, Parquet-Caching und eine eigene 1σ–3σ-Bandklassifizierung von Grund auf. Fertigungsingenieure nutzten sie in der Produktion für Root-Cause-Analysen von Testdaten, ganz ohne Code.",
-    "bio_3": "Ich studiere M.Sc. Elektromobilität an der FAU Erlangen-Nürnberg mit Schwerpunkt KI & Connectivity. Ich suche Stellen in agentischer KI, RF/Wireless oder Production ML — am liebsten dort, wo die Arbeit wirklich bei echten Nutzern landet.",
-    "education_degree": "M.Sc. Elektromobilität",
-    "education_school": "Friedrich-Alexander-Universität",
-    "education_location": "Erlangen-Nürnberg, Deutschland",
-    "education_year": "Voraussichtlich 2027"
+    "name": "Lohith Tarikere Prasanna",
+    "title": "KI-Ingenieur",
+    "statement": "Ich erforsche intelligente Sensorsysteme an der Schnittstelle von 6G-Kommunikation und autonomem Fahren.",
+    "cta_talk": "Sprechen wir",
+    "tag_1": "Ingenieur, jetzt M.Sc.-Student",
+    "tag_2": "Zuvor bei NI Dresden",
+    "tag_3": "Ansässig in Nürnberg",
+    "badge": "hallo",
+    "intro_a": "Ich bin ein Ingenieur aus",
+    "intro_location": "Nürnberg",
+    "intro_b": ".",
+    "para_1a": "Ich entwickle KI-Tools, die in der Produktion landen – hauptsächlich auf Basis von HF- und Automobildaten.",
+    "para_1_chip": "abstrakt?",
+    "para_1b": "Bevor das zu abstrakt klingt: Ich habe sechs Monate bei National Instruments ein Tool entwickelt, das Fertigungsingenieure noch heute täglich nutzen.",
+    "para_2a": "Aus Bengaluru. Riesiger",
+    "para_2_name": "Max Verstappen",
+    "para_2b": "Fan.",
+    "para_3": "Das ist, woran ich gerade arbeite."
   },
   "work": {
     "heading": "Ausgewählte Projekte",
     "view_project": "Projekt ansehen",
     "tech_label": "Tech-Stack",
-    "overview_label": "Überblick"
+    "overview_label": "Überblick",
+    "radar_outer": "ENGINEERING",
+    "radar_inner": "ZUM SPASS",
+    "system_idle": "SYSTEM_BEREIT",
+    "select_blip": "ZIEL_WÄHLEN",
+    "awaiting_target": "Warte auf Zielerfassung. Bewegen Sie den Mauszeiger über aktive Signalsignale auf der Radaranzeige, um Metadaten und Projektspezifikationen zu dekodieren.",
+    "status_tracking": "STATUS: VERFOLGUNG",
+    "status_optimal": "Status: Optimal",
+    "repository": "Repository",
+    "telemetry": "Telemetrie"
   },
   "projects": {
+    "can_decoder": {
+      "name": "CAN_DECODER",
+      "problem": "EMBEDDED SYSTEMS",
+      "tech": "RUST · CLI · CAN-BUS",
+      "description": "Rust-basiertes Kommandozeilen-Tool zur Dekodierung von Roh-Controller-Area-Network (CAN) Bus-Logs. Parst DBC-Dateien und wendet Skalierungsfaktoren an, um reale Fahrzeugtelemetrie (Geschwindigkeit, Lenkwinkel, Batterietemperatur) in Mikrosekundenauflösung zu extrahieren. Entwickelt für hochleistungsfähige Daten-Pipelines im Automobilbereich."
+    },
+    "isac_drl": {
+      "name": "ISAC-DRL",
+      "problem": "DRL RESEARCH",
+      "tech": "PYTHON · PYTORCH · ISAC",
+      "description": "Forschungssimulation, die Deep Reinforcement Learning (DRL) auf die Knotenauswahl in integrierten Sensor- und Kommunikationsnetzwerken (ISAC) anwendet. Formulates geometry-dependent bistatic radar cross-sections (RCS) to dynamically optimize beamforming vectors and role assignment, achieving a 15% increase in throughput under strict sensing constraints."
+    },
+    "modulation_classifier": {
+      "name": "MODULATION-CLASSIFIER",
+      "problem": "SIGNAL ANALYSIS",
+      "tech": "RF · ML · DSP",
+      "description": "Klassifizierung von Signal-/HF-Modulationen mittels ML. Spektralanalyse in Echtzeit. Feature-basiertes Machine-Learning-Klassifikator zur Identifizierung von 11 Modulationstypen (einschließlich BPSK, QAM16, GFSK) aus rohen IQ-Wellenform-Samples. Extrahiert statistische Momente höherer Ordnung und spektrale Merkmale, erreicht eine Genauigkeit von 83,6%."
+    },
+    "sprachboot": {
+      "name": "SPRACHBOOT",
+      "problem": "CREATIVE/LANG",
+      "tech": "EDUCATION · GERMAN · LIFE",
+      "description": "Deutsch lernen während des Lebens in Nürnberg. Ein kreatives Sprachexperiment zur Erfassung des deutschen Wortschatzes und der kulturellen Integration. Dokumentiert lokale Redewendungen, Fachbegriffe und regionale Dialekte durch ein interaktives Tagebuch-Schema."
+    },
+    "nest": {
+      "name": "NEST",
+      "problem": "HABITAT DESIGN",
+      "tech": "ARCHITECTURE · MINIMALISM",
+      "description": "Persönliches Habitat-Projekt. Erkundung minimalistischer Wohnräume. Ein Raumdesignprojekt zur Untersuchung von modularem Kleinstwohnraum mit hoher Dichte. Nutzt minimalistische Prinzipien zur Maximierung von Nutzen, Luftzirkulation und natürlichem Licht auf einer Fläche von 22 Quadratmetern mit transformierbaren Möbeln."
+    },
+    "f1_dashboard": {
+      "name": "F1-DASHBOARD",
+      "problem": "TELEMETRY DASHBOARD",
+      "tech": "FASTF1 · DASH · TELEMETRY",
+      "description": "Live-Rennanalysen mit fastf1. Visualisierung von Performance-Telemetrie. Echtzeit-Formel-1-Telemetrie-Visualisierer. Vergleicht Kurvengeschwindigkeiten, Drosselklappenprofile und Bremspunkte zwischen Fahrern. Extrahiert Telemetriedaten zur Analyse der aerodynamischen Effizienz und Reifenverschleißkurven."
+    },
     "ni_agent": {
-      "name": "Production AI Agent for RF Analytics",
-      "problem": "Fertigungsingenieure brauchten Root-Cause-Analysen über 30–40 Testtypen ohne zu programmieren",
+      "name": "Produktions-AI-Agent für RF-Analytik",
+      "problem": "Fertigungsingenieure brauchten eine Möglichkeit, Produktionstestdaten ohne SQL oder Python abzufragen",
       "status": "Abgeschlossen",
       "phasesCompleted": "3",
       "totalPhases": "3",
-      "tech": "Python · Polars · Parquet · Agent Skill · Plotly",
-      "description": "Zwei Projekte bei National Instruments in Dresden. Erstens ein auf euklidischer Distanz basierender Ranking-Algorithmus für parametrische Testdaten, erweitert von Einzeltest- auf testunabhängigen Betrieb über 30–40 VST-Testtypen. Zweitens eine End-to-End Accept-on-Retest-Analyse-Skill für NI Nigel: Polars statt pandas, Parquet-Caching und eine eigene 1σ–3σ-Bandklassifizierung, die Ergebnisse in echte Fehler, marginale Fehler und Rauschen aufteilt. Ingenieure fragten sie in natürlicher Sprache ab und erhielten Root-Cause-Zusammenfassungen mit Plotly-Visualisierungen — ganz ohne Code.",
-      "what_went_wrong": "Zunächst den Overhead wiederholter Abfragen großer Metadaten unterschätzt. Stabil, aber zu langsam für eine Konversationsschnittstelle.",
-      "what_id_change": "Schwere Datenverarbeitung von Anfang an hinter eine robuste Caching-Schicht legen. Bei einem KI-Agenten ist Latenz so wichtig wie Genauigkeit."
+      "tech": "Python · Polars · Parquet · LLM Agent Skill · Plotly",
+      "description": "Während meines Praktikums bei NI Dresden gebaut. Fertigungsingenieure tippen Fragen wie 'Zeig mir die Yield für VST Kanal 4 letzte Woche' und bekommen strukturierte Ergebnisse mit eingebetteten Plotly-Charts. Das LLM-Agent-Skill leitet Anfragen an Python-Pipelines. Ein Euclidean-Distance-Ranking-Algorithmus deckt Fehlermuster über 30-40 Messtypen auf, ohne die bestehende Datenarchitektur zu ändern. Eigener 1σ/3σ-Klassifikator teilt Ergebnisse in echte Fehler, marginale Fälle und Rauschen. Polars ersetzte pandas nach einem 5-10x Speedup auf 100k+-Zeilen-Datensätzen. Parquet-Caching eliminiert redundante Lesevorgänge aus dem proprietären Datastore.",
+      "what_went_wrong": "Zuerst den Overhead wiederholter Metadaten-Abfragen unterschätzt. Stabil, aber zu langsam für eine Konversationsschnittstelle.",
+      "what_id_change": "Schwere Datenverarbeitung von Anfang an hinter Caching legen. Bei einem AI-Agenten ist Latenz so wichtig wie Genauigkeit. Wenn es 30 Sekunden dauert, hören die Leute auf, es zu nutzen."
     },
-    "isac_drl": {
-      "name": "ISAC Beamforming via Deep RL",
-      "problem": "Die Abwägung zwischen Kommunikationsdurchsatz und Sensing-Genauigkeit im mmWave-ISAC hat keine geschlossene Lösung",
+    "rf_classifier": {
+      "name": "RF Modulation Klassifikator",
+      "problem": "Wie ein Funk-Signal kodiert wurde, aus reinem Waveform-Daten rekonstruieren",
+      "status": "Abgeschlossen",
+      "phasesCompleted": "3",
+      "totalPhases": "3",
+      "tech": "Python · scikit-learn · NumPy · Signalverarbeitung",
+      "description": "Feature-basierter Klassifikator, der den Modulationstyp aus 16 statistischen Features extrahiert — Amplitude, Phase, Frequenz, und höherordnige Spektral-Muster. Trainiert und evaluiert auf RML2016.10a (220k Samples, 11 Signal-Typen, 20 Rauschpegel). 83,6% Genauigkeit auf klaren Signalen gegen 9% Random-Baseline. Custom Feature-Engineering hob die Gesamtgenauigkeit von 47,7% auf 51,3% über alle Rauschpegel. Keine neuronalen Netze — nur Signalverarbeitung und scikit-learn.",
+      "what_went_wrong": "",
+      "what_id_change": ""
+    },
+    "isac_thesis": {
+      "name": "Intelligent Decision-Making für Cognitive ISAC-Netzwerke",
+      "problem": "Joint Node-Role-Auswahl und Beamforming in einem Multi-Node V2X-Kreuzungs-ISAC-Netzwerk",
       "status": "Aktiv",
       "phasesCompleted": "1",
       "totalPhases": "3",
-      "tech": "Python · PyTorch · Stable-Baselines3 · Gymnasium · CVXPY",
-      "description": "Ein DDPG-Agent lernt, einen MIMO-Beamformer im mmWave-ISAC (Integrated Sensing and Communication) zu steuern und Kommunikationsdurchsatz gegen Sensing-Genauigkeit end-to-end abzuwägen. Kanalmodell: Saleh-Valenzuela-Cluster-mmWave-Ausbreitung; Mobilität nach 3GPP Release 16 NR-V2X. Die Policy bildet rohe Kanalbeobachtungen auf Beamforming-Gewichte ab und zeichnet die Pareto-Kurve zwischen Sensing und Kommunikation, mit konvexen Baselines in CVXPY.",
+      "tech": "Python · CVXPY · Konvexe Optimierung · MIMO-Theorie",
+      "description": "IDC-Thesis an der FAU. Die meiste ISAC-Literatur modelliert den Radar-Cross-Section als i.i.d. Zufallsvariable, aber in verteilten Multi-Node-Netzwerken hängt der RCS von der Geometrie ab. Ich schlage ein deterministisches bistatisches RCS-Modell σ(θ_b) vor, das die Node-Role-Auswahl zu einer echten Optimierungsvariablen macht. Das volle Problem ist eine Joint Node-Role-Auswahl und Beamforming-Formulierung, gelöst über konvexe Optimierung und Successive-Convex-Approximation (SCA). Momentan: Literaturrecherche und Problemformulierung erledigt, Konvexe-Solver-Implementierung in Arbeit.",
       "what_went_wrong": "",
       "what_id_change": ""
     },
     "vlc": {
-      "name": "Vehicle-to-Vehicle Visible Light",
-      "problem": "Latenzarme V2V-Kommunikation ohne RF-Spektrumzuweisung",
+      "name": "Fahrzeug-zu-Fahrzeug Sichtlichtkommunikation",
+      "problem": "Latenzarme V2V-Kommunikation ohne Radio-Spektrum-Zuweisung",
       "status": "Abgeschlossen",
       "phasesCompleted": "3",
       "totalPhases": "3",
       "tech": "C · STM32 · OOK · Turbo Coding · MATLAB",
-      "description": "Ein STM32-basierter Fahrzeug-zu-Fahrzeug-Prototyp mit OOK-Modulation und Turbo-Coding zur Vorwärtsfehlerkorrektur, um die BER in verrauschten optischen Kanälen zu senken. LED-Treiberschaltung in Multisim auf Spannungsstabilität simuliert; ein MPPT-Algorithmus in MATLAB für einen solarbetriebenen Transceiver modelliert. Das Schwierige war nicht die Verbindung — es war das Umgebungslicht, das den Fotodetektor überflutete und adaptive Schwellenwerte erzwang.",
-      "what_went_wrong": "Zuerst für Laborbedingungen optimiert, dann alles für reale Lichtverhältnisse neu entworfen. Hätte von Tag 1 an bei Tageslicht testen sollen.",
+      "description": "STM32-basierter V2V-Prototyp mit OOK-Optischer-Modulation und Turbo-Coding zur Vorwärtsfehlerkorrektur. LED-Treiber in Multisim simuliert, um Spannungsstabilität unter Last zu prüfen. MPPT-Algorithmus in MATLAB für einen solarbetriebenen Transceiver modelliert. Das Schwierige war Umgebungslicht, das den Fotodetektor überflutete — adaptive Schwellenwertung hat es gefixt. Echte Lektion: von Tag 1 an bei Tageslicht testen, nicht nur im Labor.",
+      "what_went_wrong": "Zuerst für Laborbedingungen optimiert, dann musste alles für echte Lichtverhältnisse neu entworfen werden. Hätte von Tag 1 an bei Tageslicht testen sollen.",
       "what_id_change": "Mit der schlechtesten statt der besten Umgebung beginnen. Die Physik schert sich nicht um Laborergebnisse."
-    },
-    "iot": {
-      "name": "Secure IoT Data Transfer",
-      "problem": "Verschlüsselte Sensortelemetrie auf einem ressourcenbeschränkten Mikrocontroller",
-      "status": "Abgeschlossen",
-      "phasesCompleted": "3",
-      "totalPhases": "3",
-      "tech": "C · ESP32 · AES-128 · MQTT · SPIFFS",
-      "description": "Ein ESP32-basierter IoT-Knoten für verschlüsselte Sensordaten in Echtzeit über MQTT, mit AES-128-Verschlüsselung am Edge. SPIFFS übernahm das sichere Schlüsselmanagement und die persistente Geräteauthentifizierung, sodass der Knoten nach einem Neustart wieder eine vertrauenswürdige Sitzung aufbauen konnte.",
-      "what_went_wrong": "",
-      "what_id_change": ""
     }
   },
   "life": {
@@ -97,15 +155,23 @@
     }
   },
   "contact": {
-    "heading": "Lass uns zusammenarbeiten.",
-    "availability": "Offen für ML/Wireless-Engineering-Stellen in Deutschland oder remote.",
+    "eyebrow": "Übertragungskanal",
+    "heading": "WENN IHNEN HIER ETWAS INS AUGE GEFALLEN IST.",
+    "availability_subtext": "Schreiben Sie mir oder folgen Sie dem Signal.",
+    "availability": "M.Sc.-Student in Deutschland, bis zu 140 Tage/Jahr arbeitsberechtigt. Offen für Werkstudent- oder Praktikumstellen in Signalverarbeitung, ML-Pipelines oder Embedded Automotive. Am schnellsten erreichst du mich per E-Mail — ich lese alles.",
     "email_label": "E-Mail",
     "github_label": "GitHub",
     "linkedin_label": "LinkedIn",
-    "resume_label": "Lebenslauf herunterladen"
+    "resume_label": "Lebenslauf herunterladen",
+    "system_status": "SYSTEM_STATUS",
+    "status_listening": "OPERATIONAL / LISTENING",
+    "latency_note": "Signale werden täglich überwacht. Die Antwortlatenz liegt in der Regel unter 0x18h.",
+    "status_optimal": "Status: Optimal",
+    "repository": "Repository",
+    "telemetry": "Telemetry"
   },
   "meta": {
-    "title": "Lohith Tarikere Prasanna — Entwickler",
-    "description": "Entwickler mit Absicht. KI, drahtlose Kommunikation und Mobilität. Portfolio von Lohith Tarikere Prasanna."
+    "title": "Lohith Tarikere Prasanna",
+    "description": "M.Sc. Elektromobilität-Student an der FAU. Produktions-AI-Tools bei NI Dresden gebaut, Embedded-Systems bei Delta X Automotive. Signalverarbeitung, ML und Embedded Automotive."
   }
 }

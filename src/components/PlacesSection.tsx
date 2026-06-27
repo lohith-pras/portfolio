@@ -95,7 +95,7 @@ export function PlacesSection() {
             <ProgressDots active={active} count={n} />
             <div
               ref={hintRef}
-              className="absolute bottom-6 right-8 flex items-center gap-2 text-white/40 text-sm font-mono pointer-events-none"
+              className="absolute bottom-6 right-8 flex items-center gap-2 text-foreground/40 text-sm font-mono pointer-events-none"
             >
               <span>{t('scroll_hint')}</span>
               <span ref={arrowRef}>→</span>

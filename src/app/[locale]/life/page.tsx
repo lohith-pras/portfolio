@@ -12,7 +12,7 @@ export default async function LifePage({ params }: Props) {
 
   return (
     <>
-      <main className="max-w-4xl mx-auto px-6 pb-16">
+      <main id="main-content" className="max-w-4xl mx-auto px-6 pb-16">
         <LifeClient />
       </main>
       <PlacesSection />

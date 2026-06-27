@@ -8,10 +8,16 @@ import { useEffect } from 'react'
 import Lenis from 'lenis'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
 import { setLenis } from '@/lib/lenis'
+import { usePathname } from '@/i18n/navigation'
 
 export function SmoothScroll() {
+  const pathname = usePathname()
+  const isHome = pathname === '/'
+
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    // Disabled on homepage to allow native CSS scroll snapping,
+    // and under prefers-reduced-motion (native scroll, no interpolation).
+    if (isHome || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const lenis = new Lenis({
       duration: 1.5,

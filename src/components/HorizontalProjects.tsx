@@ -1,31 +1,63 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { useRef, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { useGSAP } from '@gsap/react'
-import { gsap, ScrollTrigger } from '@/lib/gsap'
-import { getLenis } from '@/lib/lenis'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { useParallax } from '@/hooks/useParallax'
+import { X } from 'lucide-react'
 
-/**
- * Project index — list on the left, a detail panel pinned on the right. On desktop
- * the whole block pins and scrubs: scrolling advances the active project (~1 screen
- * each). Clicking a row scrolls to its band so click and scroll stay in sync. On
- * mobile (or reduced motion) it's a plain tap-to-switch stack.
- *
- * Only isac_drl has a public repo, so only its panel shows View Source. `image`
- * falls back to a numbered placeholder if the cover is missing.
- */
+// Radar Coordinates for the 6 projects (representing active signal blips)
 const PROJECTS = [
-  { key: 'ni_agent', number: '01', category: 'AI Agents', year: '2026', href: null,                                      image: '/projects/ni_agent.png' },
-  { key: 'isac_drl', number: '02', category: 'Deep RL',   year: '2025', href: 'https://github.com/lohith-pras/isac-drl', image: '/projects/isac_drl.png' },
-  { key: 'vlc',      number: '03', category: 'Hardware',  year: '2023', href: null,                                      image: '/projects/vlc.png' },
-  { key: 'iot',      number: '04', category: 'Embedded',  year: '2023', href: null,                                      image: '/projects/iot.png' },
+  // Outer Ring (ENGINEERING): ~0.7 radius in WebGL space
+  {
+    key: 'can_decoder',
+    id: 'OBJ_001',
+    ring: 'outer',
+    top: '15%',
+    left: '35%',
+    href: 'https://github.com/lohith-pras/can-bus-decoder',
+  },
+  {
+    key: 'isac_drl',
+    id: 'OBJ_002',
+    ring: 'outer',
+    top: '82%',
+    left: '55%',
+    href: null,
+  },
+  {
+    key: 'modulation_classifier',
+    id: 'OBJ_003',
+    ring: 'outer',
+    top: '50%',
+    left: '85%',
+    href: 'https://github.com/lohith-pras/rf-modulation-classifier',
+  },
+  // Inner Ring (FOR FUN): ~0.4 radius in WebGL space
+  {
+    key: 'sprachboot',
+    id: 'OBJ_004',
+    ring: 'inner',
+    top: '40%',
+    left: '40%',
+    href: null,
+  },
+  {
+    key: 'nest',
+    id: 'OBJ_005',
+    ring: 'inner',
+    top: '60%',
+    left: '60%',
+    href: null,
+  },
+  {
+    key: 'f1_dashboard',
+    id: 'OBJ_006',
+    ring: 'inner',
+    top: '55%',
+    left: '32%',
+    href: null,
+  },
 ] as const
-
-const N = PROJECTS.length
-const DESKTOP = '(min-width: 1024px)'
 
 export function HorizontalProjects() {
   const t = useTranslations('work')
@@ -33,257 +65,489 @@ export function HorizontalProjects() {
   const reduce = useReducedMotion()
 
   const sectionRef = useRef<HTMLElement>(null)
-  const outerRef = useRef<HTMLDivElement>(null)
-  const listRef = useRef<HTMLDivElement>(null)
-  const eyebrowRef = useRef<HTMLSpanElement>(null)
-  const detailRef = useRef<HTMLDivElement>(null)
-  const numeralRef = useRef<HTMLSpanElement>(null)
-  const ruleRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const containerRef = useRef<HTMLDivElement>(null)
+  const panelRef = useRef<HTMLDivElement>(null)
+  const blipRefs = useRef<{ [key: string]: HTMLButtonElement | null }>({})
 
-  // Ghost numeral drifts across the whole pinned band — the one element still
-  // moving while the section holds, so the depth read is strongest here.
-  useParallax(numeralRef, 120, outerRef)
+  const [hoveredKey, setHoveredKey] = useState<string | null>(null)
+  const [selectedKey, setSelectedKey] = useState<string | null>(null)
+  const [panelOpen, setPanelOpen] = useState(false)
+  const [isRevealed, setIsRevealed] = useState(false)
+  const [reticleCoords, setReticleCoords] = useState({ bx: 0, by: 0, px: 0, py: 0 })
 
-  const [activeIndex, setActiveIndex] = useState(0)
-  const active = PROJECTS[activeIndex]
+  // 1. WebGL Background Shader (Radar sweep & rings)
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
 
-  // Scroll-driven active project: pin via sticky CSS, read progress → index.
-  useGSAP(
-    () => {
-      if (reduce) return
-      const mm = gsap.matchMedia()
-      mm.add(DESKTOP, () => {
-        const outer = outerRef.current
-        if (!outer) return
-        outer.style.height = `${N * 100}vh`
-        const st = ScrollTrigger.create({
-          trigger: outer,
-          start: 'top top',
-          end: 'bottom bottom',
-          onUpdate: (self) => {
-            const idx = Math.min(N - 1, Math.floor(self.progress * N))
-            setActiveIndex((prev) => (prev === idx ? prev : idx))
-          },
-        })
-        return () => {
-          st.kill()
-          outer.style.height = ''
-        }
-      })
-      return () => mm.revert()
-    },
-    { scope: sectionRef, dependencies: [reduce] },
-  )
+    const gl = (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')) as WebGLRenderingContext | null
+    if (!gl) return
 
-  // Click a row → on desktop scroll to its band (keeps scroll/active synced);
-  // on mobile just switch and bring the panel into view.
-  const select = (i: number) => {
-    const isDesktop = typeof window !== 'undefined' && window.matchMedia(DESKTOP).matches
-    if (isDesktop && !reduce && outerRef.current) {
-      const top = window.scrollY + outerRef.current.getBoundingClientRect().top
-      const dist = outerRef.current.offsetHeight - window.innerHeight
-      const y = top + ((i + 0.5) / N) * dist
-      // Scroll through Lenis when it's running so the scrub follows smoothly;
-      // fall back to ScrollToPlugin if Lenis is unavailable.
-      const lenis = getLenis()
-      if (lenis) lenis.scrollTo(y, { duration: 0.8 })
-      else gsap.to(window, { scrollTo: y, duration: 0.6, ease: 'power2.inOut' })
-    } else {
-      setActiveIndex(i)
-      detailRef.current?.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' })
+    gl.enable(gl.BLEND)
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA)
+
+    const vs = `
+      attribute vec2 a_position;
+      varying vec2 v_texCoord;
+      void main() {
+        v_texCoord = a_position * 0.5 + 0.5;
+        gl_Position = vec4(a_position, 0.0, 1.0);
+      }
+    `
+
+    const fs = `
+      precision highp float;
+      varying vec2 v_texCoord;
+      uniform float u_time;
+      uniform vec2 u_resolution;
+
+      void main() {
+        vec2 uv = (gl_FragCoord.xy * 2.0 - u_resolution.xy) / min(u_resolution.x, u_resolution.y);
+        float dist = length(uv);
+        
+        // Grid Lines (Radar Rings)
+        float ring1 = abs(dist - 0.4) < 0.002 ? 1.0 : 0.0;
+        float ring2 = abs(dist - 0.7) < 0.002 ? 1.0 : 0.0;
+        float ring3 = abs(dist - 0.1) < 0.001 ? 0.3 : 0.0;
+        
+        // Crosshair Lines
+        float axis = (abs(uv.x) < 0.0015 || abs(uv.y) < 0.0015) ? 1.0 : 0.0;
+        
+        // Radar Sweep
+        float angle = atan(uv.y, uv.x);
+        float sweep_angle = fract(u_time * 0.15) * 6.2831853 - 3.14159265;
+        float diff = mod(angle - sweep_angle, 6.2831853);
+        float sweep = exp(-diff * 3.0); 
+        
+        // Color Palette
+        vec3 color_sweep = vec3(1.0, 0.118, 0.0); // #FF1E00
+        vec3 color_grid = vec3(0.96, 0.9, 0.78); // Cream
+        
+        float grid_mask = ring1 + ring2 + ring3 + axis;
+        float sweep_mask = sweep * (1.0 - smoothstep(0.98, 1.0, dist));
+        
+        // Grid is dim cream (alpha multiplier 0.15), sweep is solid accent red
+        vec3 rgb = color_grid * grid_mask * 0.15 + color_sweep * sweep_mask;
+        float alpha = max(grid_mask * 0.15, sweep_mask);
+        
+        // Fade out towards edges (smooth transition to transparent background)
+        float edge_fade = smoothstep(1.0, 0.8, dist);
+        alpha *= edge_fade;
+        rgb *= edge_fade;
+        
+        gl_FragColor = vec4(rgb, alpha);
+      }
+    `
+
+    const compile = (type: number, src: string) => {
+      const s = gl.createShader(type)
+      if (!s) return null
+      gl.shaderSource(s, src)
+      gl.compileShader(s)
+      if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
+        console.error('Shader compilation error:', gl.getShaderInfoLog(s))
+        gl.deleteShader(s)
+        return null
+      }
+      return s
     }
-  }
 
-  // Stagger the rows up on first view.
-  useGSAP(
-    () => {
-      if (reduce || !listRef.current) return
-      gsap.from(listRef.current.children, {
-        opacity: 0,
-        y: 24,
-        duration: 0.5,
-        stagger: 0.08,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: listRef.current, start: 'top 80%', once: true },
-      })
-    },
-    { scope: sectionRef, dependencies: [reduce] },
-  )
+    const vertexShader = compile(gl.VERTEX_SHADER, vs)
+    const fragmentShader = compile(gl.FRAGMENT_SHADER, fs)
+    if (!vertexShader || !fragmentShader) return
 
-  // Head rule draws in from the left as the section head enters.
-  useGSAP(
-    () => {
-      if (reduce || !ruleRef.current) return
-      gsap.from(ruleRef.current, {
-        scaleX: 0,
-        transformOrigin: 'left center',
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: { trigger: ruleRef.current, start: 'top 85%', once: true },
-      })
-    },
-    { dependencies: [reduce] },
-  )
+    const prog = gl.createProgram()
+    if (!prog) return
+    gl.attachShader(prog, vertexShader)
+    gl.attachShader(prog, fragmentShader)
+    gl.linkProgram(prog)
 
-  // Clip-path line reveal on the eyebrow.
-  useGSAP(
-    () => {
-      if (reduce || !eyebrowRef.current) return
-      gsap.fromTo(
-        eyebrowRef.current,
-        { clipPath: 'inset(0 0 100% 0)', y: 12, willChange: 'clip-path' },
-        {
-          clipPath: 'inset(0 0 0% 0)',
-          y: 0,
-          duration: 0.5,
-          ease: 'power3.out',
-          onComplete: () => gsap.set(eyebrowRef.current, { willChange: 'auto' }),
-          scrollTrigger: { trigger: eyebrowRef.current, start: 'top 85%', once: true },
-        },
-      )
-    },
-    { dependencies: [reduce] },
-  )
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      console.error('Program linking error:', gl.getProgramInfoLog(prog))
+      return
+    }
 
-  // Materialize the detail panel whenever the active project changes —
-  // blur + slight scale reads as "coming into focus", not just fading.
-  useGSAP(
-    () => {
-      if (reduce || !detailRef.current) return
-      gsap.fromTo(
-        detailRef.current,
-        { opacity: 0, y: 12, scale: 0.99, filter: 'blur(6px)' },
-        { opacity: 1, y: 0, scale: 1, filter: 'blur(0px)', duration: 0.45, ease: 'power3.out' },
-      )
-    },
-    { dependencies: [activeIndex] },
-  )
+    gl.useProgram(prog)
 
-  const name = tp(`${active.key}.name`)
-  const description = tp(`${active.key}.description`)
-  const problem = tp(`${active.key}.problem`)
-  const tech = tp(`${active.key}.tech`).split('·').map((s) => s.trim()).filter(Boolean)
+    const buf = gl.createBuffer()
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf)
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW)
+
+    const pos = gl.getAttribLocation(prog, 'a_position')
+    gl.enableVertexAttribArray(pos)
+    gl.vertexAttribPointer(pos, 2, gl.FLOAT, false, 0, 0)
+
+    const uTime = gl.getUniformLocation(prog, 'u_time')
+    const uRes = gl.getUniformLocation(prog, 'u_resolution')
+
+    let animationFrameId = 0
+    let startTime = performance.now()
+    let isVisible = true
+
+    const resize = () => {
+      const w = canvas.clientWidth
+      const h = canvas.clientHeight
+      if (canvas.width !== w || canvas.height !== h) {
+        canvas.width = w
+        canvas.height = h
+        gl.viewport(0, 0, w, h)
+      }
+    }
+    resize()
+    window.addEventListener('resize', resize)
+
+    const render = (time: number) => {
+      if (!isVisible) return
+      
+      // Pass static time (constant angle) if user prefers reduced motion
+      const elapsed = reduce ? 2.5 : (time - startTime) * 0.001
+
+      gl.uniform1f(uTime, elapsed)
+      gl.uniform2f(uRes, canvas.width, canvas.height)
+      gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4)
+
+      if (!reduce) {
+        animationFrameId = requestAnimationFrame(render)
+      }
+    }
+
+    // IntersectionObserver to pause rendering when section goes offscreen (saving GPU repaints)
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0]
+        isVisible = entry.isIntersecting
+        setIsRevealed(isVisible)
+        if (isVisible && !reduce) {
+          startTime = performance.now() - (elapsedTimeRef.current || 0)
+          animationFrameId = requestAnimationFrame(render)
+        } else {
+          cancelAnimationFrame(animationFrameId)
+          if (!reduce) {
+            elapsedTimeRef.current = performance.now() - startTime
+          }
+        }
+      },
+      { threshold: 0.05 }
+    )
+
+    const elapsedTimeRef = { current: 0 }
+    observer.observe(canvas)
+
+    // Render static frame immediately if reduced motion is requested
+    if (reduce) {
+      render(0)
+    }
+
+    return () => {
+      window.removeEventListener('resize', resize)
+      observer.disconnect()
+      cancelAnimationFrame(animationFrameId)
+      gl.deleteBuffer(buf)
+      gl.deleteProgram(prog)
+      gl.deleteShader(vertexShader)
+      gl.deleteShader(fragmentShader)
+    }
+  }, [reduce])
+
+  // 2. Dynamic SVG Targeting Reticle Coordinate Calculation
+  useEffect(() => {
+    if (!hoveredKey) return
+
+    const updateCoords = () => {
+      const blipEl = blipRefs.current[hoveredKey]
+      const sectionEl = sectionRef.current
+      const panelEl = panelRef.current
+
+      if (blipEl && sectionEl && panelEl) {
+        const blipRect = blipEl.getBoundingClientRect()
+        const sectionRect = sectionEl.getBoundingClientRect()
+        const panelRect = panelEl.getBoundingClientRect()
+
+        const bx = blipRect.left - sectionRect.left + blipRect.width / 2
+        const by = blipRect.top - sectionRect.top + blipRect.height / 2
+
+        const isMobile = window.innerWidth < 768
+        let px = 0
+        let py = 0
+
+        if (isMobile) {
+          // Mobile bottom sheet: vertical connection line directly to the sheet top edge
+          px = bx
+          py = panelRect.top - sectionRect.top
+        } else {
+          // Desktop sidebar: horizontal connection line to the left edge of sidebar
+          px = panelRect.left - sectionRect.left
+          py = panelRect.top - sectionRect.top + panelRect.height / 2
+        }
+
+        setReticleCoords({ bx, by, px, py })
+      }
+    }
+
+    updateCoords()
+
+    window.addEventListener('resize', updateCoords)
+    window.addEventListener('scroll', updateCoords, { passive: true })
+    return () => {
+      window.removeEventListener('resize', updateCoords)
+      window.removeEventListener('scroll', updateCoords)
+    }
+  }, [hoveredKey])
+
+  const activeProject = PROJECTS.find((p) => p.key === selectedKey)
 
   return (
-    <section id="projects" ref={sectionRef} className="relative z-10 bg-paper-2">
-      {/* outer gains height on desktop (set in JS) to create the scrub distance */}
-      <div ref={outerRef}>
-        {/* inner pins via sticky on desktop; normal flow on mobile */}
-        <div className="px-6 py-[var(--space-section-lg)] md:px-16 lg:sticky lg:top-0 lg:flex lg:h-screen lg:items-center lg:overflow-hidden lg:py-0">
-          <div className="mx-auto w-full max-w-6xl">
-            {/* section head — eyebrow + rule + ghost numeral 02 */}
-            <div className="mb-12 flex items-baseline gap-4 md:mb-16">
-              <div className="relative">
+    <section
+      id="projects"
+      ref={sectionRef}
+      className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-[#0A0A0A] py-16 md:py-0"
+    >
+      {/* WebGL background shader (Radar Sweep) */}
+      <canvas
+        ref={canvasRef}
+        className="absolute inset-0 w-full h-full z-0 pointer-events-none"
+      />
+
+      {/* Dynamic Target Reticle Overlay (SVG) */}
+      <svg
+        className={`absolute inset-0 w-full h-full pointer-events-none z-20 transition-opacity duration-300 ${
+          hoveredKey && panelOpen ? 'opacity-100' : 'opacity-0'
+        }`}
+      >
+        {/* Dotted target-locked connector line */}
+        <line
+          stroke="#FF1E00"
+          strokeWidth="0.5"
+          strokeDasharray="5,5"
+          x1={reticleCoords.bx}
+          y1={reticleCoords.by}
+          x2={reticleCoords.px}
+          y2={reticleCoords.py}
+          className="transition-[x1,y1,x2,y2] duration-150 ease-out"
+        />
+        {/* Concentric rotating radar rings on blip */}
+        <circle
+          cx={reticleCoords.bx}
+          cy={reticleCoords.by}
+          r="18"
+          fill="none"
+          stroke="#FF1E00"
+          strokeWidth="0.5"
+          strokeDasharray="4"
+          className="transition-[cx,cy] duration-150 ease-out origin-center animate-[spin_10s_linear_infinite]"
+        />
+        <circle
+          cx={reticleCoords.bx}
+          cy={reticleCoords.by}
+          r="6"
+          fill="none"
+          stroke="#FF1E00"
+          strokeWidth="0.75"
+          className="transition-[cx,cy] duration-150 ease-out"
+        />
+      </svg>
+
+      {/* Radar Interactive Container */}
+      <div
+        ref={containerRef}
+        className={`relative w-full h-full max-w-[min(90vw,70vh)] aspect-square flex items-center justify-center z-10 transition-all duration-1000 ${
+          isRevealed ? 'opacity-100 scale-100' : 'opacity-0 scale-95'
+        }`}
+      >
+        {/* Radar Ring Labels */}
+        <div className="absolute font-mono text-[11px] font-bold tracking-[0.4em] text-foreground/15 uppercase select-none pointer-events-none top-[15%]">
+          {t('radar_outer')}
+        </div>
+        <div className="absolute font-mono text-[10px] font-bold tracking-[0.3em] text-foreground/15 uppercase select-none pointer-events-none top-[32%]">
+          {t('radar_inner')}
+        </div>
+
+        {/* Signal Blips (Interactive Projects) */}
+        {PROJECTS.map((p) => {
+          const isHovered = hoveredKey === p.key
+          const isActive = selectedKey === p.key
+          return (
+            <button
+              key={p.key}
+              ref={(el) => {
+                blipRefs.current[p.key] = el
+              }}
+              type="button"
+              onMouseEnter={() => {
+                setHoveredKey(p.key)
+                setSelectedKey(p.key)
+                setPanelOpen(true)
+              }}
+              onMouseLeave={() => setHoveredKey(null)}
+              onFocus={() => {
+                setHoveredKey(p.key)
+                setSelectedKey(p.key)
+                setPanelOpen(true)
+              }}
+              onBlur={() => setHoveredKey(null)}
+              onClick={() => {
+                setSelectedKey(p.key)
+                setPanelOpen(true)
+              }}
+              aria-label={tp(`${p.key}.name`)}
+              className="absolute -translate-x-1/2 -translate-y-1/2 group focus-visible:outline-none z-30"
+              style={{ top: p.top, left: p.left }}
+            >
+              <div className="relative p-4">
+                {/* Core Blip Dot */}
+                <div
+                  className={`w-3 h-3 rounded-full transition-all duration-300 ${
+                    isActive
+                      ? 'bg-accent shadow-[0_0_15px_rgba(255,30,0,0.9)]'
+                      : 'bg-beige shadow-[0_0_12px_rgba(245,221,182,0.7)] group-hover:bg-accent group-hover:shadow-[0_0_15px_rgba(255,30,0,0.9)]'
+                  }`}
+                />
+                {/* Rippling Pulse Ring */}
+                {!reduce && (
+                  <div
+                    className={`absolute inset-0 m-auto w-3 h-3 border rounded-full blip-pulse pointer-events-none ${
+                      isActive ? 'border-accent' : 'border-beige group-hover:border-accent'
+                    }`}
+                  />
+                )}
+                {/* Blip Object Code Tag */}
                 <span
-                  ref={numeralRef}
-                  aria-hidden="true"
-                  className="pointer-events-none absolute -left-3 -top-10 -z-10 select-none font-mono text-[clamp(6rem,18vw,16rem)] font-bold leading-none text-foreground/[0.035]"
+                  className={`absolute -top-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200 font-mono text-[9px] text-beige bg-[#0A0A0A] px-2 py-0.5 border border-rule whitespace-nowrap z-40 pointer-events-none`}
                 >
-                  02
-                </span>
-                <span
-                  ref={eyebrowRef}
-                  className="relative font-mono text-[11px] uppercase tracking-[0.3em] text-muted"
-                  style={reduce ? undefined : { clipPath: 'inset(0 0 100% 0)' }}
-                >
-                  {t('heading')}
+                  {p.id}
                 </span>
               </div>
-              <div ref={ruleRef} className="h-px flex-1 bg-rule" />
+            </button>
+          )
+        })}
+      </div>
+
+      {/* Responsive Detail Panel (Desktop Sidebar / Mobile Bottom Sheet) */}
+      <aside
+        ref={panelRef}
+        className={`absolute z-40 bg-paper/95 border-rule transition-transform duration-500 ease-out flex flex-col justify-between select-none
+          /* Mobile Bottom Sheet Styles */
+          bottom-0 left-0 w-full h-[45vh] border-t p-6 md:p-8
+          /* Desktop Sidebar Overrides */
+          md:top-0 md:right-0 md:left-auto md:bottom-auto md:w-[400px] md:h-full md:border-l md:border-t-0 md:p-12
+          ${panelOpen ? 'translate-y-0 md:translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}
+        `}
+      >
+        <div className="space-y-6 md:space-y-8 mt-4 md:mt-16">
+          {/* Header metadata */}
+          <div className="space-y-1">
+            <div className="font-mono text-[10px] text-accent uppercase tracking-[0.25em]">
+              {selectedKey ? tp(`${selectedKey}.problem`) : t('system_idle')}
             </div>
-
-            {/* split — list left, detail right (stacks on mobile) */}
-            <div className="grid grid-cols-1 gap-x-12 gap-y-10 lg:grid-cols-2">
-              {/* left: project list */}
-              <div ref={listRef}>
-                {PROJECTS.map((p, i) => {
-                  const isActive = i === activeIndex
-                  return (
-                    <button
-                      key={p.key}
-                      type="button"
-                      onClick={() => select(i)}
-                      aria-pressed={isActive}
-                      className="group grid w-full grid-cols-[2.5rem_1fr_auto] items-baseline gap-4 border-t border-rule py-6 text-left transition-colors duration-300 last:border-b focus-visible:outline-none md:py-7"
-                    >
-                      <span className={`font-mono text-xs transition-colors duration-300 ${isActive ? 'text-accent' : 'text-muted group-hover:text-accent'}`}>
-                        {p.number}
-                      </span>
-                      <span className="min-w-0">
-                        <span
-                          className={`block font-display text-[clamp(1.3rem,2.6vw,2rem)] leading-tight transition-[color,transform] duration-300 ${
-                            isActive
-                              ? 'translate-x-2 text-foreground'
-                              : 'text-foreground/60 group-hover:translate-x-2 group-hover:text-foreground'
-                          }`}
-                        >
-                          {tp(`${p.key}.name`)}
-                        </span>
-                      </span>
-                      <span className="flex items-baseline gap-3 whitespace-nowrap font-mono text-[11px] uppercase tracking-widest text-muted">
-                        <span className="hidden sm:inline">{p.category}</span>
-                        <span className="hidden text-rule sm:inline">·</span>
-                        <span>{p.year}</span>
-                      </span>
-                    </button>
-                  )
-                })}
-              </div>
-
-              {/* right: detail panel */}
-              <div className="lg:pl-4">
-                <div ref={detailRef}>
-                  {/* cover */}
-                  <div className="group/cover relative aspect-[16/10] w-full overflow-hidden rounded-xl border border-white/10">
-                    <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-white/[0.06] to-transparent">
-                      <span className="font-mono text-7xl font-bold text-white/10">{active.number}</span>
-                    </div>
-                    <img
-                      key={active.key}
-                      src={active.image}
-                      alt={name}
-                      loading="lazy"
-                      className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 ease-out motion-safe:group-hover/cover:scale-[1.04]"
-                      onError={(e) => {
-                        e.currentTarget.style.opacity = '0'
-                      }}
-                    />
-                  </div>
-
-                  {/* meta + copy */}
-                  <div className="mt-6 flex flex-col gap-5">
-                    <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-accent/80">{problem}</p>
-                    <p className="text-sm leading-relaxed text-foreground/75 [text-wrap:pretty]">{description}</p>
-
-                    <div className="flex flex-wrap gap-2">
-                      {tech.map((item) => (
-                        <span
-                          key={item}
-                          className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[11px] text-foreground/70 transition-colors duration-200 hover:border-white/25 hover:text-foreground/90"
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-
-                    {active.href && (
-                      <a
-                        href={active.href}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="group/btn mt-1 inline-flex w-fit items-center gap-2 rounded-full border border-foreground/20 px-5 py-2.5 font-mono text-xs uppercase tracking-widest text-foreground transition-colors duration-200 hover:border-accent hover:text-accent focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-                      >
-                        View Source
-                        <span aria-hidden="true" className="transition-transform duration-200 group-hover/btn:translate-x-0.5">
-                          ↗
-                        </span>
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
+            <h3 className="font-display text-[2rem] md:text-[2.75rem] font-bold leading-none uppercase tracking-tight text-beige mt-2">
+              {selectedKey ? tp(`${selectedKey}.name`) : t('select_blip')}
+            </h3>
           </div>
+
+          {/* Close Panel Button */}
+          {panelOpen && (
+            <button
+              type="button"
+              onClick={() => {
+                setPanelOpen(false)
+                setSelectedKey(null)
+              }}
+              className="absolute top-4 right-4 md:top-6 md:right-6 text-foreground/50 hover:text-accent transition-colors p-2 rounded-full hover:bg-white/[0.05]"
+              aria-label="Close panel"
+            >
+              <X size={16} />
+            </button>
+          )}
+
+          {/* Description Copy */}
+          <p className="font-body text-foreground/75 leading-relaxed text-xs md:text-sm select-text max-h-[12vh] md:max-h-[35vh] overflow-y-auto pr-2">
+            {selectedKey ? tp(`${selectedKey}.description`) : t('awaiting_target')}
+          </p>
+
+          {/* Tech stack tags */}
+          {selectedKey && (
+            <div className="flex flex-wrap gap-1.5 md:gap-2">
+              {tp(`${selectedKey}.tech`)
+                .split('·')
+                .map((s) => s.trim())
+                .filter(Boolean)
+                .map((tag) => (
+                  <span
+                    key={tag}
+                    className="px-2.5 py-1 rounded-full border border-rule font-mono text-[10px] text-foreground/60 uppercase tracking-wider bg-white/[0.02]"
+                  >
+                    {tag}
+                  </span>
+                ))}
+            </div>
+          )}
+
+          {/* View Project Action */}
+          {selectedKey && (
+            <div className="pt-2 md:pt-4">
+              {activeProject?.href ? (
+                <a
+                  href={activeProject.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="group inline-flex items-center gap-3 rounded-full border border-rule px-5 py-2 md:px-6 md:py-2.5 font-mono text-xs uppercase tracking-widest text-beige hover:border-accent hover:text-accent transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+                >
+                  {t('view_project')}
+                  <span className="inline-block transform group-hover:translate-x-1 transition-transform duration-200">
+                    →
+                  </span>
+                </a>
+              ) : (
+                <button
+                  type="button"
+                  disabled
+                  className="inline-flex items-center gap-2 rounded-full border border-rule/30 px-5 py-2 md:px-6 md:py-2.5 font-mono text-xs uppercase tracking-widest text-foreground/35 cursor-not-allowed"
+                >
+                  {t('view_project')}
+                  <span className="text-[9px] text-muted tracking-normal font-normal lowercase">
+                    (proprietary)
+                  </span>
+                </button>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Panel Telemetry Footer (Desktop only) */}
+        <div className="hidden md:flex justify-between items-end border-t border-rule pt-6">
+          <div className="font-mono text-[9px] text-foreground/30 space-y-0.5 leading-none">
+            <div>LAT: 49.4521</div>
+            <div>LNG: 11.0767</div>
+          </div>
+          <div className="font-mono text-[9px] text-accent font-bold uppercase tracking-wider">
+            {t('status_tracking')}
+          </div>
+        </div>
+      </aside>
+
+      {/* System Status Footer (Desktop only) */}
+      <div className="absolute bottom-6 left-12 right-12 hidden md:flex justify-between items-center z-10 pointer-events-none select-none">
+        <div className="font-mono text-[10px] text-foreground/40 uppercase tracking-widest">
+          ©{new Date().getFullYear()} SIGNAL/LABS. <span className="text-accent font-bold">SYSTEM_READY</span>
+        </div>
+        <div className="flex gap-6 font-mono text-[10px] pointer-events-auto">
+          <a
+            href="https://github.com/lohith-pras/portfolio_v2"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-foreground/45 hover:text-accent transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+          >
+            {t('repository')}
+          </a>
+          <span className="text-foreground/20">·</span>
+          <span className="text-foreground/45">
+            {t('telemetry')}
+          </span>
+          <span className="text-foreground/20">·</span>
+          <span className="text-accent underline decoration-accent/30 underline-offset-4 font-bold">
+            {t('status_optimal')}
+          </span>
         </div>
       </div>
     </section>

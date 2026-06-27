@@ -6,8 +6,7 @@ import { useReducedMotion } from '@/hooks/useReducedMotion'
 const SECTIONS = [
   { id: 'about',   n: '01', label: 'ABOUT'   },
   { id: 'projects', n: '02', label: 'WORK'    },
-  { id: 'toolkit', n: '03', label: 'STACK'   },
-  { id: 'contact', n: '04', label: 'CONTACT' },
+  { id: 'contact', n: '03', label: 'CONTACT' },
 ] as const
 
 type SectionId = (typeof SECTIONS)[number]['id']
