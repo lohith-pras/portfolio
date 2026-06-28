@@ -8,10 +8,14 @@ import { useEffect } from 'react'
 import Lenis from 'lenis'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
 import { setLenis } from '@/lib/lenis'
+import { usePathname } from '@/i18n/navigation'
 
 export function SmoothScroll() {
+  const pathname = usePathname()
+  const isHome = pathname === '/'
+
   useEffect(() => {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (isHome || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
 
     const lenis = new Lenis({
       duration: 1.5,
@@ -43,7 +47,10 @@ export function SmoothScroll() {
       setLenis(null)
       lenis.destroy()
     }
-  }, [])
+    // Re-run on route change: component lives in the persistent layout, so the
+    // isHome guard must re-evaluate when navigating home ↔ /life (else Lenis
+    // is created/destroyed based only on the first route loaded).
+  }, [isHome])
 
   return null
 }

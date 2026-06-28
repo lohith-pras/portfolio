@@ -5,140 +5,244 @@ import { useTranslations } from 'next-intl'
 import { useGSAP } from '@gsap/react'
 import { gsap } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { useParallax } from '@/hooks/useParallax'
 
 /**
- * AboutSection — Manifesto beat.
+ * AboutSection — personal narrative beat.
  *
- * Type-led positioning statement (the thesis), bio at a readable measure, and a
- * credential meta row. No 3D here — the manifesto leads on typography.
- * See design.md § Macrostructure family (home → Manifesto).
+ * Layout mirrors the Stitch "Rich Detail" variant:
+ *   badge → decorative orbit ring → large display intro → three body paragraphs
+ *   → divider → facts row.
+ *
+ * Design tokens: existing Oswald / Plus Jakarta Sans / Space Mono stack,
+ * foreground / beige / muted / accent palette from globals.css — no new fonts.
+ *
+ * Animation: GSAP ScrollTrigger stagger-from-below on each `.about-block`
+ * when the section edge crosses 75 % of the viewport.
  */
 export function AboutSection() {
   const t = useTranslations('about')
   const reduce = useReducedMotion()
-  const ref = useRef<HTMLDivElement>(null)
-  const headingRef = useRef<HTMLHeadingElement>(null)
-  const numeralRef = useRef<HTMLSpanElement>(null)
+  const sectionRef = useRef<HTMLElement>(null)
 
-  // Ghost numeral drifts slower than the page — editorial depth layer.
-  useParallax(numeralRef, 60, ref)
-
-  // Existing scrub reveal — opacity on all .about-element nodes
   useGSAP(
     () => {
-      if (reduce || !ref.current) return
+      if (reduce) return
 
-      const elements = ref.current.querySelectorAll('.about-element')
-
-      gsap.to(elements, {
-        opacity: 1,
-        y: 0,
-        stagger: 0.1,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: ref.current,
-          start: 'top 75%',
-          end: 'top 25%',
-          scrub: 1,
-        },
-      })
-    },
-    { scope: ref, dependencies: [reduce] },
-  )
-
-  // Clip-path line reveal on the thesis heading — separate pass, fires once
-  useGSAP(
-    () => {
-      if (reduce || !headingRef.current) return
+      const blocks = gsap.utils.toArray<HTMLElement>('.about-block')
       gsap.fromTo(
-        headingRef.current,
-        { clipPath: 'inset(0 0 100% 0)', y: 12, willChange: 'clip-path' },
+        blocks,
+        { y: 32, opacity: 0 },
         {
-          clipPath: 'inset(0 0 0% 0)',
           y: 0,
-          duration: 0.5,
-          ease: 'power3.out',
-          onComplete: () => gsap.set(headingRef.current, { willChange: 'auto' }),
+          opacity: 1,
+          duration: 0.9,
+          ease: 'expo.out',
+          stagger: 0.1,
           scrollTrigger: {
-            trigger: headingRef.current,
-            start: 'top 85%',
+            trigger: sectionRef.current,
+            start: 'top 75%',
             once: true,
           },
         },
       )
+
+      // Slow infinite rotation of the orbit ring paths
+      gsap.to('.orbit-g-1', {
+        rotation: 360,
+        duration: 25,
+        repeat: -1,
+        ease: 'none',
+        transformOrigin: '32px 32px',
+      })
+      gsap.to('.orbit-g-2', {
+        rotation: -360,
+        duration: 18,
+        repeat: -1,
+        ease: 'none',
+        transformOrigin: '32px 32px',
+      })
     },
-    { dependencies: [reduce] },
+    { scope: sectionRef, dependencies: [reduce] },
   )
+
+  const facts = [
+    { label: t('tag_1'), icon: FactSchool },
+    { label: t('tag_2'), icon: FactWork },
+    { label: t('tag_3'), icon: FactPin },
+  ]
 
   return (
     <section
+      ref={sectionRef}
       id="about"
-      className="relative z-10 flex min-h-screen w-full items-center bg-paper-2 py-16"
+      className="about-dot-grid relative z-20 flex w-full flex-col items-center bg-background py-20 md:py-[100px]"
     >
-      <div ref={ref} className="mx-auto w-full max-w-7xl px-6 md:px-16">
-        <div className="flex flex-col gap-[clamp(1.5rem,4vh,2.75rem)]">
-          {/* eyebrow */}
-          <span className="about-element font-mono text-[11px] uppercase tracking-[0.3em] text-muted opacity-20">
-            About
-          </span>
+      <div className="flex w-full max-w-[800px] flex-col items-center px-6 text-center">
 
-          {/* thesis — clip-path reveal wrapper with ghost numeral */}
-          <div className="relative">
-            {/* ghost numeral 01 — editorial depth layer */}
-            <span
-              ref={numeralRef}
-              aria-hidden="true"
-              className="pointer-events-none select-none absolute -top-8 -left-5 font-mono font-bold leading-none text-foreground/[0.035] text-[clamp(5rem,14vw,13rem)] -z-10"
-            >
-              01
-            </span>
-
-            {/* thesis h2 — receives clip-path reveal; also a scrub .about-element */}
-            <h2
-              ref={headingRef}
-              className="about-element relative font-display font-bold leading-[1.15] tracking-tight text-foreground text-[clamp(1.6rem,3vw,2.6rem)] max-w-[30ch] border-l-2 border-accent pl-6 md:pl-10 [text-wrap:balance] [overflow-wrap:anywhere] min-w-0 opacity-20"
-              style={reduce ? undefined : { clipPath: 'inset(0 0 100% 0)' }}
-            >
-              {t('descriptor')}
-            </h2>
-          </div>
-
-          {/* bio — offset into a 12-col grid for editorial indent */}
-          <div className="grid grid-cols-1 md:grid-cols-12">
-            <div className="md:col-start-3 md:col-span-8 font-body text-foreground/75 leading-relaxed text-[clamp(1.05rem,1.5vw,1.3rem)] max-w-[62ch] space-y-7 [text-wrap:pretty]">
-              <p className="about-element opacity-20">{t('bio_1')}</p>
-
-              {/* NI career proof — pulled callout */}
-              <p className="about-element opacity-20 border-l-2 border-accent pl-6 py-1 text-foreground/65 italic">
-                {t('bio_2')}
-              </p>
-
-              <p className="about-element opacity-20">{t('bio_3')}</p>
-            </div>
-          </div>
-
-          {/* credential meta row — spec-sheet grid */}
-          <div className="about-element grid grid-cols-2 md:grid-cols-4 gap-x-8 gap-y-8 border-t border-rule pt-8 font-mono text-xs uppercase tracking-widest text-muted opacity-20">
-            <div className="flex flex-col gap-2">
-              <span className="text-accent/80">Degree</span>
-              <span className="text-foreground/80">{t('education_degree')}</span>
-            </div>
-            <div className="flex flex-col gap-2">
-              <span className="text-accent/80">Institution</span>
-              <span>{t('education_school')}</span>
-            </div>
-            <div className="flex flex-col gap-2">
-              <span className="text-accent/80">Location</span>
-              <span>{t('education_location')}</span>
-            </div>
-            <div className="flex flex-col gap-2">
-              <span className="text-accent/80">Timeline</span>
-              <span className="text-foreground/80">{t('education_year')}</span>
-            </div>
+        {/* Badge — "what's up" */}
+        <div className="about-block mb-8" style={reduce ? undefined : { opacity: 0 }}>
+          <div className="inline-block border border-foreground/25 px-4 py-1 font-mono text-xs lowercase tracking-tight text-foreground/60">
+            {t('badge')}
           </div>
         </div>
+
+        {/* Decorative orbit ring */}
+        <div className="about-block mb-12" style={reduce ? undefined : { opacity: 0 }}>
+          <div className="relative flex h-[120px] w-[120px] items-center justify-center rounded-full border border-beige/20 bg-gradient-to-tr from-beige/10 to-transparent">
+            <OrbitRing />
+            {/* Ambient glow */}
+            <div
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full bg-beige/5 blur-2xl"
+            />
+          </div>
+        </div>
+
+        {/* Main identity block */}
+        <div className="about-block" style={reduce ? undefined : { opacity: 0 }}>
+          {/* Large display intro */}
+          <h2 className="font-display mx-auto mb-10 max-w-[20ch] text-[clamp(2.6rem,6.5vw,3.9rem)] font-bold leading-[1.1] tracking-[-0.04em] text-beige uppercase">
+            {t('intro_a')}{' '}
+            <span className="text-accent">{t('intro_location')}</span>
+            {t('intro_b')}
+          </h2>
+
+          {/* Body paragraphs */}
+          <div className="mx-auto max-w-[640px] space-y-8">
+            {/* Para 1 */}
+            <p className="font-body text-[1.2rem] leading-[1.55] tracking-tight text-foreground/65">
+              {t('para_1a')}{' '}{t('para_1b')}
+            </p>
+
+            {/* Para 3 — call to scroll */}
+            <p className="pt-4 font-body text-[1.2rem] font-semibold leading-[1.55] tracking-tight text-beige">
+              {t('para_3')}
+              <span
+                aria-hidden="true"
+                className="animate-bounce-down ml-2 inline-block select-none text-accent"
+              >
+                ↓
+              </span>
+            </p>
+          </div>
+        </div>
+
+        {/* Divider */}
+        <div
+          className="about-block mt-16 h-px w-full bg-foreground/10"
+          style={reduce ? undefined : { opacity: 0 }}
+        />
+
+        {/* Facts row */}
+        <ul
+          className="about-block mt-6 flex w-full flex-col items-center justify-between gap-6 sm:flex-row sm:gap-0"
+          style={reduce ? undefined : { opacity: 0 }}
+        >
+          {facts.map(({ label, icon: Icon }) => (
+            <li
+              key={label}
+              className="group flex items-center gap-2"
+            >
+              <Icon />
+              <span className="font-mono text-[0.65rem] uppercase tracking-[0.2em] text-foreground/50 group-hover:text-foreground/80 transition-colors duration-200">
+                {label}
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
+  )
+}
+
+/* ── Decorative orbit ring — evokes the "blur_on" icon feel ── */
+function OrbitRing() {
+  return (
+    <svg
+      width="64"
+      height="64"
+      viewBox="0 0 64 64"
+      fill="none"
+      aria-hidden="true"
+      className="text-beige"
+    >
+      {/* Outer ring */}
+      <circle cx="32" cy="32" r="28" stroke="currentColor" strokeWidth="0.6" opacity="0.25" />
+      {/* Mid ring */}
+      <circle cx="32" cy="32" r="18" stroke="currentColor" strokeWidth="0.8" opacity="0.45" />
+      {/* Inner ring */}
+      <circle cx="32" cy="32" r="9" stroke="currentColor" strokeWidth="1" opacity="0.65" />
+      {/* Core dot */}
+      <circle cx="32" cy="32" r="3" fill="currentColor" opacity="0.9" />
+      {/* Tilted orbital ellipse */}
+      <g className="orbit-g-1" style={{ transformOrigin: '32px 32px' }}>
+        <ellipse
+          cx="32"
+          cy="32"
+          rx="28"
+          ry="10"
+          stroke="currentColor"
+          strokeWidth="0.6"
+          opacity="0.2"
+          transform="rotate(-35 32 32)"
+        />
+      </g>
+      <g className="orbit-g-2" style={{ transformOrigin: '32px 32px' }}>
+        <ellipse
+          cx="32"
+          cy="32"
+          rx="18"
+          ry="6"
+          stroke="currentColor"
+          strokeWidth="0.6"
+          opacity="0.3"
+          transform="rotate(55 32 32)"
+        />
+      </g>
+    </svg>
+  )
+}
+
+/* ── Fact glyphs — 16 px stroke icons, beige-tinted ── */
+function iconProps() {
+  return {
+    width: 16,
+    height: 16,
+    viewBox: '0 0 24 24',
+    fill: 'none',
+    stroke: 'currentColor',
+    strokeWidth: 1.6,
+    strokeLinecap: 'round' as const,
+    strokeLinejoin: 'round' as const,
+    'aria-hidden': true,
+    className: 'shrink-0 text-beige transition-transform duration-200 group-hover:rotate-12',
+  }
+}
+
+function FactSchool() {
+  return (
+    <svg {...iconProps()}>
+      {/* Mortarboard / graduation cap */}
+      <path d="M22 10L12 4 2 10l10 6 10-6z" />
+      <path d="M6 12v5c0 2.2 2.7 4 6 4s6-1.8 6-4v-5" />
+    </svg>
+  )
+}
+
+function FactWork() {
+  return (
+    <svg {...iconProps()}>
+      <rect x="3" y="7" width="18" height="13" rx="2" />
+      <path d="M9 7V5a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2v2" />
+    </svg>
+  )
+}
+
+function FactPin() {
+  return (
+    <svg {...iconProps()}>
+      <path d="M12 21s-7-5.2-7-11a7 7 0 0 1 14 0c0 5.8-7 11-7 11z" />
+      <circle cx="12" cy="10" r="2.5" />
+    </svg>
   )
 }

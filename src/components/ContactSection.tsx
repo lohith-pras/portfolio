@@ -1,40 +1,33 @@
 'use client'
 
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useGSAP } from '@gsap/react'
 import { gsap, SplitText } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { useParallax } from '@/hooks/useParallax'
 
 export function ContactSection() {
   const t = useTranslations('contact')
   const reduce = useReducedMotion()
   const ref = useRef<HTMLDivElement>(null)
   const headingRef = useRef<HTMLHeadingElement>(null)
-  const numeralRef = useRef<HTMLSpanElement>(null)
+  const [formStatus, setFormStatus] = useState<'idle' | 'transmitting' | 'success' | 'error'>('idle')
 
-  // Ghost numeral drifts slower than the page — editorial depth layer.
-  useParallax(numeralRef, 80, ref)
-
-  // Existing section reveal — whole container fades/slides in
+  // Section reveal: opacity-only
   useGSAP(
     () => {
       if (reduce || !ref.current) return
       gsap.from(ref.current, {
         opacity: 0,
-        y: 32,
-        duration: 0.6,
-        ease: 'power3.out',
+        duration: 0.9,
+        ease: 'power2.out',
         scrollTrigger: { trigger: ref.current, start: 'top 85%', once: true },
       })
     },
     { scope: ref, dependencies: [reduce] },
   )
 
-  // SplitText line-mask reveal on the closing heading — each line rises out
-  // from behind a clip, staggered. Split after fonts settle so line breaks are
-  // measured against final glyphs. Reverts on cleanup to restore the raw node.
+  // SplitText line-mask reveal on the closing heading
   useGSAP(
     () => {
       if (reduce || !headingRef.current) return
@@ -61,73 +54,208 @@ export function ContactSection() {
     { dependencies: [reduce] },
   )
 
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    setFormStatus('transmitting')
+
+    const formData = new FormData(e.currentTarget)
+    try {
+      const response = await fetch('https://formsubmit.co/ajax/lnlohith3@gmail.com', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(Object.fromEntries(formData)),
+      })
+
+      if (response.ok) {
+        setFormStatus('success')
+        e.currentTarget.reset()
+      } else {
+        setFormStatus('error')
+      }
+    } catch (err) {
+      setFormStatus('error')
+    }
+  }
+
   const links = [
-    { label: t('email_label'), href: 'mailto:lnlohith3@gmail.com', external: false },
-    { label: t('github_label'), href: 'https://github.com/lohith-pras', external: true },
-    { label: t('linkedin_label'), href: 'https://www.linkedin.com/in/loh-pras', external: true },
-    { label: t('resume_label'), href: '/Lohith_Prasanna_Resume.pdf', external: true },
+    { label: 'EMAIL', href: 'mailto:lnlohith3@gmail.com', external: false },
+    { label: 'GITHUB', href: 'https://github.com/lohith-pras', external: true },
+    { label: 'LINKEDIN', href: 'https://www.linkedin.com/in/loh-pras', external: true },
+    { label: 'CV', href: '/Lohith_Prasanna_Resume.pdf', external: true },
   ]
 
   return (
-    <section
-      id="contact"
-      className="relative z-10 flex min-h-screen w-full items-center bg-paper border-t border-rule px-6 md:px-16 py-16"
-    >
-      <div className="max-w-7xl mx-auto w-full">
-        <div ref={ref} className="flex flex-col gap-[clamp(2.5rem,6vh,4rem)]">
-          {/* Heading with ghost numeral */}
-          <div className="relative">
-            {/* ghost numeral 04 — editorial depth layer */}
-            <span
-              ref={numeralRef}
-              aria-hidden="true"
-              className="pointer-events-none select-none absolute -top-14 -left-5 font-mono font-bold leading-none text-foreground/[0.035] text-[clamp(7rem,18vw,18rem)] -z-10"
-            >
-              04
-            </span>
-
-            {/* heading — receives clip-path reveal */}
+    <div id="contact-container" ref={ref} className="relative z-10 w-full border-t border-rule bg-background">
+      {/* Contact Section */}
+      <section
+        id="contact"
+        className="min-h-screen flex flex-col justify-center px-6 md:px-16 py-16 bg-background"
+      >
+        <div className="max-w-6xl w-full mx-auto space-y-16">
+          {/* Heading Block */}
+          <div className="space-y-6">
+            <p className="font-mono text-xs text-accent uppercase tracking-[0.5em] mb-4">
+              {t('eyebrow')}
+            </p>
             <h2
               ref={headingRef}
-              className="relative font-display text-[clamp(2.75rem,7vw,6rem)] leading-none tracking-tight text-foreground"
+              className="relative font-body font-extrabold text-[clamp(2.5rem,8vw,6rem)] leading-[0.9] tracking-tighter text-beige max-w-4xl"
             >
               {t('heading')}
             </h2>
           </div>
 
-          {/* Availability */}
-          <p className="font-body text-foreground/60 text-xl md:text-2xl leading-relaxed max-w-2xl">
-            {t('availability')}
-          </p>
+          {/* Body Text & Form */}
+          <div className="pt-4 space-y-8">
+            <p className="font-mono text-foreground/60 text-xl md:text-2xl leading-relaxed max-w-2xl">
+              {t('availability_subtext')}
+            </p>
 
-          {/* Links row */}
-          <div className="flex flex-wrap gap-4">
-            {links.map(({ label, href, external }) => (
-              <a
-                key={label}
-                href={href}
-                {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-                className="group inline-flex items-center gap-2 rounded-full border border-foreground/20 px-6 py-3 font-mono text-sm uppercase tracking-widest text-foreground hover:border-accent hover:text-accent motion-safe:hover:-translate-y-0.5 transition-[color,border-color,transform] duration-200 active:scale-[0.98] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
-              >
-                {label}
-                <span aria-hidden="true" className="opacity-0 -translate-x-1 group-hover:opacity-100 group-hover:translate-x-0 transition-[opacity,transform] duration-200">
-                  →
-                </span>
-              </a>
-            ))}
+            {/* Quick Contact Form */}
+            <form onSubmit={handleSubmit} className="max-w-xl space-y-6 pt-2">
+              <input type="hidden" name="_subject" value="New Portfolio Message!" />
+
+              <div className="space-y-4">
+                {/* Sender Contact */}
+                <div className="relative border-b border-rule focus-within:border-accent transition-colors duration-300 py-2">
+                  <label className="block font-mono text-[10px] text-foreground/45 uppercase tracking-widest mb-1">
+                    SENDER_IDENTITY
+                  </label>
+                  <input
+                    type="text"
+                    name="name"
+                    required
+                    placeholder="your name or call sign"
+                    className="w-full bg-transparent border-none outline-none font-mono text-sm text-foreground placeholder-foreground/20 focus:ring-0 p-0"
+                  />
+                </div>
+
+                {/* Message Payload */}
+                <div className="relative border-b border-rule focus-within:border-accent transition-colors duration-300 py-2">
+                  <label className="block font-mono text-[10px] text-foreground/45 uppercase tracking-widest mb-1">
+                    MESSAGE_PAYLOAD
+                  </label>
+                  <textarea
+                    name="message"
+                    required
+                    rows={2}
+                    placeholder="Type your message here..."
+                    className="w-full bg-transparent border-none outline-none font-mono text-sm text-foreground placeholder-foreground/20 focus:ring-0 p-0 resize-none"
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <button
+                  type="submit"
+                  disabled={formStatus === 'transmitting'}
+                  className="inline-flex items-center gap-2 min-h-[40px] rounded-full border border-accent bg-accent/10 px-6 py-2 font-mono text-xs uppercase tracking-widest text-accent hover:bg-accent hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                  {formStatus === 'transmitting' ? 'Broadcasting...' : 'Transmit Signal'}
+                  <span aria-hidden="true">→</span>
+                </button>
+
+                {/* Status Indicator */}
+                <div className="font-mono text-[10px] flex items-center gap-2">
+                  {formStatus === 'transmitting' && (
+                    <>
+                      <span className="w-2 h-2 bg-yellow-500 rounded-full animate-ping"></span>
+                      <span className="text-yellow-500 uppercase tracking-widest">STATUS: BROADCASTING...</span>
+                    </>
+                  )}
+                  {formStatus === 'success' && (
+                    <>
+                      <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                      <span className="text-green-500 uppercase tracking-widest">STATUS: ACK_RECEIVED (OK)</span>
+                    </>
+                  )}
+                  {formStatus === 'error' && (
+                    <>
+                      <span className="w-2 h-2 bg-accent rounded-full"></span>
+                      <span className="text-accent uppercase tracking-widest">STATUS: ERR_FAILED_RETRY</span>
+                    </>
+                  )}
+                  {formStatus === 'idle' && (
+                    <>
+                      <span className="w-2 h-2 bg-foreground/30 rounded-full"></span>
+                      <span className="text-foreground/40 uppercase tracking-widest">STATUS: AWAITING_INPUT</span>
+                    </>
+                  )}
+                </div>
+              </div>
+            </form>
           </div>
 
-          {/* Footer line */}
-          <div className="flex items-center justify-between border-t border-rule pt-8 mt-4">
-            <span className="font-mono text-xs uppercase tracking-widest text-muted">
-              Lohith Tarikere Prasanna · {new Date().getFullYear()}
-            </span>
-            <span className="font-mono text-xs uppercase tracking-widest text-muted">
-              Nürnberg, Germany
-            </span>
+          {/* Signal Transmission Node Array */}
+          <div className="relative pt-44 pb-16 w-full">
+            {/* The Background Line (Baseline) */}
+            <div className="signal-line absolute bottom-[84px] left-0"></div>
+
+            {/* Antenna Grid */}
+            <div className="w-full flex justify-between items-end gap-4">
+              {links.map(({ label, href, external }) => (
+                <a
+                  key={label}
+                  href={href}
+                  {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  className="antenna-transmitter group relative flex flex-col items-center cursor-pointer"
+                >
+                  <div className="w-20 h-20 mb-[-5px]">
+                    <svg
+                      className="w-full h-full overflow-visible"
+                      viewBox="0 0 40 40"
+                      xmlns="http://www.w3.org/2000/svg"
+                      style={{ overflow: 'visible' }}
+                    >
+                      <path
+                        d="M20 35V15M12 35L20 15L28 35"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="1.5"
+                      />
+                      <g className="signal-arcs" fill="none" stroke="var(--color-accent)" strokeLinecap="round" strokeWidth="1.5">
+                        <path className="arc-1" d="M16 11C18 9 22 9 24 11" />
+                        <path className="arc-2" d="M12 8C16 5 24 5 28 8" />
+                        <path className="arc-3" d="M8 5C14 0 26 0 32 5" />
+                      </g>
+                    </svg>
+                  </div>
+                  <span className="contact-label font-mono text-xs tracking-widest text-foreground/60 uppercase mt-8 opacity-60 transition-all duration-300">
+                    {label}
+                  </span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+
+      {/* Aesthetic Ledger Section */}
+      <section className="px-6 md:px-16 py-8 border-t border-rule bg-background">
+        <div className="max-w-6xl w-full mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
+          <div className="space-y-4">
+            <h3 className="font-mono text-xs text-foreground/45 uppercase tracking-widest">
+              {t('system_status')}
+            </h3>
+            <div className="flex items-center gap-2">
+              <span className="w-2 h-2 bg-accent rounded-full animate-pulse"></span>
+              <span className="font-mono text-xs text-foreground uppercase tracking-wider">
+                {t('status_listening')}
+              </span>
+            </div>
+          </div>
+          <div className="text-left md:text-right">
+            <p className="font-mono text-xs text-foreground/60 max-w-sm md:ml-auto">
+              {t('latency_note')}
+            </p>
+          </div>
+        </div>
+      </section>
+    </div>
   )
 }

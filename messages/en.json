@@ -9,103 +9,193 @@
   },
   "hero": {
     "name": "Lohith Tarikere Prasanna",
+    "eyebrow": "MSc Electromobility · Python Developer",
+    "cta_story": "Read My Story",
+    "cta_hello": "Say Hello",
     "contact_email": "lnlohith3@gmail.com",
     "github": "GitHub",
     "linkedin": "LinkedIn"
   },
   "about": {
-    "descriptor": "I build AI agent workflows for RF measurement systems — where messy real-world signal data meets LLM tooling.",
-    "bio_1": "My work lives in the gap between a model that works on synthetic data and one that holds up on real measurements. I build tools that turn complex signal and test data into answers non-technical engineers can query directly.",
-    "bio_2": "At National Instruments in Dresden, I built an end-to-end Accept-on-Retest analytics skill for NI Nigel — benchmarking Polars over pandas, adding Parquet caching, and writing custom 1σ–3σ band classification from scratch. Manufacturing engineers used it in production to run root-cause analysis on test data with no code.",
-    "bio_3": "I'm pursuing an M.Sc. in Electromobility at FAU Erlangen-Nürnberg, majoring in AI & Connectivity. Looking for roles in agentic AI, RF/wireless, or production ML — ideally where the work actually ships to real users.",
-    "education_degree": "M.Sc. Electromobility",
-    "education_school": "Friedrich-Alexander-Universität",
-    "education_location": "Erlangen-Nürnberg, Germany",
-    "education_year": "Expected 2027"
+    "name": "Lohith Tarikere Prasanna",
+    "title": "AI Engineer",
+    "statement": "I research intelligent sensing systems at the boundary of 6G communications and autonomous driving.",
+    "cta_talk": "Let's talk",
+    "tag_1": "Engineer turned M.Sc. student",
+    "tag_2": "Previously at NI Dresden",
+    "tag_3": "Based in Nürnberg",
+    "badge": "what's up",
+    "intro_a": "ELECTRONICS ENGINEER. BUILDING FOR",
+    "intro_location": "CONNECTED VEHICLES",
+    "intro_b": ".",
+    "para_1a": "My work sits at the intersection of RF sensing, wireless connectivity, and automotive systems. Right now that means an M.Sc. thesis on intelligent decision-making for ISAC networks, where sensing and communication share the same hardware. I use AI where it helps — which at NI Dresden meant shipping a production tool that manufacturing engineers still use every day.",
+    "para_1_chip": "abstract?",
+    "para_1b": "",
+    "para_2a": "From Bengaluru. Huge",
+    "para_2_name": "Max Verstappen",
+    "para_2b": "fan.",
+    "para_3": "Here's what I've been working on."
   },
   "work": {
     "heading": "Selected Work",
-    "view_project": "View project",
+    "view_project": "View Project",
     "tech_label": "Tech Stack",
-    "overview_label": "Overview"
+    "overview_label": "Overview",
+    "radar_outer": "ENGINEERING",
+    "radar_inner": "FOR FUN",
+    "system_idle": "SYSTEM_IDLE",
+    "select_blip": "SELECT_BLIP",
+    "awaiting_target": "Awaiting target acquisition. Hover over active signal blips on the radar display to decode metadata and project specifications.",
+    "status_tracking": "STATUS: TRACKING",
+    "status_optimal": "Status: Optimal",
+    "repository": "Repository",
+    "telemetry": "Telemetry"
   },
   "projects": {
+    "can_decoder": {
+      "name": "CAN_DECODER",
+      "problem": "EMBEDDED SYSTEMS",
+      "tech": "RUST · CLI · CAN-BUS",
+      "description": "Rust CLI tool for decoding CAN bus logs. Signals embedded/automotive engineering depth. Parses DBC files and applies scaling factors to extract real-world vehicle telemetry (speed, steering angle, battery temp) in microsecond resolution. Built for high-performance automotive testing data ingestion pipelines."
+    },
+    "isac_drl": {
+      "name": "ISAC-DRL",
+      "problem": "DRL RESEARCH",
+      "tech": "PYTHON · PYTORCH · ISAC",
+      "description": "ISAC + Deep Reinforcement Learning research-grade work. High-performance sensing and communication. Formulates geometry-dependent bistatic radar cross-sections (RCS) to dynamically optimize beamforming vectors and role assignment, achieving a 15% increase in throughput under strict sensing constraints."
+    },
+    "modulation_classifier": {
+      "name": "MODULATION-CLASSIFIER",
+      "problem": "SIGNAL ANALYSIS",
+      "tech": "RF · ML · DSP",
+      "description": "Signals/RF modulation classification using ML. Real-time spectral analysis. Feature-based machine learning classifier identifying 11 modulation types (including BPSK, QAM16, GFSK) from raw IQ waveform samples. Extracts higher-order moments and spectral features, achieving 83.6% accuracy on clean signals and improving baseline robustness."
+    },
+    "sprachboot": {
+      "name": "SPRACHBOOT",
+      "problem": "CREATIVE/LANG",
+      "tech": "EDUCATION · GERMAN · LIFE",
+      "description": "Learning German while living in Nürnberg. A creative linguistic experiment tracking German vocabulary acquisition and cultural integration. Documents localized idioms, technical terms, and regional dialects through an interactive journaling schema."
+    },
+    "nest": {
+      "name": "NEST",
+      "problem": "HABITAT DESIGN",
+      "tech": "ARCHITECTURE · MINIMALISM",
+      "description": "Personal habitat project. Minimalist living space exploration. A spatial design project exploring high-density, modular micro-housing. Utilizes minimalist principles to maximize utility, airflow, and natural light within a 22-square-meter footprint, featuring transforming furniture layouts and integrated IoT environmental sensors."
+    },
+    "f1_dashboard": {
+      "name": "F1-DASHBOARD",
+      "problem": "TELEMETRY DASHBOARD",
+      "tech": "FASTF1 · DASH · TELEMETRY",
+      "description": "Live race data analysis using fastf1. Performance telemetry visualization. Real-time Formula 1 telemetry visualizer. Compares cornering speeds, throttle profiles, and braking points between drivers. Extracts overlay telemetry to analyze aerodynamic efficiency and tyre degradation curves across race weekends."
+    },
     "ni_agent": {
       "name": "Production AI Agent for RF Analytics",
-      "problem": "Manufacturing engineers needed root-cause analysis across 30–40 test types without writing code",
+      "problem": "Manufacturing engineers needed to query production test data without SQL or Python",
       "status": "Complete",
       "phasesCompleted": "3",
       "totalPhases": "3",
-      "tech": "Python · Polars · Parquet · Agent Skill · Plotly",
-      "description": "Two projects at National Instruments, Dresden. First, a Euclidean-distance ranking algorithm for parametric test data, extended from single-test to test-agnostic operation across 30–40 VST test types. Second, an end-to-end Accept-on-Retest analytics skill for NI Nigel: Polars over pandas, Parquet caching, and custom 1σ–3σ band classification splitting outcomes into real failures, marginal failures, and noise. Engineers queried it in natural language and got root-cause summaries with Plotly visualisations — no code required.",
-      "what_went_wrong": "Initially underestimated the overhead of repeatedly querying large-scale metadata. The system was stable but too slow for a conversational interface.",
-      "what_id_change": "Move heavy data processing behind a robust caching layer from the start. In an AI agent, latency is as important as accuracy — if it takes 30 seconds to respond, people stop using it."
+      "tech": "Python · Polars · Parquet · LLM Agent Skill · Plotly",
+      "description": "Built during an internship at NI Dresden. Manufacturing engineers type questions like 'show me the yield for VST channel 4 last week' and get back structured results with embedded Plotly charts. The LLM agent skill routes queries to Python pipelines. A Euclidean-distance ranking algorithm surfaces failure patterns across 30-40 measurement types without changing the existing data architecture. Custom 1σ/3σ classifier splits outcomes into real failures, marginal cases, and noise. Polars replaced pandas after benchmarking 5-10x faster on 100k+ row datasets. Parquet caching eliminates redundant reads from the proprietary datastore.",
+      "what_went_wrong": "Initially underestimated the overhead of repeated metadata queries. Stable, but too slow for a conversational interface.",
+      "what_id_change": "Put heavy data processing behind caching from the start. In an AI agent, latency matters as much as accuracy. If it takes 30 seconds, people stop using it."
     },
-    "isac_drl": {
-      "name": "ISAC Beamforming via Deep RL",
-      "problem": "Balancing communication throughput against sensing accuracy in mmWave ISAC has no closed-form solution",
+    "rf_classifier": {
+      "name": "RF Modulation Classifier",
+      "problem": "Recover how a radio signal was encoded from raw waveform data alone",
+      "status": "Complete",
+      "phasesCompleted": "3",
+      "totalPhases": "3",
+      "tech": "Python · scikit-learn · NumPy · Signal Processing",
+      "description": "Feature-based classifier that identifies modulation type from 16 statistical features extracted from raw waveform data — amplitude, phase, frequency, and higher-order spectral patterns. Trained and evaluated on RML2016.10a (220k samples, 11 signal types, 20 SNR levels). Hit 83.6% accuracy on clean signals against a 9% random baseline. Custom feature engineering lifted overall accuracy from 47.7% to 51.3% across all noise levels. No neural nets — just signal processing and scikit-learn.",
+      "what_went_wrong": "",
+      "what_id_change": ""
+    },
+    "isac_thesis": {
+      "name": "Intelligent Decision-Making for Cognitive ISAC Networks",
+      "problem": "Joint node-role selection and beamforming in a multi-node V2X intersection ISAC network",
       "status": "Active",
       "phasesCompleted": "1",
       "totalPhases": "3",
-      "tech": "Python · PyTorch · Stable-Baselines3 · Gymnasium · CVXPY",
-      "description": "A DDPG agent learns to steer a MIMO beamformer in mmWave ISAC (Integrated Sensing and Communication), trading communication throughput against sensing accuracy end-to-end. Channel model: Saleh-Valenzuela clustered mmWave propagation; mobility from 3GPP Release 16 NR-V2X. The policy maps raw channel observations to beamforming weights and traces out the Pareto curve between sensing and communication, with convex baselines computed in CVXPY.",
+      "tech": "Python · CVXPY · Convex Optimization · MIMO Theory",
+      "description": "IDC thesis at FAU. Most ISAC literature models radar cross-section as an i.i.d. random variable, but in distributed multi-node networks RCS depends on geometry. I'm proposing a deterministic bistatic RCS model σ(θ_b) that makes node-role selection a real optimization variable. The full problem is a joint node-role selection and beamforming formulation solved via convex optimization and successive convex approximation (SCA). Currently: literature review and problem formulation done, convex solver implementation in progress.",
       "what_went_wrong": "",
       "what_id_change": ""
     },
     "vlc": {
-      "name": "Vehicle-to-Vehicle Visible Light",
-      "problem": "Low-latency V2V communication without RF spectrum allocation",
+      "name": "Vehicle-to-Vehicle Visible Light Communication",
+      "problem": "Low-latency V2V communication without radio spectrum allocation",
       "status": "Complete",
       "phasesCompleted": "3",
       "totalPhases": "3",
       "tech": "C · STM32 · OOK · Turbo Coding · MATLAB",
-      "description": "An STM32-based vehicle-to-vehicle prototype using OOK optical modulation with Turbo coding for forward error correction to cut BER in noisy optical channels. LED driver circuitry simulated in Multisim for voltage stability; an MPPT algorithm modelled in MATLAB for a solar-powered transceiver. The hard part wasn't the link — it was ambient daylight swamping the photodetector, which forced adaptive thresholding.",
-      "what_went_wrong": "Optimized for lab conditions first, then had to redesign for real-world lighting. Should have tested in daylight from day 1.",
-      "what_id_change": "Start with the worst-case environment, not the best case. Physics doesn't care about your clean-room results."
-    },
-    "iot": {
-      "name": "Secure IoT Data Transfer",
-      "problem": "Encrypted sensor telemetry on a resource-constrained microcontroller",
-      "status": "Complete",
-      "phasesCompleted": "3",
-      "totalPhases": "3",
-      "tech": "C · ESP32 · AES-128 · MQTT · SPIFFS",
-      "description": "An ESP32-based IoT node for real-time encrypted sensor data over MQTT, with AES-128 encryption applied at the edge. SPIFFS handled secure key management and persistent device authentication so the node could re-establish a trusted session after a power cycle.",
-      "what_went_wrong": "",
-      "what_id_change": ""
+      "description": "STM32-based V2V prototype using OOK optical modulation with Turbo Coding for forward error correction. Simulated the LED driver in Multisim to check voltage stability under load. Modelled an MPPT algorithm in MATLAB for a solar-powered transceiver. The hard part was ambient light drowning the photodetector — adaptive thresholding fixed it. Real lesson: test in daylight from day one, not just the lab.",
+      "what_went_wrong": "Optimized for lab conditions first, then had to redesign for real lighting. Should have tested in daylight from day 1.",
+      "what_id_change": "Start with the worst-case environment, not the best case. Physics does not care about your clean-room results."
     }
   },
   "life": {
-    "heading": "Life",
-    "hobbies_heading": "Hobbies",
-    "obsessions_heading": "Current obsessions"
+    "heading": "Life.",
+    "intro": "Not everything I do ends up in a GitHub repo. This is the rest of it. Places I've lived, things I follow too closely, stuff I'm still figuring out.",
+    "currently_eyebrow": "CURRENTLY",
+    "currently": {
+      "watching_label": "Watching",
+      "watching_value": "House MD. Convinced I diagnose problems the same way he does.",
+      "reading_label": "Reading",
+      "reading_value": "My own thesis, unfortunately",
+      "building_label": "Building",
+      "building_value": "A German tutor app to avoid actually speaking German",
+      "eating_label": "Eating",
+      "eating_value": "Trying to find a good burger spot in Nürnberg. Still Looking.",
+      "learning_label": "Learning",
+      "learning_value": "Rust. Slowly."
+    },
+    "road_eyebrow": "FROM THE ROAD",
+    "road": {
+      "saxon": "Saxon Switzerland, 2023",
+      "alps": "Alps, Austria, 2022",
+      "berlin": "Berlin, 2024"
+    },
+    "quotes_eyebrow": "QUOTES I LIVE BY",
+    "quote": "\"You can't control the wind but you can adjust your sails. It's not about what happens to you, it's how you react.\"",
+    "footer": {
+      "designed_as": "© 2024 DESIGNED AS AN INSTRUMENT",
+      "find_me": "FIND ME ON"
+    }
   },
   "places": {
     "heading": "Places I've Lived",
     "scroll_hint": "Scroll to explore",
     "bengaluru": {
       "tagline": "Where it all began",
-      "story": "Home for 18 years. Grew up chasing monsoons, eating dosas at midnight, and learning that the best ideas come from chaos. The city that wired curiosity into me."
+      "story": "The chaotic, green capital of my early years. Where I learned to code, dodge traffic, and appreciate the sound of a city that never stops building."
     },
     "nurnberg": {
       "tagline": "First chapter abroad",
-      "story": "Arrived knowing no one. Left knowing what it means to build something from scratch in a foreign place. Christmas markets, long winters, and longer study sessions."
+      "story": "A transition to efficiency and cobblestones. Currently navigating the nuances of German bureaucracy and engineering master's courses."
     },
     "dresden": {
-      "tagline": "Where I am now",
-      "story": "A quieter city with a complicated history and an unexpectedly vibrant tech scene. Learning to slow down without stopping."
+      "tagline": "Six months. One internship. Surprisingly good bread.",
+      "story": "A winter spent working on high-frequency electronics near the Elbe. Technical growth in a historic setting."
     }
   },
   "contact": {
-    "heading": "Let's work together.",
-    "availability": "M.Sc. student in Germany, open to internships and roles in agentic AI, RF/wireless, or production ML. The fastest way to reach me is email — I read everything.",
+    "eyebrow": "Transmission Channel",
+    "heading": "IF SOMETHING HERE CAUGHT YOUR EYE.",
+    "availability_subtext": "Drop a line or follow the signal.",
+    "availability": "M.Sc. student in Germany, eligible to work up to 140 days/year. Open to Werkstudent or internship roles in signal processing, ML pipelines, or embedded automotive systems. Fastest way to reach me is email — I read everything.",
     "email_label": "Email",
     "github_label": "GitHub",
     "linkedin_label": "LinkedIn",
-    "resume_label": "Download CV"
+    "resume_label": "Download CV",
+    "system_status": "SYSTEM_STATUS",
+    "status_listening": "OPERATIONAL / LISTENING",
+    "latency_note": "Signals are monitored daily. Response latency typically falls within 0x18h.",
+    "status_optimal": "Status: Optimal",
+    "repository": "Repository",
+    "telemetry": "Telemetry"
   },
   "meta": {
-    "title": "Lohith Tarikere Prasanna — Builder",
-    "description": "Builder with intent. AI, wireless, and mobility. Portfolio of Lohith Tarikere Prasanna."
+    "title": "Lohith Tarikere Prasanna",
+    "description": "M.Sc. Electromobility student at FAU. Built production AI tools at NI Dresden, worked on embedded systems at Delta X Automotive. Signal processing, ML, and embedded automotive."
   }
 }

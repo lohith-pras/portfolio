@@ -1,9 +1,11 @@
 import type { Metadata } from 'next'
-import { Space_Mono, JetBrains_Mono, Outfit } from 'next/font/google'
+import { Space_Mono, Plus_Jakarta_Sans, Oswald } from 'next/font/google'
 import './globals.css'
 
 // FOUND-01: Fonts loaded via next/font/google — zero external network request,
 // automatic preload, no layout shift, latin subset covers German umlauts (ä ö ü ß)
+// 3-family stack: Oswald (display/headings) + Space Mono (mono labels) + Plus Jakarta Sans (body)
+
 const spaceMono = Space_Mono({
   weight: ['400', '700'],
   subsets: ['latin'],
@@ -11,18 +13,20 @@ const spaceMono = Space_Mono({
   display: 'swap',
 })
 
-// Display face — JetBrains Mono. Headings + hero name.
-// Space Mono is kept for small technical labels (eyebrows, ledger, tuner).
-const jetbrainsMono = JetBrains_Mono({
-  weight: ['400', '500', '700'],
+// Body face — Plus Jakarta Sans. Prose, body copy, captions.
+const plusJakartaSans = Plus_Jakarta_Sans({
+  weight: ['300', '400', '500'],
   subsets: ['latin'],
-  variable: '--font-jetbrains-mono',
+  variable: '--font-plus-jakarta',
   display: 'swap',
 })
 
-const outfit = Outfit({
+// Display / heading face — Oswald. Hero name + all section h2 headings.
+// Condensed grotesque — carries the "signal / instrument" brand voice.
+const oswald = Oswald({
+  weight: ['500', '600', '700'],
   subsets: ['latin'],
-  variable: '--font-outfit',
+  variable: '--font-oswald',
   display: 'swap',
 })
 
@@ -44,7 +48,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${spaceMono.variable} ${jetbrainsMono.variable} ${outfit.variable}`}
+      className={`${spaceMono.variable} ${plusJakartaSans.variable} ${oswald.variable}`}
     >
       <body className="bg-background text-foreground antialiased">
         {children}
