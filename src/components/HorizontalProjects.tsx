@@ -249,6 +249,8 @@ export function HorizontalProjects() {
       gl.deleteProgram(prog)
       gl.deleteShader(vertexShader)
       gl.deleteShader(fragmentShader)
+      // Force-release the GPU context so it isn't left lingering on unmount.
+      gl.getExtension('WEBGL_lose_context')?.loseContext()
     }
   }, [reduce])
 
@@ -412,6 +414,7 @@ export function HorizontalProjects() {
   }, [panelOpen, selectedKey, reduce])
 
   const activeProject = PROJECTS.find((p) => p.key === selectedKey)
+  const year = new Date().getFullYear()
 
   return (
     <section
@@ -651,7 +654,7 @@ export function HorizontalProjects() {
       {/* System Status Footer (Desktop only) */}
       <div className="absolute bottom-6 left-12 right-12 hidden md:flex justify-between items-center z-10 pointer-events-none select-none">
         <div className="font-mono text-[10px] text-foreground/40 uppercase tracking-widest">
-          ©{new Date().getFullYear()} SIGNAL/LABS. <span className="text-accent font-bold">SYSTEM_READY</span>
+          ©{year} SIGNAL/LABS. <span className="text-accent font-bold">SYSTEM_READY</span>
         </div>
         <div className="flex gap-6 font-mono text-[10px] pointer-events-auto">
           <a

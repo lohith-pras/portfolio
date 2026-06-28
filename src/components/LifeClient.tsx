@@ -99,15 +99,13 @@ export function LifeClient() {
         </span>
         <div className="space-y-12 max-w-4xl">
           {logItems.map((item) => (
-            <div key={item.key} className="grid border-t border-rule pt-6">
-              <div>
-                <span className="font-mono text-accent text-xs uppercase tracking-widest block mb-2">
-                  {item.label}
-                </span>
-                <p className={`font-body text-ink text-lg md:text-xl font-light ${item.key === 'reading' ? 'italic' : ''}`}>
-                  {item.value}
-                </p>
-              </div>
+            <div key={item.key} className="border-t border-rule pt-6">
+              <span className="font-mono text-accent text-xs uppercase tracking-widest block mb-2">
+                {item.label}
+              </span>
+              <p className={`font-body text-ink text-lg md:text-xl font-light ${item.key === 'reading' ? 'italic' : ''}`}>
+                {item.value}
+              </p>
             </div>
           ))}
         </div>
@@ -208,7 +206,7 @@ export function LifeClient() {
           <span className="text-[#F5E6C8]/50">{t('footer.find_me')}</span>
           <a
             className="text-[#F5E6C8] hover:text-accent transition-colors underline decoration-accent underline-offset-4"
-            href="https://instagram.com"
+            href="https://instagram.com/lohith_pras"
             target="_blank"
             rel="noopener noreferrer"
           >

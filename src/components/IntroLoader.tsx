@@ -58,10 +58,16 @@ export function IntroLoader() {
     const lenis = getLenis()
     lenis?.scrollTo(0, { immediate: true })
     lenis?.stop()
+    // Lenis is disabled on the home route (SmoothScroll), so its stop() is a
+    // no-op here — lock native scroll directly so the page can't move behind
+    // the overlay during the boot sequence.
+    const prevOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
 
     const counter = { n: 0 }
     const tl = gsap.timeline({
       onComplete: () => {
+        document.body.style.overflow = prevOverflow
         getLenis()?.start()
         fireComplete()
         setShow(false)
@@ -81,9 +87,10 @@ export function IntroLoader() {
       .to(bottomRef.current, { yPercent: 100, duration: 0.8, ease: 'expo.inOut' }, '<')
 
     return () => {
-      // Always release Lenis on teardown — a StrictMode/HMR kill must never
+      // Always release scroll on teardown — a StrictMode/HMR kill must never
       // strand the page in a scroll-locked state.
       tl.kill()
+      document.body.style.overflow = prevOverflow
       getLenis()?.start()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

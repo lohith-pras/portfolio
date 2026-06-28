@@ -44,6 +44,7 @@ export function StaticHero() {
         gsap.to(lines, { yPercent: 0, duration: 1.1, ease: 'expo.out', stagger: 0.12 })
       }
 
+      let fallback: ReturnType<typeof setTimeout> | undefined
       if (played) {
         reveal()
       } else {
@@ -51,7 +52,7 @@ export function StaticHero() {
         // I4 — safety net: if intro-complete never fires (e.g. GSAP load failure,
         // strict-mode teardown race), reveal after 3 s so the name is never
         // permanently hidden.
-        const fallback = setTimeout(reveal, 3000)
+        fallback = setTimeout(reveal, 3000)
         const cleanup = () => clearTimeout(fallback)
         window.addEventListener('intro-complete', cleanup, { once: true })
       }
@@ -88,6 +89,7 @@ export function StaticHero() {
       })
 
       return () => {
+        if (fallback) clearTimeout(fallback)
         window.removeEventListener('intro-complete', reveal)
         handlers.forEach(({ btn, move, leave }) => {
           btn.removeEventListener('mousemove', move)

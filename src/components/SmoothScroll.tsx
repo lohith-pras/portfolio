@@ -47,7 +47,10 @@ export function SmoothScroll() {
       setLenis(null)
       lenis.destroy()
     }
-  }, [])
+    // Re-run on route change: component lives in the persistent layout, so the
+    // isHome guard must re-evaluate when navigating home ↔ /life (else Lenis
+    // is created/destroyed based only on the first route loaded).
+  }, [isHome])
 
   return null
 }

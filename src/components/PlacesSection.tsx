@@ -6,7 +6,6 @@ import { useTranslations } from 'next-intl'
 import { useGSAP } from '@gsap/react'
 import { gsap, ScrollTrigger } from '@/lib/gsap'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
-import { PLACES } from '@/lib/places'
 
 export function PlacesSection() {
   const t = useTranslations('places')
