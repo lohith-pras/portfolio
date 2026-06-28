@@ -2,6 +2,8 @@
 
 import { useEffect, useRef, useState } from 'react'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
+import { useGSAP } from '@gsap/react'
+import { gsap } from '@/lib/gsap'
 
 const SECTIONS = [
   { id: 'about',   n: '01', label: 'ABOUT'   },
@@ -13,9 +15,12 @@ type SectionId = (typeof SECTIONS)[number]['id']
 
 export function SectionSpine() {
   const [active, setActive] = useState<SectionId | null>(null)
-  // Track the previous active for crossfade direction
   const [visible, setVisible] = useState(false)
+  const [displayCurrent, setDisplayCurrent] = useState<typeof SECTIONS[number] | null>(null)
   const reducedMotion = useReducedMotion()
+
+  const contentRef = useRef<HTMLDivElement>(null)
+  const prevActiveRef = useRef<SectionId | null>(null)
 
   useEffect(() => {
     // Build a map of id → element, skipping any that don't exist in the DOM
@@ -73,7 +78,54 @@ export function SectionSpine() {
     }
   }, [])
 
-  const current = SECTIONS.find(s => s.id === active) ?? null
+  // Animate indicator label cross-fade when active section changes
+  useGSAP(() => {
+    if (reducedMotion) {
+      const nextSection = SECTIONS.find(s => s.id === active) ?? null
+      setDisplayCurrent(nextSection)
+      return
+    }
+
+    if (!active) {
+      gsap.to(contentRef.current, {
+        opacity: 0,
+        y: 8,
+        duration: 0.15,
+        ease: 'power2.in',
+        onComplete: () => setDisplayCurrent(null)
+      })
+      prevActiveRef.current = null
+      return
+    }
+
+    const nextSection = SECTIONS.find(s => s.id === active) ?? null
+    if (!nextSection) return
+
+    // If there was no previous active indicator visible, fade in directly
+    if (!displayCurrent) {
+      setDisplayCurrent(nextSection)
+      gsap.fromTo(contentRef.current,
+        { opacity: 0, y: -8 },
+        { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }
+      )
+    } else if (prevActiveRef.current !== active) {
+      // Cross-fade: Slide down and fade out, change the content, slide down and fade in
+      gsap.to(contentRef.current, {
+        opacity: 0,
+        y: 8,
+        duration: 0.15,
+        ease: 'power2.in',
+        onComplete: () => {
+          setDisplayCurrent(nextSection)
+          gsap.fromTo(contentRef.current,
+            { opacity: 0, y: -8 },
+            { opacity: 1, y: 0, duration: 0.25, ease: 'power2.out' }
+          )
+        }
+      })
+    }
+    prevActiveRef.current = active
+  }, [active, reducedMotion])
 
   const transitionStyle = reducedMotion
     ? undefined
@@ -87,35 +139,37 @@ export function SectionSpine() {
       <div
         style={{
           ...transitionStyle,
-          opacity: visible && current ? 1 : 0,
-          transform: visible && current ? 'translateY(0)' : 'translateY(6px)',
+          opacity: visible && active ? 1 : 0,
+          transform: visible && active ? 'translateY(0)' : 'translateY(6px)',
         }}
         aria-hidden="true"
       >
-        {current && (
-          <div className="flex flex-col items-start gap-1">
-            {/* Hairline rule above */}
-            <span
-              className="block w-px h-8 bg-rule opacity-40"
-              style={{ marginLeft: '2px' }}
-            />
-            {/* Number */}
-            <span className="font-mono text-[10px] leading-none tracking-[0.25em] text-accent">
-              {current.n}
-            </span>
-            {/* Label — rotated 90° so it reads bottom-to-top, spine style */}
-            <span
-              className="font-mono text-[10px] leading-none tracking-[0.3em] text-muted uppercase"
-              style={{
-                writingMode: 'vertical-rl',
-                transform: 'rotate(180deg)',
-                marginTop: '4px',
-              }}
-            >
-              {current.label}
-            </span>
-          </div>
-        )}
+        <div ref={contentRef} style={reducedMotion ? undefined : { opacity: 0 }}>
+          {displayCurrent && (
+            <div className="flex flex-col items-start gap-1">
+              {/* Hairline rule above */}
+              <span
+                className="block w-px h-8 bg-rule opacity-40"
+                style={{ marginLeft: '2px' }}
+              />
+              {/* Number */}
+              <span className="font-mono text-[10px] leading-none tracking-[0.25em] text-accent">
+                {displayCurrent.n}
+              </span>
+              {/* Label — rotated 90° so it reads bottom-to-top, spine style */}
+              <span
+                className="font-mono text-[10px] leading-none tracking-[0.3em] text-muted uppercase"
+                style={{
+                  writingMode: 'vertical-rl',
+                  transform: 'rotate(180deg)',
+                  marginTop: '4px',
+                }}
+              >
+                {displayCurrent.label}
+              </span>
+            </div>
+          )}
+        </div>
       </div>
     </nav>
   )

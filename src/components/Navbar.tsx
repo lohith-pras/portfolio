@@ -37,7 +37,7 @@ export function Navbar() {
       style={{ opacity: 0 }}
       className="fixed top-8 left-1/2 -translate-x-1/2 z-[100] w-auto"
     >
-      <div className="bg-paper border border-rule rounded-full px-6 py-3 flex items-center gap-12 shadow-2xl">
+      <div className="bg-paper border border-beige/50 rounded-full px-6 py-3 flex items-center gap-12 shadow-2xl">
         {/* Left: LTP Monogram */}
         <div className="flex items-center">
           <Link

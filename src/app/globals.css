@@ -374,4 +374,20 @@ html.has-scroll-snap #contact-container {
   }
 }
 
+/* ─── Coordinate Grid & Kannada Glow ─── */
+.coordinate-grid {
+  background-image: linear-gradient(rgba(245, 230, 200, 0.08) 1px, transparent 1px),
+                    linear-gradient(90deg, rgba(245, 230, 200, 0.08) 1px, transparent 1px);
+  background-size: 50px 50px;
+}
+
+.kannada-glow {
+  transition: text-shadow 0.3s ease, opacity 0.3s ease;
+}
+
+.kannada-glow:hover {
+  text-shadow: 0 0 35px var(--color-accent);
+}
+
+
 

@@ -134,24 +134,48 @@
     }
   },
   "life": {
-    "heading": "Leben",
-    "hobbies_heading": "Hobbys",
-    "obsessions_heading": "Aktuelle Obsessionen"
+    "heading": "Leben.",
+    "intro": "Nicht alles, was ich tue, landet in einem GitHub-Repo. Dies ist der Rest davon. Orte, an denen ich gelebt habe, Dinge, die ich zu genau verfolge, Zeug, das ich immer noch herauszufinden versuche.",
+    "currently_eyebrow": "AKTUELL",
+    "currently": {
+      "watching_label": "Ich schaue",
+      "watching_value": "Dr. House. Überzeugt, dass ich Probleme auf die gleiche Weise diagnostiziere wie er.",
+      "reading_label": "Ich lese",
+      "reading_value": "Meine eigene Abschlussarbeit, leider",
+      "building_label": "Ich baue",
+      "building_value": "Eine Deutsch-Lern-App, um tatsächliches Deutschsprechen zu vermeiden",
+      "eating_label": "Ich esse",
+      "eating_value": "Ich versuche, einen guten Burger-Laden in Nürnberg zu finden. Suche immer noch.",
+      "learning_label": "Ich lerne",
+      "learning_value": "Rust. Langsam."
+    },
+    "road_eyebrow": "UNTERWEGS",
+    "road": {
+      "saxon": "Sächsische Schweiz, 2023",
+      "alps": "Alpen, Österreich, 2022",
+      "berlin": "Berlin, 2024"
+    },
+    "quotes_eyebrow": "ZITATE, NACH DENEN ICH LEBE",
+    "quote": "\"Du kannst den Wind nicht kontrollieren, aber du kannst deine Segel anpassen. Es geht nicht darum, was dir passiert, sondern wie du darauf reagierst.\"",
+    "footer": {
+      "designed_as": "© 2024 DESIGNT ALS INSTRUMENT",
+      "find_me": "FINDE MICH AUF"
+    }
   },
   "places": {
     "heading": "Orte, an denen ich gelebt habe",
     "scroll_hint": "Scrollen zum Erkunden",
     "bengaluru": {
       "tagline": "Wo alles begann",
-      "story": "18 Jahre lang mein Zuhause. Aufgewachsen zwischen Monsunregen, nächtlichen Dosas und der Erkenntnis, dass die besten Ideen aus dem Chaos kommen. Die Stadt, die mir Neugier einpflanzte."
+      "story": "Die chaotische, grüne Hauptstadt meiner frühen Jahre. Wo ich programmieren und dem Verkehr ausweichen gelernt habe und das Geräusch einer Stadt schätzen lernte, die niemals aufhört zu bauen."
     },
     "nurnberg": {
       "tagline": "Erstes Kapitel im Ausland",
-      "story": "Angekommen ohne jemanden zu kennen. Gegangen mit dem Wissen, was es bedeutet, in der Fremde etwas aufzubauen. Weihnachtsmärkte, lange Winter und noch längere Lernsessions."
+      "story": "Ein Übergang zu Effizienz und Kopfsteinpflaster. Navigiere derzeit durch die Nuancen der deutschen Bürokratie und der Masterstudiengänge im Ingenieurwesen."
     },
     "dresden": {
-      "tagline": "Wo ich jetzt bin",
-      "story": "Eine ruhigere Stadt mit komplizierter Geschichte und überraschend lebendiger Tech-Szene. Ich lerne, langsamer zu werden, ohne aufzuhören."
+      "tagline": "Sechs Monate. Ein Praktikum. Überraschend gutes Brot.",
+      "story": "Ein Winter, in dem ich an Hochfrequenzelektronik in der Nähe der Elbe gearbeitet habe. Technisches Wachstum in einem historischen Umfeld."
     }
   },
   "contact": {

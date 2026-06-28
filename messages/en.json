@@ -134,24 +134,48 @@
     }
   },
   "life": {
-    "heading": "Life",
-    "hobbies_heading": "Hobbies",
-    "obsessions_heading": "Current obsessions"
+    "heading": "Life.",
+    "intro": "Not everything I do ends up in a GitHub repo. This is the rest of it. Places I've lived, things I follow too closely, stuff I'm still figuring out.",
+    "currently_eyebrow": "CURRENTLY",
+    "currently": {
+      "watching_label": "Watching",
+      "watching_value": "House MD. Convinced I diagnose problems the same way he does.",
+      "reading_label": "Reading",
+      "reading_value": "My own thesis, unfortunately",
+      "building_label": "Building",
+      "building_value": "A German tutor app to avoid actually speaking German",
+      "eating_label": "Eating",
+      "eating_value": "Trying to find a good burger spot in Nürnberg. Still Looking.",
+      "learning_label": "Learning",
+      "learning_value": "Rust. Slowly."
+    },
+    "road_eyebrow": "FROM THE ROAD",
+    "road": {
+      "saxon": "Saxon Switzerland, 2023",
+      "alps": "Alps, Austria, 2022",
+      "berlin": "Berlin, 2024"
+    },
+    "quotes_eyebrow": "QUOTES I LIVE BY",
+    "quote": "\"You can't control the wind but you can adjust your sails. It's not about what happens to you, it's how you react.\"",
+    "footer": {
+      "designed_as": "© 2024 DESIGNED AS AN INSTRUMENT",
+      "find_me": "FIND ME ON"
+    }
   },
   "places": {
     "heading": "Places I've Lived",
     "scroll_hint": "Scroll to explore",
     "bengaluru": {
       "tagline": "Where it all began",
-      "story": "Home for 18 years. Grew up chasing monsoons, eating dosas at midnight, and learning that the best ideas come from chaos. The city that wired curiosity into me."
+      "story": "The chaotic, green capital of my early years. Where I learned to code, dodge traffic, and appreciate the sound of a city that never stops building."
     },
     "nurnberg": {
       "tagline": "First chapter abroad",
-      "story": "Arrived knowing no one. Left knowing what it means to build something from scratch in a foreign place. Christmas markets, long winters, and longer study sessions."
+      "story": "A transition to efficiency and cobblestones. Currently navigating the nuances of German bureaucracy and engineering master's courses."
     },
     "dresden": {
-      "tagline": "Where I am now",
-      "story": "A quieter city with a complicated history and an unexpectedly vibrant tech scene. Learning to slow down without stopping."
+      "tagline": "Six months. One internship. Surprisingly good bread.",
+      "story": "A winter spent working on high-frequency electronics near the Elbe. Technical growth in a historic setting."
     }
   },
   "contact": {

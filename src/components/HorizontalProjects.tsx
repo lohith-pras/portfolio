@@ -4,6 +4,8 @@ import { useRef, useEffect, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { useReducedMotion } from '@/hooks/useReducedMotion'
 import { X } from 'lucide-react'
+import { useGSAP } from '@gsap/react'
+import { gsap } from '@/lib/gsap'
 
 // Radar Coordinates for the 6 projects (representing active signal blips)
 const PROJECTS = [
@@ -293,6 +295,122 @@ export function HorizontalProjects() {
     }
   }, [hoveredKey])
 
+  // Blip entrance pop-in stagger when container is revealed
+  useGSAP(() => {
+    const container = containerRef.current
+    if (!container || reduce) return
+
+    const blips = container.querySelectorAll('.group')
+
+    if (isRevealed) {
+      // Scale and fade container in
+      gsap.to(container, {
+        opacity: 1,
+        scale: 1,
+        duration: 1.2,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      })
+      // Stagger blips in with a pop spring
+      gsap.fromTo(blips,
+        { scale: 0, opacity: 0 },
+        {
+          scale: 1,
+          opacity: 1,
+          duration: 0.6,
+          stagger: 0.08,
+          ease: 'back.out(1.5)',
+          delay: 0.2,
+          overwrite: 'auto'
+        }
+      )
+    } else {
+      // Hold hidden in preparation for next reveal
+      gsap.set(container, { opacity: 0, scale: 0.95 })
+      gsap.set(blips, { scale: 0, opacity: 0 })
+    }
+  }, [isRevealed, reduce])
+
+  // Slide details panel in/out and stagger contents
+  useGSAP(() => {
+    const panel = panelRef.current
+    if (!panel) return
+
+    const isMobile = window.innerWidth < 768
+
+    // Set initial position and ensure it's visible (opacity: 1) when GSAP takes over
+    if (!panelOpen) {
+      gsap.set(panel, {
+        xPercent: isMobile ? 0 : 100,
+        yPercent: isMobile ? 100 : 0,
+        opacity: 1
+      })
+    }
+
+    const handleResize = () => {
+      const isMob = window.innerWidth < 768
+      if (!panelOpen) {
+        gsap.set(panel, {
+          xPercent: isMob ? 0 : 100,
+          yPercent: isMob ? 100 : 0
+        })
+      } else {
+        gsap.set(panel, {
+          xPercent: 0,
+          yPercent: 0
+        })
+      }
+    }
+
+    window.addEventListener('resize', handleResize)
+
+    const contentElements = panel.querySelectorAll('.panel-animate')
+
+    if (panelOpen) {
+      const tl = gsap.timeline()
+      
+      // Animate panel container slide-in
+      tl.to(panel, {
+        xPercent: 0,
+        yPercent: 0,
+        opacity: 1,
+        duration: 0.55,
+        ease: 'power3.out',
+        overwrite: 'auto'
+      })
+
+      // Stagger internal items
+      if (!reduce) {
+        tl.fromTo(contentElements,
+          { opacity: 0, y: 12 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+            stagger: 0.06,
+            ease: 'power2.out',
+            clearProps: 'transform,opacity',
+            overwrite: 'auto'
+          },
+          '-=0.3'
+        )
+      }
+    } else {
+      // Animate panel slide-out
+      gsap.to(panel, {
+        xPercent: isMobile ? 0 : 100,
+        yPercent: isMobile ? 100 : 0,
+        duration: 0.5,
+        ease: 'power3.inOut',
+        overwrite: 'auto'
+      })
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResize)
+    }
+  }, [panelOpen, selectedKey, reduce])
+
   const activeProject = PROJECTS.find((p) => p.key === selectedKey)
 
   return (
@@ -390,7 +508,12 @@ export function HorizontalProjects() {
               }}
               aria-label={tp(`${p.key}.name`)}
               className="absolute -translate-x-1/2 -translate-y-1/2 group focus-visible:outline-none z-30"
-              style={{ top: p.top, left: p.left }}
+              style={{
+                top: p.top,
+                left: p.left,
+                opacity: reduce ? 1 : 0,
+                transform: reduce ? undefined : 'translate(-50%, -50%) scale(0)'
+              }}
             >
               <div className="relative p-4">
                 {/* Core Blip Dot */}
@@ -424,17 +547,18 @@ export function HorizontalProjects() {
       {/* Responsive Detail Panel (Desktop Sidebar / Mobile Bottom Sheet) */}
       <aside
         ref={panelRef}
-        className={`absolute z-40 bg-paper/95 border-rule transition-transform duration-500 ease-out flex flex-col justify-between select-none
+        style={{
+          opacity: reduce ? 1 : 0,
+        }}
+        className="absolute z-40 bg-paper/95 border-rule flex flex-col justify-between select-none
           /* Mobile Bottom Sheet Styles */
           bottom-0 left-0 w-full h-[45vh] border-t p-6 md:p-8
           /* Desktop Sidebar Overrides */
-          md:top-0 md:right-0 md:left-auto md:bottom-auto md:w-[400px] md:h-full md:border-l md:border-t-0 md:p-12
-          ${panelOpen ? 'translate-y-0 md:translate-y-0 md:translate-x-0' : 'translate-y-full md:translate-y-0 md:translate-x-full'}
-        `}
+          md:top-0 md:right-0 md:left-auto md:bottom-auto md:w-[400px] md:h-full md:border-l md:border-t-0 md:p-12"
       >
         <div className="space-y-6 md:space-y-8 mt-4 md:mt-16">
           {/* Header metadata */}
-          <div className="space-y-1">
+          <div className="space-y-1 panel-animate">
             <div className="font-mono text-[10px] text-accent uppercase tracking-[0.25em]">
               {selectedKey ? tp(`${selectedKey}.problem`) : t('system_idle')}
             </div>
@@ -459,13 +583,13 @@ export function HorizontalProjects() {
           )}
 
           {/* Description Copy */}
-          <p className="font-body text-foreground/75 leading-relaxed text-xs md:text-sm select-text max-h-[12vh] md:max-h-[35vh] overflow-y-auto pr-2">
+          <p className="font-body text-foreground/75 leading-relaxed text-xs md:text-sm select-text max-h-[12vh] md:max-h-[35vh] overflow-y-auto pr-2 panel-animate">
             {selectedKey ? tp(`${selectedKey}.description`) : t('awaiting_target')}
           </p>
 
           {/* Tech stack tags */}
           {selectedKey && (
-            <div className="flex flex-wrap gap-1.5 md:gap-2">
+            <div className="flex flex-wrap gap-1.5 md:gap-2 panel-animate">
               {tp(`${selectedKey}.tech`)
                 .split('·')
                 .map((s) => s.trim())
@@ -483,7 +607,7 @@ export function HorizontalProjects() {
 
           {/* View Project Action */}
           {selectedKey && (
-            <div className="pt-2 md:pt-4">
+            <div className="pt-2 md:pt-4 panel-animate">
               {activeProject?.href ? (
                 <a
                   href={activeProject.href}
@@ -513,7 +637,7 @@ export function HorizontalProjects() {
         </div>
 
         {/* Panel Telemetry Footer (Desktop only) */}
-        <div className="hidden md:flex justify-between items-end border-t border-rule pt-6">
+        <div className="hidden md:flex justify-between items-end border-t border-rule pt-6 panel-animate">
           <div className="font-mono text-[9px] text-foreground/30 space-y-0.5 leading-none">
             <div>LAT: 49.4521</div>
             <div>LNG: 11.0767</div>

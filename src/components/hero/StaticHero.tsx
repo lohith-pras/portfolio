@@ -66,8 +66,33 @@ export function StaticHero() {
       gsap.to('.hero-name', { y: -340, ease: 'none', scrollTrigger: st })
       gsap.to('.hero-ui', { y: -260, opacity: 0, ease: 'none', scrollTrigger: st })
 
+      // Magnetic hover effect for CTA buttons
+      const buttons = gsap.utils.toArray<HTMLElement>('.hero-ui a')
+      const handlers: { btn: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }[] = []
+
+      buttons.forEach((btn) => {
+        const onMove = (e: MouseEvent) => {
+          const rect = btn.getBoundingClientRect()
+          const x = (e.clientX - rect.left - rect.width / 2) * 0.35
+          const y = (e.clientY - rect.top - rect.height / 2) * 0.35
+          gsap.to(btn, { x, y, duration: 0.3, ease: 'power2.out', overwrite: 'auto' })
+        }
+
+        const onLeave = () => {
+          gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1.1, 0.4)', overwrite: 'auto' })
+        }
+
+        btn.addEventListener('mousemove', onMove)
+        btn.addEventListener('mouseleave', onLeave)
+        handlers.push({ btn, move: onMove, leave: onLeave })
+      })
+
       return () => {
         window.removeEventListener('intro-complete', reveal)
+        handlers.forEach(({ btn, move, leave }) => {
+          btn.removeEventListener('mousemove', move)
+          btn.removeEventListener('mouseleave', leave)
+        })
       }
     },
     { scope: sectionRef, dependencies: [reduce] },

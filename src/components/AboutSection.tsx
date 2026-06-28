@@ -45,6 +45,22 @@ export function AboutSection() {
           },
         },
       )
+
+      // Slow infinite rotation of the orbit ring paths
+      gsap.to('.orbit-g-1', {
+        rotation: 360,
+        duration: 25,
+        repeat: -1,
+        ease: 'none',
+        transformOrigin: '32px 32px',
+      })
+      gsap.to('.orbit-g-2', {
+        rotation: -360,
+        duration: 18,
+        repeat: -1,
+        ease: 'none',
+        transformOrigin: '32px 32px',
+      })
     },
     { scope: sectionRef, dependencies: [reduce] },
   )
@@ -159,26 +175,30 @@ function OrbitRing() {
       {/* Core dot */}
       <circle cx="32" cy="32" r="3" fill="currentColor" opacity="0.9" />
       {/* Tilted orbital ellipse */}
-      <ellipse
-        cx="32"
-        cy="32"
-        rx="28"
-        ry="10"
-        stroke="currentColor"
-        strokeWidth="0.6"
-        opacity="0.2"
-        transform="rotate(-35 32 32)"
-      />
-      <ellipse
-        cx="32"
-        cy="32"
-        rx="18"
-        ry="6"
-        stroke="currentColor"
-        strokeWidth="0.6"
-        opacity="0.3"
-        transform="rotate(55 32 32)"
-      />
+      <g className="orbit-g-1" style={{ transformOrigin: '32px 32px' }}>
+        <ellipse
+          cx="32"
+          cy="32"
+          rx="28"
+          ry="10"
+          stroke="currentColor"
+          strokeWidth="0.6"
+          opacity="0.2"
+          transform="rotate(-35 32 32)"
+        />
+      </g>
+      <g className="orbit-g-2" style={{ transformOrigin: '32px 32px' }}>
+        <ellipse
+          cx="32"
+          cy="32"
+          rx="18"
+          ry="6"
+          stroke="currentColor"
+          strokeWidth="0.6"
+          opacity="0.3"
+          transform="rotate(55 32 32)"
+        />
+      </g>
     </svg>
   )
 }
