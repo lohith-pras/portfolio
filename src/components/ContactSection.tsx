@@ -56,9 +56,10 @@ export function ContactSection() {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
+    const form = e.currentTarget
     setFormStatus('transmitting')
 
-    const formData = new FormData(e.currentTarget)
+    const formData = new FormData(form)
     try {
       const response = await fetch('https://formsubmit.co/ajax/lnlohith3@gmail.com', {
         method: 'POST',
@@ -69,13 +70,14 @@ export function ContactSection() {
         body: JSON.stringify(Object.fromEntries(formData)),
       })
 
-      if (response.ok) {
+      const data = await response.json()
+      if (data.success === 'true' || data.success === true) {
         setFormStatus('success')
-        e.currentTarget.reset()
+        form.reset()
       } else {
         setFormStatus('error')
       }
-    } catch (err) {
+    } catch {
       setFormStatus('error')
     }
   }
@@ -203,7 +205,7 @@ export function ContactSection() {
                   {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
                   className="antenna-transmitter group relative flex flex-col items-center cursor-pointer"
                 >
-                  <div className="w-20 h-20 mb-[-5px]">
+                  <div className="w-12 h-12 md:w-20 md:h-20 mb-[-5px]">
                     <svg
                       className="w-full h-full overflow-visible"
                       viewBox="0 0 40 40"

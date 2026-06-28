@@ -75,7 +75,7 @@ export function AboutSection() {
     <section
       ref={sectionRef}
       id="about"
-      className="about-dot-grid relative z-20 flex w-full flex-col items-center bg-background py-20 md:py-[100px]"
+      className="about-dot-grid relative z-20 flex w-full flex-col items-center bg-background pt-28 pb-20 md:py-[100px]"
     >
       <div className="flex w-full max-w-[800px] flex-col items-center px-6 text-center">
 

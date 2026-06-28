@@ -171,8 +171,9 @@ export function PlacesSection() {
           ease: 'power1.out',
         }, 4.8)
 
-        // Pause/Reveal Dresden
+        // Pause/Reveal Dresden — slide left as plane arrives
         .to(cardDrsRef.current, {
+          x: -60,
           opacity: 1,
           duration: 1.5,
           ease: 'power1.out',
@@ -196,7 +197,8 @@ export function PlacesSection() {
           ease: 'none',
         }, 8.5)
         .to(cardDrsRef.current, {
-          opacity: 0.2,
+          opacity: 0,
+          x: -60,
           duration: 1.5,
           ease: 'power1.out',
         }, 8.8)
@@ -206,13 +208,23 @@ export function PlacesSection() {
           ease: 'power1.out',
         }, 8.8)
 
-        // Final highlights Nürnberg
+        // Final state — Nürnberg + Bengaluru both visible
         .to(cardNueRef.current, {
           opacity: 1,
           duration: 1.5,
           ease: 'power1.out',
         }, 11)
         .to(imgNueRef.current, {
+          filter: 'grayscale(0%) contrast(0.95) brightness(0.85)',
+          duration: 1.5,
+          ease: 'power1.out',
+        }, 11)
+        .to(cardBlrRef.current, {
+          opacity: 1,
+          duration: 1.5,
+          ease: 'power1.out',
+        }, 11)
+        .to(imgBlrRef.current, {
           filter: 'grayscale(0%) contrast(0.95) brightness(0.85)',
           duration: 1.5,
           ease: 'power1.out',
@@ -345,6 +357,7 @@ export function PlacesSection() {
         }, 4.8)
 
         .to(cardDrsRef.current, {
+          x: -40,
           opacity: 1,
           duration: 1.5,
           ease: 'power1.out',
@@ -367,7 +380,8 @@ export function PlacesSection() {
           ease: 'none',
         }, 8.5)
         .to(cardDrsRef.current, {
-          opacity: 0.2,
+          opacity: 0,
+          x: -40,
           duration: 1.5,
           ease: 'power1.out',
         }, 8.8)
@@ -383,6 +397,16 @@ export function PlacesSection() {
           ease: 'power1.out',
         }, 11)
         .to(imgNueRef.current, {
+          filter: 'grayscale(0%) contrast(0.95) brightness(0.85)',
+          duration: 1.5,
+          ease: 'power1.out',
+        }, 11)
+        .to(cardBlrRef.current, {
+          opacity: 1,
+          duration: 1.5,
+          ease: 'power1.out',
+        }, 11)
+        .to(imgBlrRef.current, {
           filter: 'grayscale(0%) contrast(0.95) brightness(0.85)',
           duration: 1.5,
           ease: 'power1.out',
@@ -588,7 +612,7 @@ export function PlacesSection() {
 
             {/* Mobile Detour Label */}
             <text
-              x="590"
+              x="420"
               y="460"
               className="font-mono italic fill-[#F5E6C8] opacity-40 text-[14px] pointer-events-none select-none rotate-[-8deg]"
             >
@@ -612,7 +636,7 @@ export function PlacesSection() {
           {/* Bengaluru Card */}
           <div
             ref={cardBlrRef}
-            className="absolute left-[5%] bottom-[12%] max-w-[280px] md:left-[10%] md:bottom-[15%] md:max-w-[340px]"
+            className="absolute left-[5%] bottom-[22%] max-w-[260px] md:left-[10%] md:bottom-[28%] md:max-w-[340px]"
             style={{ opacity: 1 }} // Initial card is visible
           >
             <span className="font-mono text-accent text-[10px] block tracking-widest uppercase mb-1">
@@ -632,7 +656,7 @@ export function PlacesSection() {
             </p>
             <div
               ref={imgBlrRef}
-              className="mt-3 relative aspect-[4/3] w-full overflow-hidden contrast-[0.95] brightness-[0.85] rounded"
+              className="hidden md:block mt-3 relative aspect-[4/3] w-full overflow-hidden contrast-[0.95] brightness-[0.85] rounded"
               style={{ filter: 'grayscale(0%) contrast(0.95) brightness(0.85)' }}
             >
               <Image src="/bengaluru.png" alt="Bengaluru" fill className="object-cover" />
@@ -642,7 +666,7 @@ export function PlacesSection() {
           {/* Nürnberg Card */}
           <div
             ref={cardNueRef}
-            className="absolute right-[5%] top-[40%] max-w-[280px] md:right-[10%] md:top-[30%] md:max-w-[340px]"
+            className="absolute left-1/2 -translate-x-1/2 top-[53%] max-w-[260px] md:right-[10%] md:left-auto md:translate-x-0 md:top-[30%] md:max-w-[340px]"
             style={{ opacity: 0 }}
           >
             <span className="font-mono text-accent text-[10px] block tracking-widest uppercase mb-1">
@@ -662,7 +686,7 @@ export function PlacesSection() {
             </p>
             <div
               ref={imgNueRef}
-              className="mt-3 relative aspect-[4/3] w-full overflow-hidden contrast-[0.95] brightness-[0.85] rounded"
+              className="hidden md:block mt-3 relative aspect-[4/3] w-full overflow-hidden contrast-[0.95] brightness-[0.85] rounded"
               style={{ filter: 'grayscale(100%) contrast(0.95) brightness(0.85)' }}
             >
               <Image src="/nurnberg.png" alt="Nürnberg" fill className="object-cover" />
@@ -672,7 +696,7 @@ export function PlacesSection() {
           {/* Dresden Card (Detour, smaller and slightly dimmer) */}
           <div
             ref={cardDrsRef}
-            className="absolute left-[10%] top-[10%] max-w-[240px] md:left-[52%] md:top-[10%] md:max-w-[280px]"
+            className="absolute left-[10%] top-[10%] max-w-[220px] md:left-[52%] md:top-[10%] md:max-w-[280px]"
             style={{ opacity: 0 }}
           >
             <span className="font-mono text-accent/60 text-[10px] block tracking-widest uppercase mb-0.5">
@@ -692,7 +716,7 @@ export function PlacesSection() {
             </p>
             <div
               ref={imgDrsRef}
-              className="mt-3 relative aspect-[4/3] w-full overflow-hidden contrast-[0.95] brightness-[0.8] rounded"
+              className="hidden md:block mt-3 relative aspect-[4/3] w-full overflow-hidden contrast-[0.95] brightness-[0.8] rounded"
               style={{ filter: 'grayscale(100%) contrast(0.95) brightness(0.8)' }}
             >
               <Image src="/dresden.png" alt="Dresden" fill className="object-cover" />

@@ -122,6 +122,11 @@ export function StaticHero() {
           </span>
         </h1>
 
+        <p className="hero-ui font-mono text-[0.65rem] uppercase tracking-[0.2em] text-beige/60 flex items-center gap-2">
+          <span className="h-1.5 w-1.5 rounded-full bg-green-400 animate-pulse" aria-hidden="true" />
+          {t('available')}
+        </p>
+
         <div className="hero-ui flex flex-wrap items-center justify-center gap-4">
           <a
             href="#about"

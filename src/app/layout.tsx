@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { Space_Mono, Plus_Jakarta_Sans, Oswald } from 'next/font/google'
+import { getLocale } from 'next-intl/server'
+import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
 // FOUND-01: Fonts loaded via next/font/google — zero external network request,
@@ -40,18 +42,20 @@ export const metadata: Metadata = {
   keywords: ['AI', 'wireless', 'mobility', 'MIMO', 'portfolio', 'engineer'],
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  const locale = await getLocale()
   return (
     <html
-      lang="en"
+      lang={locale}
       className={`${spaceMono.variable} ${plusJakartaSans.variable} ${oswald.variable}`}
     >
       <body className="bg-background text-foreground antialiased">
         {children}
+        <Analytics />
       </body>
     </html>
   )

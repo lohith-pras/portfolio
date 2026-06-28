@@ -10,6 +10,7 @@
   "hero": {
     "name": "Lohith Tarikere Prasanna",
     "eyebrow": "M.Sc. Elektromobilität · Python-Entwickler",
+    "available": "Offen für Stellen",
     "cta_story": "Meine Story",
     "cta_hello": "Hallo sagen",
     "contact_email": "lnlohith3@gmail.com",
@@ -25,12 +26,12 @@
     "tag_2": "Zuvor bei NI Dresden",
     "tag_3": "Ansässig in Nürnberg",
     "badge": "hallo",
-    "intro_a": "Ich bin ein Ingenieur aus",
-    "intro_location": "Nürnberg",
+    "intro_a": "ELECTRONICS-INGENIEUR. ENTWICKELT FÜR",
+    "intro_location": "VERNETZTE FAHRZEUGE",
     "intro_b": ".",
-    "para_1a": "Ich entwickle KI-Tools, die in der Produktion landen – hauptsächlich auf Basis von HF- und Automobildaten.",
+    "para_1a": "Meine Arbeit liegt an der Schnittstelle von HF-Sensorik, drahtloser Konnektivität und Automobilsystemen. Aktuell bedeutet das eine M.Sc.-Abschlussarbeit über intelligente Entscheidungsfindung in ISAC-Netzwerken, bei denen Sensorik und Kommunikation dieselbe Hardware teilen. KI setze ich ein, wo sie hilft – bei NI Dresden hieß das: ein Produktionstool entwickeln, das Fertigungsingenieure noch heute täglich nutzen.",
     "para_1_chip": "abstrakt?",
-    "para_1b": "Bevor das zu abstrakt klingt: Ich habe sechs Monate bei National Instruments ein Tool entwickelt, das Fertigungsingenieure noch heute täglich nutzen.",
+    "para_1b": "",
     "para_2a": "Aus Bengaluru. Riesiger",
     "para_2_name": "Max Verstappen",
     "para_2b": "Fan.",
@@ -43,9 +44,9 @@
     "overview_label": "Überblick",
     "radar_outer": "ENGINEERING",
     "radar_inner": "ZUM SPASS",
-    "system_idle": "SYSTEM_BEREIT",
+    "system_idle": "SYSTEM_INAKTIV",
     "select_blip": "ZIEL_WÄHLEN",
-    "awaiting_target": "Warte auf Zielerfassung. Bewegen Sie den Mauszeiger über aktive Signalsignale auf der Radaranzeige, um Metadaten und Projektspezifikationen zu dekodieren.",
+    "awaiting_target": "Mauszeiger über aktive Signale bewegen, um Projektdetails zu laden.",
     "status_tracking": "STATUS: VERFOLGUNG",
     "status_optimal": "Status: Optimal",
     "repository": "Repository",
@@ -62,13 +63,13 @@
       "name": "ISAC-DRL",
       "problem": "DRL RESEARCH",
       "tech": "PYTHON · PYTORCH · ISAC",
-      "description": "Forschungssimulation, die Deep Reinforcement Learning (DRL) auf die Knotenauswahl in integrierten Sensor- und Kommunikationsnetzwerken (ISAC) anwendet. Formulates geometry-dependent bistatic radar cross-sections (RCS) to dynamically optimize beamforming vectors and role assignment, achieving a 15% increase in throughput under strict sensing constraints."
+      "description": "Forschungssimulation, die Deep Reinforcement Learning (DRL) auf die Knotenauswahl in integrierten Sensor- und Kommunikationsnetzwerken (ISAC) anwendet. Modelliert geometrieabhängige bistatische Radarquerschnitte (RCS), um Beamforming-Vektoren und Rollenzuweisung dynamisch zu optimieren und einen Durchsatzgewinn von 15 % unter strengen Sensing-Beschränkungen zu erzielen."
     },
     "modulation_classifier": {
       "name": "MODULATION-CLASSIFIER",
       "problem": "SIGNAL ANALYSIS",
       "tech": "RF · ML · DSP",
-      "description": "Klassifizierung von Signal-/HF-Modulationen mittels ML. Spektralanalyse in Echtzeit. Feature-basiertes Machine-Learning-Klassifikator zur Identifizierung von 11 Modulationstypen (einschließlich BPSK, QAM16, GFSK) aus rohen IQ-Wellenform-Samples. Extrahiert statistische Momente höherer Ordnung und spektrale Merkmale, erreicht eine Genauigkeit von 83,6%."
+      "description": "Klassifizierung von Signal-/HF-Modulationen mittels ML. Spektralanalyse in Echtzeit. Feature-basierter ML-Klassifikator zur Identifizierung von 11 Modulationstypen (einschließlich BPSK, QAM16, GFSK) aus rohen IQ-Wellenform-Samples. Extrahiert statistische Momente höherer Ordnung und spektrale Merkmale, erreicht 83,6 % Genauigkeit auf klaren Signalen und verbessert die Baseline-Robustheit."
     },
     "sprachboot": {
       "name": "SPRACHBOOT",
@@ -80,7 +81,7 @@
       "name": "NEST",
       "problem": "HABITAT DESIGN",
       "tech": "ARCHITECTURE · MINIMALISM",
-      "description": "Persönliches Habitat-Projekt. Erkundung minimalistischer Wohnräume. Ein Raumdesignprojekt zur Untersuchung von modularem Kleinstwohnraum mit hoher Dichte. Nutzt minimalistische Prinzipien zur Maximierung von Nutzen, Luftzirkulation und natürlichem Licht auf einer Fläche von 22 Quadratmetern mit transformierbaren Möbeln."
+      "description": "Persönliches Habitat-Projekt. Erkundung minimalistischer Wohnräume. Ein Raumdesignprojekt zur Untersuchung von modularem Kleinstwohnraum mit hoher Dichte. Nutzt minimalistische Prinzipien zur Maximierung von Nutzen, Luftzirkulation und natürlichem Licht auf einer Fläche von 22 Quadratmetern mit transformierbaren Möbeln und integrierten IoT-Umgebungssensoren."
     },
     "f1_dashboard": {
       "name": "F1-DASHBOARD",
@@ -101,7 +102,7 @@
     },
     "rf_classifier": {
       "name": "RF Modulation Klassifikator",
-      "problem": "Wie ein Funk-Signal kodiert wurde, aus reinem Waveform-Daten rekonstruieren",
+      "problem": "Wie ein Funksignal kodiert wurde, aus reinen Waveform-Daten allein rekonstruieren",
       "status": "Abgeschlossen",
       "phasesCompleted": "3",
       "totalPhases": "3",
@@ -111,7 +112,7 @@
       "what_id_change": ""
     },
     "isac_thesis": {
-      "name": "Intelligent Decision-Making für Cognitive ISAC-Netzwerke",
+      "name": "Intelligente Entscheidungsfindung für kognitive ISAC-Netzwerke",
       "problem": "Joint Node-Role-Auswahl und Beamforming in einem Multi-Node V2X-Kreuzungs-ISAC-Netzwerk",
       "status": "Aktiv",
       "phasesCompleted": "1",
@@ -158,13 +159,13 @@
     "quotes_eyebrow": "ZITATE, NACH DENEN ICH LEBE",
     "quote": "\"Du kannst den Wind nicht kontrollieren, aber du kannst deine Segel anpassen. Es geht nicht darum, was dir passiert, sondern wie du darauf reagierst.\"",
     "footer": {
-      "designed_as": "© 2024 DESIGNT ALS INSTRUMENT",
+      "designed_as": "© 2025 DESIGNT ALS INSTRUMENT",
       "find_me": "FINDE MICH AUF"
     }
   },
   "places": {
     "heading": "Orte, an denen ich gelebt habe",
-    "scroll_hint": "Scrollen zum Erkunden",
+    "scroll_hint": "Zum Erkunden scrollen",
     "bengaluru": {
       "tagline": "Wo alles begann",
       "story": "Die chaotische, grüne Hauptstadt meiner frühen Jahre. Wo ich programmieren und dem Verkehr ausweichen gelernt habe und das Geräusch einer Stadt schätzen lernte, die niemals aufhört zu bauen."
@@ -180,8 +181,8 @@
   },
   "contact": {
     "eyebrow": "Übertragungskanal",
-    "heading": "WENN IHNEN HIER ETWAS INS AUGE GEFALLEN IST.",
-    "availability_subtext": "Schreiben Sie mir oder folgen Sie dem Signal.",
+    "heading": "WENN DIR HIER ETWAS INS AUGE GEFALLEN IST.",
+    "availability_subtext": "Schreib mir oder folg dem Signal.",
     "availability": "M.Sc.-Student in Deutschland, bis zu 140 Tage/Jahr arbeitsberechtigt. Offen für Werkstudent- oder Praktikumstellen in Signalverarbeitung, ML-Pipelines oder Embedded Automotive. Am schnellsten erreichst du mich per E-Mail — ich lese alles.",
     "email_label": "E-Mail",
     "github_label": "GitHub",
@@ -189,10 +190,10 @@
     "resume_label": "Lebenslauf herunterladen",
     "system_status": "SYSTEM_STATUS",
     "status_listening": "OPERATIONAL / LISTENING",
-    "latency_note": "Signale werden täglich überwacht. Die Antwortlatenz liegt in der Regel unter 0x18h.",
+    "latency_note": "Signale werden täglich gecheckt. Antwortzeit in der Regel unter 24 Stunden.",
     "status_optimal": "Status: Optimal",
     "repository": "Repository",
-    "telemetry": "Telemetry"
+    "telemetry": "Telemetrie"
   },
   "meta": {
     "title": "Lohith Tarikere Prasanna",
