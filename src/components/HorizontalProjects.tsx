@@ -249,8 +249,6 @@ export function HorizontalProjects() {
       gl.deleteProgram(prog)
       gl.deleteShader(vertexShader)
       gl.deleteShader(fragmentShader)
-      // Force-release the GPU context so it isn't left lingering on unmount.
-      gl.getExtension('WEBGL_lose_context')?.loseContext()
     }
   }, [reduce])
 

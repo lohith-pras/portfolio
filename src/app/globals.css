@@ -354,7 +354,7 @@ html.has-scroll-snap #contact-container {
   transform: translateX(-50%);
   width: 4px;
   height: 4px;
-  background-color: var(--color-accent);
+  background-color: var(--color-ink);
   border-radius: 50%;
 }
 

@@ -43,7 +43,7 @@ export function Navbar() {
           <Link
             href="/"
             locale={locale}
-            className="font-mono text-sm text-ink tracking-tighter font-bold hover:text-accent transition-colors duration-300"
+            className="font-mono text-sm text-ink tracking-tighter font-bold hover:text-ink-2 transition-colors duration-300"
             aria-label="Home"
           >
             LTP
@@ -58,7 +58,7 @@ export function Navbar() {
             className={`relative font-mono text-xs uppercase tracking-[0.2em] transition-colors duration-300 ${
               isHome
                 ? 'text-ink active-dot font-bold'
-                : 'text-ink-2 hover:text-accent'
+                : 'text-ink-2 hover:text-ink'
             }`}
           >
             {t('work')}
@@ -69,11 +69,19 @@ export function Navbar() {
             className={`relative font-mono text-xs uppercase tracking-[0.2em] transition-colors duration-300 ${
               isLife
                 ? 'text-ink active-dot font-bold'
-                : 'text-ink-2 hover:text-accent'
+                : 'text-ink-2 hover:text-ink'
             }`}
           >
             {t('life')}
           </Link>
+          <a
+            href="/Lohith_Prasanna_Resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative font-mono text-xs uppercase tracking-[0.2em] transition-colors duration-300 text-ink-2 hover:text-ink"
+          >
+            {t('resume')}
+          </a>
         </div>
 
         {/* Right: Language Toggle */}
@@ -81,7 +89,7 @@ export function Navbar() {
           <button
             type="button"
             onClick={toggleLocale}
-            className="font-mono text-xs font-bold text-accent hover:opacity-80 transition-opacity duration-300 uppercase focus-visible:outline-none"
+            className="font-mono text-xs font-bold text-ink hover:text-ink-2 transition-colors duration-300 uppercase focus-visible:outline-none"
             aria-label={`Switch language to ${locale === 'en' ? 'German' : 'English'}`}
           >
             {locale}
