@@ -1,214 +1,181 @@
 {
   "nav": {
-    "about": "Über mich",
+    "label": "Abschnitte",
+    "home": "Lohith Tarikere Prasanna, zurück nach oben",
+    "thesis": "Thesis",
     "work": "Arbeit",
     "life": "Leben",
     "contact": "Kontakt",
-    "locale": "DE",
-    "resume": "Lebenslauf"
+    "resume": "Lebenslauf",
+    "switch": "English",
+    "switch_label": "Read this page in English",
+    "skip": "Zum Inhalt springen"
   },
   "hero": {
     "name": "Lohith Tarikere Prasanna",
-    "eyebrow": "M.Sc. Elektromobilität · Python-Entwickler",
-    "available": "Offen für Stellen",
-    "cta_story": "Meine Story",
-    "cta_hello": "Hallo sagen",
-    "contact_email": "lnlohith3@gmail.com",
-    "github": "GitHub",
-    "linkedin": "LinkedIn"
+    "lead": "Ich erforsche intelligente Sensorik, wo 6G auf autonomes Fahren trifft.",
+    "byline": "M.Sc.-Student an der FAU in Nürnberg, zuvor bei NI Dresden.",
+    "email": "Schreib mir",
+    "cv": "Lebenslauf laden",
+    "table_caption": "Ingenieursarbeit",
+    "col_project": "Projekt",
+    "col_field": "Gebiet",
+    "col_result": "Ergebnis",
+    "rows": {
+      "thesis": {
+        "name": "Kognitive ISAC-Netze",
+        "field": "Konvexe Optimierung, V2X",
+        "result": "Phase 1 von 3 fertig"
+      },
+      "ni": {
+        "name": "KI-Agent für HF-Testdaten",
+        "field": "LLM-Agenten, Datenpipelines",
+        "result": "Täglich im Einsatz bei NI"
+      },
+      "drl": {
+        "name": "ISAC-DRL",
+        "field": "Reinforcement Learning, mmWave",
+        "result": "DDPG gegen eine DFT-Baseline"
+      },
+      "amc": {
+        "name": "Modulationsklassifikator",
+        "field": "Signalverarbeitung, ML",
+        "result": "83,6 % bei ≥ +6 dB SNR"
+      },
+      "vlc": {
+        "name": "V2V per sichtbarem Licht",
+        "field": "Embedded, optische Kommunikation",
+        "result": "STM32-Prototyp"
+      }
+    }
   },
-  "about": {
-    "name": "Lohith Tarikere Prasanna",
-    "title": "KI-Ingenieur",
-    "statement": "Ich erforsche intelligente Sensorsysteme an der Schnittstelle von 6G-Kommunikation und autonomem Fahren.",
-    "cta_talk": "Sprechen wir",
-    "tag_1": "Ingenieur, jetzt M.Sc.-Student",
-    "tag_2": "Zuvor bei NI Dresden",
-    "tag_3": "Ansässig in Nürnberg",
-    "badge": "hallo",
-    "intro_a": "ELECTRONICS-INGENIEUR. ENTWICKELT FÜR",
-    "intro_location": "VERNETZTE FAHRZEUGE",
-    "intro_b": ".",
-    "para_1a": "Meine Arbeit liegt an der Schnittstelle von HF-Sensorik, drahtloser Konnektivität und Automobilsystemen. Aktuell bedeutet das eine M.Sc.-Abschlussarbeit über intelligente Entscheidungsfindung in ISAC-Netzwerken, bei denen Sensorik und Kommunikation dieselbe Hardware teilen. KI setze ich ein, wo sie hilft – bei NI Dresden hieß das: ein Produktionstool entwickeln, das Fertigungsingenieure noch heute täglich nutzen.",
-    "para_1_chip": "abstrakt?",
-    "para_1b": "",
-    "para_2a": "Aus Bengaluru. Riesiger",
-    "para_2_name": "Max Verstappen",
-    "para_2b": "Fan.",
-    "para_3": "Das ist, woran ich gerade arbeite."
+  "thesis": {
+    "heading": "Worum geht es in meiner Thesis?",
+    "answer": "Die meiste ISAC-Forschung behandelt den Radarquerschnitt als Zufallsvariable. In einem Netz aus Knoten hängt er von der Geometrie ab, also modelliere ich ihn deterministisch. So wird die Rolle jedes Knotens, Sensing oder Kommunikation, zu etwas, das der Optimierer wählen kann.",
+    "problem_label": "Problem",
+    "problem": "Gemeinsame Rollenwahl und Beamforming in einem V2X-Kreuzungsnetz mit mehreren Knoten",
+    "model_label": "Modell",
+    "model": "Deterministischer bistatischer RCS, σ(θ_b)",
+    "method_label": "Methode",
+    "method": "Konvexe Optimierung und Successive Convex Approximation",
+    "tools_label": "Werkzeuge",
+    "tools": "Python, CVXPY, MIMO-Theorie",
+    "where_label": "Wo",
+    "where": "IDC-Thesis an der FAU Erlangen-Nürnberg",
+    "status_label": "Stand",
+    "status": "Literaturrecherche und Formulierung fertig, konvexer Solver in Arbeit",
+    "phase": "1 von 3"
   },
-  "work": {
-    "heading": "Ausgewählte Projekte",
-    "view_project": "Projekt ansehen",
-    "tech_label": "Tech-Stack",
-    "overview_label": "Überblick",
-    "radar_outer": "ENGINEERING",
-    "radar_inner": "ZUM SPASS",
-    "system_idle": "SYSTEM_INAKTIV",
-    "select_blip": "ZIEL_WÄHLEN",
-    "awaiting_target": "Mauszeiger über aktive Signale bewegen, um Projektdetails zu laden.",
-    "status_tracking": "STATUS: VERFOLGUNG",
-    "status_optimal": "Status: Optimal",
-    "repository": "Repository",
-    "telemetry": "Telemetrie"
+  "ni": {
+    "heading": "Was habe ich bei NI Dresden gebaut?",
+    "lead": "Ein Werkzeug, mit dem Fertigungsingenieure Produktionstestdaten ohne SQL oder Python abfragen.",
+    "fig_speed": "schneller nach dem Wechsel von pandas zu Polars",
+    "fig_rows": "Zeilen pro Datensatz, als Parquet gecacht",
+    "fig_types": "Messtypen, nach Fehlermustern gerankt",
+    "how_label": "So funktioniert es",
+    "how": "Ingenieure fragen etwa „Zeig mir die Yield für VST-Kanal 4 letzte Woche“ und bekommen Tabellen und Plotly-Charts zurück. Ein LLM-Agent-Skill leitet jede Frage an eine Python-Pipeline; ein 1σ/3σ-Klassifikator trennt echte Fehler von Grenzfällen und Rauschen.",
+    "wrong_label": "Was schiefging",
+    "wrong": "Ich habe die Kosten wiederholter Metadaten-Abfragen unterschätzt. Stabil, aber zu langsam für ein Gespräch.",
+    "change_label": "Was ich ändern würde",
+    "change": "Schwere Verarbeitung vom ersten Tag an hinter einen Cache legen. Dauert eine Antwort 30 Sekunden, fragt niemand mehr."
   },
-  "projects": {
-    "can_decoder": {
-      "name": "CAN_DECODER",
-      "problem": "EMBEDDED SYSTEMS",
-      "tech": "RUST · CLI · CAN-BUS · DBC",
-      "description": "Rust-Kommandozeilen-Tool, das candump-style CAN-Bus-Logs und DBC-Signaldefinitionen parst und Roh-Payloads in benannte, skalierte physikalische Werte dekodiert — Geschwindigkeit, Lenkwinkel, Batterietemperatur — in Mikrosekundenauflösung. Gebaut für hochleistungsfähige Automotive-Daten-Pipelines. Meilenstein 1 (Log-Parser) geliefert; DBC-Parser und Bit-Extraktion in Arbeit."
-    },
-    "isac_drl": {
-      "name": "ISAC-DRL",
-      "problem": "DRL RESEARCH",
-      "tech": "PYTHON · PYTORCH · SB3 · CVXPY · GYMNASIUM",
-      "description": "Deep Reinforcement Learning für Beamforming in mmWave-ISAC-Systemen. Ein DDPG-Agent lernt, einen MIMO-Beamformer zu steuern und Durchsatz gegen Sensing-Genauigkeit auszubalancieren — keine geschlossene Lösung. Basiert auf Saleh-Valenzuela-geclustertem mmWave-Kanalmodell mit 3GPP-Rel-16-NR-V2X-Mobilität. Enthält klassische DFT-Baseline, Pareto-Kurven-Evaluierung und eine Gymnasium-Umgebung, die den gesamten Kanal- und MIMO-Stack kapselt."
-    },
-    "modulation_classifier": {
-      "name": "MODULATION-CLASSIFIER",
-      "problem": "SIGNAL ANALYSIS",
-      "tech": "PYTHON · SCIKIT-LEARN · NUMPY · DSP",
-      "description": "Automatische Modulationsklassifikation auf dem RML2016.10a-Benchmark (220k Samples, 11 Modulationstypen, 20 SNR-Level). Extrahiert 16 statistische Features pro I/Q-Fenster — Amplitude, Phase, instantane Frequenz, FFT-Leistung und Kumulanten höherer Ordnung — und trainiert einen Random Forest (100 Bäume). 83,6% Genauigkeit bei hohem SNR (≥+6 dB) und 51,3% gepoolt über alle Rauschpegel, gegenüber 47,7% Baseline. Keine neuronalen Netze — nur Signalverarbeitung und scikit-learn."
-    },
-    "sprachboot": {
-      "name": "SPRACHBOOT",
-      "problem": "CREATIVE/LANG",
-      "tech": "FASTAPI · REACT · OPENROUTER · CHROMADB · DOCKER",
-      "description": "KI-gestützter Konversationsfluency-Trainer für Deutsch. Übe Sprechen durch realistische Gespräche — die App korrigiert Grammatik, erklärt Fehler im Kontext und passt sich an dein Niveau an. Local-first: Konversationen verlassen nie dein Gerät. Multi-Arch-Docker-Images via GitHub Actions. Angetrieben von Llama und DeepSeek über OpenRouter, mit optionaler DeepL-Übersetzung und ChromaDB für Kontext."
-    },
-    "nest": {
-      "name": "NEST",
-      "problem": "HABITAT DESIGN",
-      "tech": "REACT 19 · VITE · SUPABASE · GSAP",
-      "description": "Shared-Living-Management-App für Mitbewohner. Verfolgt Ausgaben, Einkäufe, Putzdienste und einen geteilten Kalender an einem Ort. Gebaut als echte React-19- + Supabase-App mit GSAP- und Framer-Motion-Animation. Auf Vercel deployt — wird täglich von zwei Personen aktiv genutzt."
-    },
-    "f1_dashboard": {
-      "name": "F1-DASHBOARD",
-      "problem": "TELEMETRY DASHBOARD",
-      "tech": "FASTF1 · FASTAPI · HTML/CSS/JS · GITHUB ACTIONS",
-      "description": "Persönliche Formel-1-Pit-Wall — dunkles Theme, Live-Stände, Saisonkalender, Countdown zum nächsten GP und ein Full-Screen-Live/Replay-Overlay mit FastF1. Statisches Dashboard hydratisiert aus standings.json, das von einem täglichen GitHub-Actions-Cron committet wird. An Rennwochenenden streamt ein lokaler FastAPI- + FastF1-Server Echtzeit-Telemetrie auf localhost:8765. Degradiert gracevoll auf jeder Ebene."
-    },
-    "career_ops": {
-      "name": "CAREER-OPS",
-      "problem": "AI JOB SEARCH",
-      "tech": "JAVASCRIPT · CLAUDE CODE · GO · PDF GEN",
-      "description": "KI-gestütztes Jobsuch-System, gebaut auf Claude Code. 14 Skill-Modi, Go-Dashboard, PDF-Generierung, Batch-Verarbeitung. 740+ Job-Anzeigen evaluiert, 100+ personalisierte CVs generiert, 1 Traumrolle erhalten. Vorgestellt in WIRED und Business Insider. Open Source, Multi-Language-README (15 Sprachen), Discord-Community. Ein Fork — ursprünglich von santifer.io gebaut, ich habe beigetragen und für meine eigene Suche angepasst."
-    },
-    "prompt_analysis": {
-      "name": "PROMPT-ANALYSIS",
-      "problem": "LLM ANALYTICS",
-      "tech": "PYTHON · DUCKDB · ANTHROPIC SDK · HTML",
-      "description": "Analysiert exportierte Claude-, Gemini- und ChatGPT-Conversation-Logs und generiert ein einzelnes interaktives HTML-Dashboard mit Statistiken zum Prompting-Verhalten — Füllwort-Frequenz, Prompt-Längenverteilung, Constraint-Muster und mehr. Nutzt DuckDB für schnelles In-Process-SQL auf den Logs, mit einer optionalen KI-generierten Zusammenfassung deiner Prompting-Gewohnheiten. Self-Contained-Output, kein Server nötig."
-    },
-    "ni_agent": {
-      "name": "Produktions-AI-Agent für RF-Analytik",
-      "problem": "Fertigungsingenieure brauchten eine Möglichkeit, Produktionstestdaten ohne SQL oder Python abzufragen",
-      "status": "Abgeschlossen",
-      "phasesCompleted": "3",
-      "totalPhases": "3",
-      "tech": "Python · Polars · Parquet · LLM Agent Skill · Plotly",
-      "description": "Während meines Praktikums bei NI Dresden gebaut. Fertigungsingenieure tippen Fragen wie 'Zeig mir die Yield für VST Kanal 4 letzte Woche' und bekommen strukturierte Ergebnisse mit eingebetteten Plotly-Charts. Das LLM-Agent-Skill leitet Anfragen an Python-Pipelines. Ein Euclidean-Distance-Ranking-Algorithmus deckt Fehlermuster über 30-40 Messtypen auf, ohne die bestehende Datenarchitektur zu ändern. Eigener 1σ/3σ-Klassifikator teilt Ergebnisse in echte Fehler, marginale Fälle und Rauschen. Polars ersetzte pandas nach einem 5-10x Speedup auf 100k+-Zeilen-Datensätzen. Parquet-Caching eliminiert redundante Lesevorgänge aus dem proprietären Datastore.",
-      "what_went_wrong": "Zuerst den Overhead wiederholter Metadaten-Abfragen unterschätzt. Stabil, aber zu langsam für eine Konversationsschnittstelle.",
-      "what_id_change": "Schwere Datenverarbeitung von Anfang an hinter Caching legen. Bei einem AI-Agenten ist Latenz so wichtig wie Genauigkeit. Wenn es 30 Sekunden dauert, hören die Leute auf, es zu nutzen."
-    },
-    "rf_classifier": {
-      "name": "RF Modulation Klassifikator",
-      "problem": "Wie ein Funksignal kodiert wurde, aus reinen Waveform-Daten allein rekonstruieren",
-      "status": "Abgeschlossen",
-      "phasesCompleted": "3",
-      "totalPhases": "3",
-      "tech": "Python · scikit-learn · NumPy · Signalverarbeitung",
-      "description": "Feature-basierter Klassifikator, der den Modulationstyp aus 16 statistischen Features extrahiert — Amplitude, Phase, Frequenz, und höherordnige Spektral-Muster. Trainiert und evaluiert auf RML2016.10a (220k Samples, 11 Signal-Typen, 20 Rauschpegel). 83,6% Genauigkeit auf klaren Signalen gegen 9% Random-Baseline. Custom Feature-Engineering hob die Gesamtgenauigkeit von 47,7% auf 51,3% über alle Rauschpegel. Keine neuronalen Netze — nur Signalverarbeitung und scikit-learn.",
-      "what_went_wrong": "",
-      "what_id_change": ""
-    },
-    "isac_thesis": {
-      "name": "Intelligente Entscheidungsfindung für kognitive ISAC-Netzwerke",
-      "problem": "Joint Node-Role-Auswahl und Beamforming in einem Multi-Node V2X-Kreuzungs-ISAC-Netzwerk",
-      "status": "Aktiv",
-      "phasesCompleted": "1",
-      "totalPhases": "3",
-      "tech": "Python · CVXPY · Konvexe Optimierung · MIMO-Theorie",
-      "description": "IDC-Thesis an der FAU. Die meiste ISAC-Literatur modelliert den Radar-Cross-Section als i.i.d. Zufallsvariable, aber in verteilten Multi-Node-Netzwerken hängt der RCS von der Geometrie ab. Ich schlage ein deterministisches bistatisches RCS-Modell σ(θ_b) vor, das die Node-Role-Auswahl zu einer echten Optimierungsvariablen macht. Das volle Problem ist eine Joint Node-Role-Auswahl und Beamforming-Formulierung, gelöst über konvexe Optimierung und Successive-Convex-Approximation (SCA). Momentan: Literaturrecherche und Problemformulierung erledigt, Konvexe-Solver-Implementierung in Arbeit.",
-      "what_went_wrong": "",
-      "what_id_change": ""
-    },
-    "vlc": {
-      "name": "Fahrzeug-zu-Fahrzeug Sichtlichtkommunikation",
-      "problem": "Latenzarme V2V-Kommunikation ohne Radio-Spektrum-Zuweisung",
-      "status": "Abgeschlossen",
-      "phasesCompleted": "3",
-      "totalPhases": "3",
-      "tech": "C · STM32 · OOK · Turbo Coding · MATLAB",
-      "description": "STM32-basierter V2V-Prototyp mit OOK-Optischer-Modulation und Turbo-Coding zur Vorwärtsfehlerkorrektur. LED-Treiber in Multisim simuliert, um Spannungsstabilität unter Last zu prüfen. MPPT-Algorithmus in MATLAB für einen solarbetriebenen Transceiver modelliert. Das Schwierige war Umgebungslicht, das den Fotodetektor überflutete — adaptive Schwellenwertung hat es gefixt. Echte Lektion: von Tag 1 an bei Tageslicht testen, nicht nur im Labor.",
-      "what_went_wrong": "Zuerst für Laborbedingungen optimiert, dann musste alles für echte Lichtverhältnisse neu entworfen werden. Hätte von Tag 1 an bei Tageslicht testen sollen.",
-      "what_id_change": "Mit der schlechtesten statt der besten Umgebung beginnen. Die Physik schert sich nicht um Laborergebnisse."
+  "fun": {
+    "heading": "Was baue ich zum Spaß?",
+    "col_project": "Projekt",
+    "col_what": "Was es ist",
+    "col_stack": "Stack",
+    "code": "Code zu {name}",
+    "rows": {
+      "can_decoder": {
+        "name": "CAN-Decoder",
+        "what": "Dekodiert CAN-Bus-Logs mit DBC-Dateien in benannte physikalische Werte. Log-Parser fertig, DBC-Parser in Arbeit.",
+        "stack": "Rust"
+      },
+      "sprachboot": {
+        "name": "Sprachboot",
+        "what": "Ein Deutsch-Gesprächstrainer, der Grammatik im Kontext korrigiert. Local-first: nichts verlässt deinen Rechner.",
+        "stack": "FastAPI, React, ChromaDB"
+      },
+      "nest": {
+        "name": "Nest",
+        "what": "Ausgaben, Einkäufe, Putzplan und Kalender für eine WG. Täglich von zwei Personen genutzt.",
+        "stack": "React 19, Supabase"
+      },
+      "f1_dashboard": {
+        "name": "F1-Dashboard",
+        "what": "Meine eigene Boxenmauer: Tabellen, Kalender und Live-Telemetrie an Rennwochenenden.",
+        "stack": "FastF1, FastAPI"
+      },
+      "prompt_analysis": {
+        "name": "Prompt-Analyse",
+        "what": "Macht aus exportierten Claude-, Gemini- und ChatGPT-Logs ein Dashboard über Prompt-Gewohnheiten.",
+        "stack": "Python, DuckDB"
+      },
+      "career_ops": {
+        "name": "Career-ops",
+        "what": "Ein Fork von santifers KI-Jobsuchsystem auf Claude Code, zu dem ich beigetragen und das ich für meine Suche angepasst habe.",
+        "stack": "JavaScript, Go"
+      }
     }
   },
   "life": {
-    "heading": "Leben.",
-    "intro": "Nicht alles, was ich tue, landet in einem GitHub-Repo. Dies ist der Rest davon. Orte, an denen ich gelebt habe, Dinge, die ich zu genau verfolge, Zeug, das ich immer noch herauszufinden versuche.",
-    "currently_eyebrow": "AKTUELL",
-    "currently": {
-      "watching_label": "Ich schaue",
-      "watching_value": "Dr. House. Überzeugt, dass ich Probleme auf die gleiche Weise diagnostiziere wie er.",
-      "reading_label": "Ich lese",
-      "reading_value": "Meine eigene Abschlussarbeit, leider",
-      "building_label": "Ich baue",
-      "building_value": "Eine Deutsch-Lern-App, um tatsächliches Deutschsprechen zu vermeiden",
-      "eating_label": "Ich esse",
-      "eating_value": "Ich versuche, einen guten Burger-Laden in Nürnberg zu finden. Suche immer noch.",
-      "learning_label": "Ich lerne",
-      "learning_value": "Rust. Langsam."
-    },
-    "road_eyebrow": "UNTERWEGS",
-    "road": {
-      "saxon": "Sächsische Schweiz, 2023",
-      "alps": "Alpen, Österreich, 2022",
-      "berlin": "Berlin, 2024"
-    },
-    "quotes_eyebrow": "ZITATE, NACH DENEN ICH LEBE",
-    "quote": "\"Du kannst den Wind nicht kontrollieren, aber du kannst deine Segel anpassen. Es geht nicht darum, was dir passiert, sondern wie du darauf reagierst.\"",
-    "footer": {
-      "designed_as": "© 2025 DESIGNT ALS INSTRUMENT",
-      "find_me": "FINDE MICH AUF"
-    }
-  },
-  "places": {
-    "heading": "Orte, an denen ich gelebt habe",
-    "scroll_hint": "Zum Erkunden scrollen",
+    "heading": "Wo habe ich gelebt?",
     "bengaluru": {
-      "tagline": "Wo alles begann",
-      "story": "Die chaotische, grüne Hauptstadt meiner frühen Jahre. Wo ich programmieren und dem Verkehr ausweichen gelernt habe und das Geräusch einer Stadt schätzen lernte, die niemals aufhört zu bauen."
+      "name": "Bengaluru",
+      "line": "Wo alles begann: hier habe ich programmieren und dem Verkehr ausweichen gelernt."
     },
     "nurnberg": {
-      "tagline": "Erstes Kapitel im Ausland",
-      "story": "Ein Übergang zu Effizienz und Kopfsteinpflaster. Navigiere derzeit durch die Nuancen der deutschen Bürokratie und der Masterstudiengänge im Ingenieurwesen."
+      "name": "Nürnberg",
+      "line": "Erstes Kapitel im Ausland. Kopfsteinpflaster, ein Master und deutsche Bürokratie."
     },
     "dresden": {
-      "tagline": "Sechs Monate. Ein Praktikum. Überraschend gutes Brot.",
-      "story": "Ein Winter, in dem ich an Hochfrequenzelektronik in der Nähe der Elbe gearbeitet habe. Technisches Wachstum in einem historischen Umfeld."
+      "name": "Dresden",
+      "line": "Sechs Monate, ein Praktikum, überraschend gutes Brot."
     }
   },
+  "now": {
+    "heading": "Was mache ich gerade?",
+    "watching_label": "Ich schaue",
+    "watching": "Dr. House. Überzeugt, dass ich Probleme so diagnostiziere wie er.",
+    "reading_label": "Ich lese",
+    "reading": "Meine eigene Thesis, leider.",
+    "building_label": "Ich baue",
+    "building": "Eine Deutsch-Lern-App, um nicht wirklich Deutsch sprechen zu müssen.",
+    "eating_label": "Ich esse",
+    "eating": "Suche immer noch einen guten Burger in Nürnberg.",
+    "learning_label": "Ich lerne",
+    "learning": "Rust. Langsam.",
+    "following_label": "Ich verfolge",
+    "following": "Max Verstappen, jedes Rennen."
+  },
   "contact": {
-    "eyebrow": "Übertragungskanal",
-    "heading": "WENN DIR HIER ETWAS INS AUGE GEFALLEN IST.",
-    "availability_subtext": "Schreib mir oder folg dem Signal.",
-    "availability": "M.Sc.-Student in Deutschland, bis zu 140 Tage/Jahr arbeitsberechtigt. Offen für Werkstudent- oder Praktikumstellen in Signalverarbeitung, ML-Pipelines oder Embedded Automotive. Am schnellsten erreichst du mich per E-Mail — ich lese alles.",
+    "heading": "Arbeiten wir zusammen?",
+    "availability": "Ich bin M.Sc.-Student in Deutschland und darf bis zu 140 Tage im Jahr arbeiten. Ich suche Werkstudenten- oder Praktikumsstellen in Signalverarbeitung, ML-Pipelines oder Embedded-Automotive-Systemen.",
+    "fastest": "Per E-Mail geht es am schnellsten. Ich lese alles.",
     "email_label": "E-Mail",
-    "github_label": "GitHub",
     "linkedin_label": "LinkedIn",
-    "resume_label": "Lebenslauf herunterladen",
-    "system_status": "SYSTEM_STATUS",
-    "status_listening": "OPERATIONAL / LISTENING",
-    "latency_note": "Signale werden täglich gecheckt. Antwortzeit in der Regel unter 24 Stunden.",
-    "status_optimal": "Status: Optimal",
-    "repository": "Repository",
-    "telemetry": "Telemetrie"
+    "github_label": "GitHub",
+    "cv_label": "Lebenslauf",
+    "cv_link": "PDF herunterladen",
+    "form_name": "Dein Name",
+    "form_message": "Nachricht, mit einem Weg, dich zu erreichen",
+    "form_send": "Nachricht senden",
+    "form_sending": "Wird gesendet…",
+    "form_sent": "Gesendet. Danke fürs Schreiben.",
+    "form_error": "Das hat nicht geklappt. Schreib mir stattdessen an lnlohith3@gmail.com."
+  },
+  "footer": {
+    "line": "© 2026 Lohith Tarikere Prasanna. Gesetzt in Hanken Grotesk, Newsreader und IBM Plex Mono.",
+    "source": "Quellcode auf GitHub",
+    "instagram": "Instagram"
   },
   "meta": {
     "title": "Lohith Tarikere Prasanna",
-    "description": "M.Sc. Elektromobilität-Student an der FAU. Produktions-AI-Tools bei NI Dresden gebaut, Embedded-Systems bei Delta X Automotive. Signalverarbeitung, ML und Embedded Automotive."
+    "description": "Ich erforsche intelligente Sensorsysteme an der Schnittstelle von 6G-Kommunikation und autonomem Fahren. M.Sc.-Student an der FAU; Produktions-KI-Tools bei NI Dresden gebaut, Embedded-Systeme bei Delta X Automotive."
+  },
+  "notfound": {
+    "heading": "Diese Seite ist nicht auf der Karte.",
+    "body": "Der Link ist kaputt oder die Seite ist umgezogen.",
+    "home": "Zurück zum Anfang"
   }
 }

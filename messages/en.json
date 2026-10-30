@@ -1,214 +1,181 @@
 {
   "nav": {
-    "about": "About",
+    "label": "Sections",
+    "home": "Lohith Tarikere Prasanna, back to top",
+    "thesis": "Thesis",
     "work": "Work",
     "life": "Life",
     "contact": "Contact",
-    "locale": "EN",
-    "resume": "Resume"
+    "resume": "CV",
+    "switch": "Deutsch",
+    "switch_label": "Diese Seite auf Deutsch lesen",
+    "skip": "Skip to content"
   },
   "hero": {
     "name": "Lohith Tarikere Prasanna",
-    "eyebrow": "MSc Electromobility · Python Developer",
-    "available": "Open to roles",
-    "cta_story": "Read My Story",
-    "cta_hello": "Say Hello",
-    "contact_email": "lnlohith3@gmail.com",
-    "github": "GitHub",
-    "linkedin": "LinkedIn"
+    "lead": "I research intelligent sensing where 6G meets autonomous driving.",
+    "byline": "M.Sc. student at FAU in Nürnberg, previously at NI Dresden.",
+    "email": "Email me",
+    "cv": "Download my CV",
+    "table_caption": "Engineering work",
+    "col_project": "Project",
+    "col_field": "Field",
+    "col_result": "Result",
+    "rows": {
+      "thesis": {
+        "name": "Cognitive ISAC networks",
+        "field": "Convex optimisation, V2X",
+        "result": "Phase 1 of 3 done"
+      },
+      "ni": {
+        "name": "AI agent for RF test data",
+        "field": "LLM agents, data pipelines",
+        "result": "In daily use at NI"
+      },
+      "drl": {
+        "name": "ISAC-DRL",
+        "field": "Reinforcement learning, mmWave",
+        "result": "DDPG against a DFT baseline"
+      },
+      "amc": {
+        "name": "Modulation classifier",
+        "field": "Signal processing, ML",
+        "result": "83.6 % at ≥ +6 dB SNR"
+      },
+      "vlc": {
+        "name": "Visible light V2V link",
+        "field": "Embedded, optical comms",
+        "result": "STM32 prototype"
+      }
+    }
   },
-  "about": {
-    "name": "Lohith Tarikere Prasanna",
-    "title": "AI Engineer",
-    "statement": "I research intelligent sensing systems at the boundary of 6G communications and autonomous driving.",
-    "cta_talk": "Let's talk",
-    "tag_1": "Engineer turned M.Sc. student",
-    "tag_2": "Previously at NI Dresden",
-    "tag_3": "Based in Nürnberg",
-    "badge": "what's up",
-    "intro_a": "ELECTRONICS ENGINEER. BUILDING FOR",
-    "intro_location": "CONNECTED VEHICLES",
-    "intro_b": ".",
-    "para_1a": "My work sits at the intersection of RF sensing, wireless connectivity, and automotive systems. Right now that means an M.Sc. thesis on intelligent decision-making for ISAC networks, where sensing and communication share the same hardware. I use AI where it helps — which at NI Dresden meant shipping a production tool that manufacturing engineers still use every day.",
-    "para_1_chip": "abstract?",
-    "para_1b": "",
-    "para_2a": "From Bengaluru. Huge",
-    "para_2_name": "Max Verstappen",
-    "para_2b": "fan.",
-    "para_3": "Here's what I've been working on."
+  "thesis": {
+    "heading": "What is my thesis about?",
+    "answer": "Most ISAC research treats radar cross-section as a random variable. In a network of nodes it depends on geometry, so I model it deterministically. That turns each node’s role, sensing or talking, into something the optimiser can choose.",
+    "problem_label": "Problem",
+    "problem": "Joint node-role selection and beamforming in a multi-node V2X intersection network",
+    "model_label": "Model",
+    "model": "Deterministic bistatic RCS, σ(θ_b)",
+    "method_label": "Method",
+    "method": "Convex optimisation and successive convex approximation",
+    "tools_label": "Tools",
+    "tools": "Python, CVXPY, MIMO theory",
+    "where_label": "Where",
+    "where": "IDC thesis at FAU Erlangen-Nürnberg",
+    "status_label": "Status",
+    "status": "Literature review and formulation done, convex solver in progress",
+    "phase": "1 of 3"
   },
-  "work": {
-    "heading": "Selected Work",
-    "view_project": "View Project",
-    "tech_label": "Tech Stack",
-    "overview_label": "Overview",
-    "radar_outer": "ENGINEERING",
-    "radar_inner": "FOR FUN",
-    "system_idle": "SYSTEM_IDLE",
-    "select_blip": "SELECT_BLIP",
-    "awaiting_target": "Awaiting target acquisition. Hover over active signal blips on the radar display to decode metadata and project specifications.",
-    "status_tracking": "STATUS: TRACKING",
-    "status_optimal": "Status: Optimal",
-    "repository": "Repository",
-    "telemetry": "Telemetry"
+  "ni": {
+    "heading": "What did I ship at NI Dresden?",
+    "lead": "A tool that lets manufacturing engineers query production test data without SQL or Python.",
+    "fig_speed": "faster after moving from pandas to Polars",
+    "fig_rows": "rows per dataset, cached as Parquet",
+    "fig_types": "measurement types ranked for failure patterns",
+    "how_label": "How it works",
+    "how": "Engineers ask things like “show me the yield for VST channel 4 last week” and get tables and Plotly charts back. An LLM agent skill routes each question to a Python pipeline; a 1σ/3σ classifier splits real failures from marginal cases and noise.",
+    "wrong_label": "What went wrong",
+    "wrong": "I underestimated the cost of repeated metadata queries. It was stable, but too slow for a conversation.",
+    "change_label": "What I’d change",
+    "change": "Put heavy processing behind a cache from day one. If an answer takes 30 seconds, people stop asking."
   },
-  "projects": {
-    "can_decoder": {
-      "name": "CAN_DECODER",
-      "problem": "EMBEDDED SYSTEMS",
-      "tech": "RUST · CLI · CAN-BUS · DBC",
-      "description": "Rust CLI tool that parses candump-style CAN bus logs and DBC signal definitions, then decodes raw payloads into named, scaled physical values — speed, steering angle, battery temp — at microsecond resolution. Built for high-performance automotive test-data ingestion. Milestone 1 (log parser) shipped; DBC parser and bit-extraction pipeline in progress."
-    },
-    "isac_drl": {
-      "name": "ISAC-DRL",
-      "problem": "DRL RESEARCH",
-      "tech": "PYTHON · PYTORCH · SB3 · CVXPY · GYMNASIUM",
-      "description": "Deep reinforcement learning for beamforming in mmWave ISAC systems. A DDPG agent learns to steer a MIMO beamformer to balance communication throughput against sensing accuracy — no closed-form solution. Built on Saleh-Valenzuela clustered mmWave channel model with 3GPP Rel-16 NR-V2X mobility. Includes classical DFT steering-vector baseline, Pareto-curve evaluation, and a Gymnasium environment wrapping the full channel + MIMO stack."
-    },
-    "modulation_classifier": {
-      "name": "MODULATION-CLASSIFIER",
-      "problem": "SIGNAL ANALYSIS",
-      "tech": "PYTHON · SCIKIT-LEARN · NUMPY · DSP",
-      "description": "Automatic Modulation Classification on the RML2016.10a benchmark (220k samples, 11 modulation types, 20 SNR levels). Extracts 16 statistical features per I/Q window — amplitude, phase, instantaneous frequency, FFT power, and higher-order cumulants — then trains a Random Forest (100 trees). Hit 83.6% accuracy at high SNR (≥+6 dB) and 51.3% pooled across all noise levels, up from a 47.7% baseline. No neural nets — just signal processing and scikit-learn."
-    },
-    "sprachboot": {
-      "name": "SPRACHBOOT",
-      "problem": "CREATIVE/LANG",
-      "tech": "FASTAPI · REACT · OPENROUTER · CHROMADB · DOCKER",
-      "description": "AI-powered German conversational fluency trainer. Practice speaking through realistic conversations — the app corrects grammar, explains errors in context, and adapts to your level. Local-first: conversations never leave your machine. Multi-arch Docker images published via GitHub Actions. Powered by Llama and DeepSeek through OpenRouter, with optional DeepL translation and ChromaDB for context."
-    },
-    "nest": {
-      "name": "NEST",
-      "problem": "HABITAT DESIGN",
-      "tech": "REACT 19 · VITE · SUPABASE · GSAP",
-      "description": "Shared living management app for roommates. Tracks expenses, groceries, chores, and a shared calendar in one place. Built as a real-world React 19 + Supabase app with GSAP and Framer Motion animation. Deployed on Vercel — actively used by two people daily."
-    },
-    "f1_dashboard": {
-      "name": "F1-DASHBOARD",
-      "problem": "TELEMETRY DASHBOARD",
-      "tech": "FASTF1 · FASTAPI · HTML/CSS/JS · GITHUB ACTIONS",
-      "description": "Personal Formula 1 pit wall — dark-themed, live-updating standings, season calendar, countdown to next GP, and a full-screen Live/Replay overlay powered by FastF1. Static dashboard hydrates from standings.json committed by a daily GitHub Actions cron. On race weekends, a local FastAPI + FastF1 server streams real-time telemetry on localhost:8765. Degrades gracefully at every layer."
-    },
-    "career_ops": {
-      "name": "CAREER-OPS",
-      "problem": "AI JOB SEARCH",
-      "tech": "JAVASCRIPT · CLAUDE CODE · GO · PDF GEN",
-      "description": "AI-powered job search system built on Claude Code. 14 skill modes, Go dashboard, PDF generation, batch processing. 740+ job listings evaluated, 100+ personalized CVs generated, 1 dream role landed. Featured in WIRED and Business Insider. Open source, multi-language README (15 languages), Discord community. A fork — originally built by santifer.io, I contributed and adapted it for my own search."
-    },
-    "prompt_analysis": {
-      "name": "PROMPT-ANALYSIS",
-      "problem": "LLM ANALYTICS",
-      "tech": "PYTHON · DUCKDB · ANTHROPIC SDK · HTML",
-      "description": "Analyses exported Claude, Gemini, and ChatGPT conversation logs and generates a single interactive HTML dashboard with stats on prompting behaviour — filler word frequency, prompt length distribution, constraint patterns, and more. Uses DuckDB for fast in-process SQL on the logs, with an optional AI-generated summary of your prompting habits. Self-contained output, no server needed."
-    },
-    "ni_agent": {
-      "name": "Production AI Agent for RF Analytics",
-      "problem": "Manufacturing engineers needed to query production test data without SQL or Python",
-      "status": "Complete",
-      "phasesCompleted": "3",
-      "totalPhases": "3",
-      "tech": "Python · Polars · Parquet · LLM Agent Skill · Plotly",
-      "description": "Built during an internship at NI Dresden. Manufacturing engineers type questions like 'show me the yield for VST channel 4 last week' and get back structured results with embedded Plotly charts. The LLM agent skill routes queries to Python pipelines. A Euclidean-distance ranking algorithm surfaces failure patterns across 30-40 measurement types without changing the existing data architecture. Custom 1σ/3σ classifier splits outcomes into real failures, marginal cases, and noise. Polars replaced pandas after benchmarking 5-10x faster on 100k+ row datasets. Parquet caching eliminates redundant reads from the proprietary datastore.",
-      "what_went_wrong": "Initially underestimated the overhead of repeated metadata queries. Stable, but too slow for a conversational interface.",
-      "what_id_change": "Put heavy data processing behind caching from the start. In an AI agent, latency matters as much as accuracy. If it takes 30 seconds, people stop using it."
-    },
-    "rf_classifier": {
-      "name": "RF Modulation Classifier",
-      "problem": "Recover how a radio signal was encoded from raw waveform data alone",
-      "status": "Complete",
-      "phasesCompleted": "3",
-      "totalPhases": "3",
-      "tech": "Python · scikit-learn · NumPy · Signal Processing",
-      "description": "Feature-based classifier that identifies modulation type from 16 statistical features extracted from raw waveform data — amplitude, phase, frequency, and higher-order spectral patterns. Trained and evaluated on RML2016.10a (220k samples, 11 signal types, 20 SNR levels). Hit 83.6% accuracy on clean signals against a 9% random baseline. Custom feature engineering lifted overall accuracy from 47.7% to 51.3% across all noise levels. No neural nets — just signal processing and scikit-learn.",
-      "what_went_wrong": "",
-      "what_id_change": ""
-    },
-    "isac_thesis": {
-      "name": "Intelligent Decision-Making for Cognitive ISAC Networks",
-      "problem": "Joint node-role selection and beamforming in a multi-node V2X intersection ISAC network",
-      "status": "Active",
-      "phasesCompleted": "1",
-      "totalPhases": "3",
-      "tech": "Python · CVXPY · Convex Optimization · MIMO Theory",
-      "description": "IDC thesis at FAU. Most ISAC literature models radar cross-section as an i.i.d. random variable, but in distributed multi-node networks RCS depends on geometry. I'm proposing a deterministic bistatic RCS model σ(θ_b) that makes node-role selection a real optimization variable. The full problem is a joint node-role selection and beamforming formulation solved via convex optimization and successive convex approximation (SCA). Currently: literature review and problem formulation done, convex solver implementation in progress.",
-      "what_went_wrong": "",
-      "what_id_change": ""
-    },
-    "vlc": {
-      "name": "Vehicle-to-Vehicle Visible Light Communication",
-      "problem": "Low-latency V2V communication without radio spectrum allocation",
-      "status": "Complete",
-      "phasesCompleted": "3",
-      "totalPhases": "3",
-      "tech": "C · STM32 · OOK · Turbo Coding · MATLAB",
-      "description": "STM32-based V2V prototype using OOK optical modulation with Turbo Coding for forward error correction. Simulated the LED driver in Multisim to check voltage stability under load. Modelled an MPPT algorithm in MATLAB for a solar-powered transceiver. The hard part was ambient light drowning the photodetector — adaptive thresholding fixed it. Real lesson: test in daylight from day one, not just the lab.",
-      "what_went_wrong": "Optimized for lab conditions first, then had to redesign for real lighting. Should have tested in daylight from day 1.",
-      "what_id_change": "Start with the worst-case environment, not the best case. Physics does not care about your clean-room results."
+  "fun": {
+    "heading": "What do I build for fun?",
+    "col_project": "Project",
+    "col_what": "What it is",
+    "col_stack": "Stack",
+    "code": "Code for {name}",
+    "rows": {
+      "can_decoder": {
+        "name": "CAN decoder",
+        "what": "Decodes CAN bus logs into named physical values using DBC files. Log parser shipped, DBC parser in progress.",
+        "stack": "Rust"
+      },
+      "sprachboot": {
+        "name": "Sprachboot",
+        "what": "A German conversation trainer that corrects grammar in context. Local-first: nothing leaves your machine.",
+        "stack": "FastAPI, React, ChromaDB"
+      },
+      "nest": {
+        "name": "Nest",
+        "what": "Expenses, groceries, chores and a calendar for a shared flat. Used every day by two people.",
+        "stack": "React 19, Supabase"
+      },
+      "f1_dashboard": {
+        "name": "F1 dashboard",
+        "what": "My own pit wall: standings, the calendar, and live telemetry on race weekends.",
+        "stack": "FastF1, FastAPI"
+      },
+      "prompt_analysis": {
+        "name": "Prompt analysis",
+        "what": "Turns exported Claude, Gemini and ChatGPT logs into one dashboard of prompting habits.",
+        "stack": "Python, DuckDB"
+      },
+      "career_ops": {
+        "name": "Career-ops",
+        "what": "A fork of santifer’s AI job-search system on Claude Code, which I contributed to and adapted for my own search.",
+        "stack": "JavaScript, Go"
+      }
     }
   },
   "life": {
-    "heading": "Life.",
-    "intro": "Not everything I do ends up in a GitHub repo. This is the rest of it. Places I've lived, things I follow too closely, stuff I'm still figuring out.",
-    "currently_eyebrow": "CURRENTLY",
-    "currently": {
-      "watching_label": "Watching",
-      "watching_value": "House MD. Convinced I diagnose problems the same way he does.",
-      "reading_label": "Reading",
-      "reading_value": "My own thesis, unfortunately",
-      "building_label": "Building",
-      "building_value": "A German tutor app to avoid actually speaking German",
-      "eating_label": "Eating",
-      "eating_value": "Trying to find a good burger spot in Nürnberg. Still Looking.",
-      "learning_label": "Learning",
-      "learning_value": "Rust. Slowly."
-    },
-    "road_eyebrow": "FROM THE ROAD",
-    "road": {
-      "saxon": "Saxon Switzerland, 2023",
-      "alps": "Alps, Austria, 2022",
-      "berlin": "Berlin, 2024"
-    },
-    "quotes_eyebrow": "QUOTES I LIVE BY",
-    "quote": "\"You can't control the wind but you can adjust your sails. It's not about what happens to you, it's how you react.\"",
-    "footer": {
-      "designed_as": "© 2024 DESIGNED AS AN INSTRUMENT",
-      "find_me": "FIND ME ON"
-    }
-  },
-  "places": {
-    "heading": "Places I've Lived",
-    "scroll_hint": "Scroll to explore",
+    "heading": "Where have I lived?",
     "bengaluru": {
-      "tagline": "Where it all began",
-      "story": "The chaotic, green capital of my early years. Where I learned to code, dodge traffic, and appreciate the sound of a city that never stops building."
+      "name": "Bengaluru",
+      "line": "Where it all began: where I learned to code and to dodge traffic."
     },
     "nurnberg": {
-      "tagline": "First chapter abroad",
-      "story": "A transition to efficiency and cobblestones. Currently navigating the nuances of German bureaucracy and engineering master's courses."
+      "name": "Nürnberg",
+      "line": "First chapter abroad. Cobblestones, a master’s, and German bureaucracy."
     },
     "dresden": {
-      "tagline": "Six months. One internship. Surprisingly good bread.",
-      "story": "A winter spent working on high-frequency electronics near the Elbe. Technical growth in a historic setting."
+      "name": "Dresden",
+      "line": "Six months, one internship, surprisingly good bread."
     }
   },
+  "now": {
+    "heading": "What am I up to now?",
+    "watching_label": "Watching",
+    "watching": "House MD. Convinced I diagnose problems the way he does.",
+    "reading_label": "Reading",
+    "reading": "My own thesis, unfortunately.",
+    "building_label": "Building",
+    "building": "A German tutor app, to avoid actually speaking German.",
+    "eating_label": "Eating",
+    "eating": "Still looking for a good burger in Nürnberg.",
+    "learning_label": "Learning",
+    "learning": "Rust. Slowly.",
+    "following_label": "Following",
+    "following": "Max Verstappen, every race."
+  },
   "contact": {
-    "eyebrow": "Transmission Channel",
-    "heading": "IF SOMETHING HERE CAUGHT YOUR EYE.",
-    "availability_subtext": "Drop a line or follow the signal.",
-    "availability": "M.Sc. student in Germany, eligible to work up to 140 days/year. Open to Werkstudent or internship roles in signal processing, ML pipelines, or embedded automotive systems. Fastest way to reach me is email — I read everything.",
+    "heading": "Can we work together?",
+    "availability": "I’m an M.Sc. student in Germany, allowed to work up to 140 days a year. I’m looking for Werkstudent or internship roles in signal processing, ML pipelines or embedded automotive systems.",
+    "fastest": "Email is fastest. I read everything.",
     "email_label": "Email",
-    "github_label": "GitHub",
     "linkedin_label": "LinkedIn",
-    "resume_label": "Download CV",
-    "system_status": "SYSTEM_STATUS",
-    "status_listening": "OPERATIONAL / LISTENING",
-    "latency_note": "Signals are monitored daily. Response latency typically falls within 0x18h.",
-    "status_optimal": "Status: Optimal",
-    "repository": "Repository",
-    "telemetry": "Telemetry"
+    "github_label": "GitHub",
+    "cv_label": "CV",
+    "cv_link": "Download the PDF",
+    "form_name": "Your name",
+    "form_message": "Message, with a way to reach you",
+    "form_send": "Send message",
+    "form_sending": "Sending…",
+    "form_sent": "Sent. Thanks for writing.",
+    "form_error": "That didn’t go through. Email me at lnlohith3@gmail.com instead."
+  },
+  "footer": {
+    "line": "© 2026 Lohith Tarikere Prasanna. Set in Hanken Grotesk, Newsreader and IBM Plex Mono.",
+    "source": "Source on GitHub",
+    "instagram": "Instagram"
   },
   "meta": {
     "title": "Lohith Tarikere Prasanna",
-    "description": "M.Sc. Electromobility student at FAU. Built production AI tools at NI Dresden, worked on embedded systems at Delta X Automotive. Signal processing, ML, and embedded automotive."
+    "description": "I research intelligent sensing at the boundary of 6G communications and autonomous driving. M.Sc. student at FAU; built production AI tools at NI Dresden and worked on embedded systems at Delta X Automotive."
+  },
+  "notfound": {
+    "heading": "This page isn’t on the map.",
+    "body": "The link is broken or the page moved.",
+    "home": "Back to the start"
   }
 }

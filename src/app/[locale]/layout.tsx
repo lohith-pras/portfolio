@@ -1,11 +1,6 @@
 import { NextIntlClientProvider } from 'next-intl'
-import { getMessages, setRequestLocale } from 'next-intl/server'
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server'
 import { routing, type Locale } from '@/i18n/routing'
-import { PageTransition } from '@/components/PageTransition'
-
-import { SmoothScroll } from '@/components/SmoothScroll'
-import { GrainCanvas } from '@/components/GrainCanvas'
-import { IntroLoader } from '@/components/IntroLoader'
 import { Navbar } from '@/components/Navbar'
 import { type ReactNode } from 'react'
 import { type Metadata } from 'next'
@@ -17,7 +12,7 @@ const jsonLd = {
   '@type': 'Person',
   name: 'Lohith Tarikere Prasanna',
   url: BASE,
-  jobTitle: 'M.Sc. Student, Electrical Engineering',
+  jobTitle: 'M.Sc. student researching intelligent sensing for 6G and autonomous driving',
   sameAs: [
     'https://github.com/lohith-pras',
     'https://www.linkedin.com/in/loh-pras',
@@ -31,24 +26,27 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'meta' })
+  const title = t('title')
+  const description = t('description')
   return {
     metadataBase: new URL(BASE),
     title: {
-      default: 'Lohith Tarikere Prasanna — Builder',
-      template: '%s — Lohith',
+      default: title,
+      template: '%s, Lohith',
     },
-    description: 'Builder with intent. AI, wireless, and mobility. MIMO, VLC, IoT security.',
+    description,
     openGraph: {
-      title: 'Lohith Tarikere Prasanna — Builder',
-      description: 'Builder with intent. AI, wireless, and mobility.',
+      title,
+      description,
       url: `${BASE}/${locale}`,
-      siteName: 'Lohith Prasanna Portfolio',
+      siteName: 'Lohith Tarikere Prasanna',
       images: [
         {
           url: '/og-image.png',
           width: 1200,
           height: 630,
-          alt: 'Lohith Tarikere Prasanna — Builder',
+          alt: title,
         },
       ],
       locale: locale === 'de' ? 'de_DE' : 'en_US',
@@ -56,8 +54,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'Lohith Tarikere Prasanna — Builder',
-      description: 'Builder with intent. AI, wireless, and mobility.',
+      title,
+      description,
       images: ['/og-image.png'],
     },
     alternates: {
@@ -77,7 +75,6 @@ export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }))
 }
 
-
 export default async function LocaleLayout({ children, params }: Props) {
   const { locale } = await params
 
@@ -85,8 +82,8 @@ export default async function LocaleLayout({ children, params }: Props) {
   // Must be called in EVERY layout and page that uses the [locale] param.
   setRequestLocale(locale as Locale)
 
-  // Fetch messages for the current locale
   const messages = await getMessages()
+  const t = await getTranslations('nav')
 
   return (
     <NextIntlClientProvider locale={locale} messages={messages}>
@@ -94,19 +91,11 @@ export default async function LocaleLayout({ children, params }: Props) {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:border focus:border-accent focus:bg-paper focus:px-5 focus:py-2.5 focus:font-mono focus:text-sm focus:uppercase focus:tracking-widest focus:text-accent"
-      >
-        Skip to content
+      <a className="skip" href="#main-content">
+        {t('skip')}
       </a>
-      <SmoothScroll />
-      <GrainCanvas />
-      <IntroLoader />
       <Navbar />
-      <PageTransition>
-        {children}
-      </PageTransition>
+      {children}
     </NextIntlClientProvider>
   )
 }

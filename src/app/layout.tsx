@@ -1,45 +1,38 @@
 import type { Metadata } from 'next'
-import { Space_Mono, Plus_Jakarta_Sans, Oswald } from 'next/font/google'
+import { Hanken_Grotesk, Newsreader, IBM_Plex_Mono } from 'next/font/google'
 import { getLocale } from 'next-intl/server'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-// FOUND-01: Fonts loaded via next/font/google — zero external network request,
-// automatic preload, no layout shift, latin subset covers German umlauts (ä ö ü ß)
-// 3-family stack: Oswald (display/headings) + Space Mono (mono labels) + Plus Jakarta Sans (body)
+// Almanac type stack (design.md): Hanken Grotesk heads, Newsreader prose,
+// IBM Plex Mono for figures only. Exposed as CSS variables read by tokens.css.
 
-const spaceMono = Space_Mono({
-  weight: ['400', '700'],
+const hanken = Hanken_Grotesk({
+  weight: ['500', '600'],
   subsets: ['latin'],
-  variable: '--font-space-mono',
+  variable: '--font-hanken',
   display: 'swap',
 })
 
-// Body face — Plus Jakarta Sans. Prose, body copy, captions.
-const plusJakartaSans = Plus_Jakarta_Sans({
-  weight: ['300', '400', '500'],
+const newsreader = Newsreader({
+  weight: ['400', '500'],
+  style: ['normal', 'italic'],
   subsets: ['latin'],
-  variable: '--font-plus-jakarta',
+  variable: '--font-newsreader',
   display: 'swap',
 })
 
-// Display / heading face — Oswald. Hero name + all section h2 headings.
-// Condensed grotesque — carries the "signal / instrument" brand voice.
-const oswald = Oswald({
-  weight: ['500', '600', '700'],
+const plexMono = IBM_Plex_Mono({
+  weight: ['400', '500'],
   subsets: ['latin'],
-  variable: '--font-oswald',
+  variable: '--font-plex-mono',
   display: 'swap',
 })
-
-// NOTE: Courier Prime is intentionally NOT loaded here.
-// It loads ONLY in src/app/[locale]/life/layout.tsx (Phase 7).
-// Loading it here would add 200+ kB to every non-/life route (PITFALL).
 
 export const metadata: Metadata = {
   title: 'Lohith Tarikere Prasanna',
-  description: 'Builder with intent. AI, wireless, and mobility.',
-  keywords: ['AI', 'wireless', 'mobility', 'MIMO', 'portfolio', 'engineer'],
+  description: 'I research intelligent sensing at the boundary of 6G communications and autonomous driving.',
+  keywords: ['ISAC', '6G', 'autonomous driving', 'signal processing', 'V2X', 'portfolio', 'engineer'],
 }
 
 export default async function RootLayout({
@@ -51,9 +44,9 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      className={`${spaceMono.variable} ${plusJakartaSans.variable} ${oswald.variable}`}
+      className={`${hanken.variable} ${newsreader.variable} ${plexMono.variable}`}
     >
-      <body className="bg-background text-foreground antialiased">
+      <body>
         {children}
         <Analytics />
       </body>
