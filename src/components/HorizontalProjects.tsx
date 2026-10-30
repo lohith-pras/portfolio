@@ -7,57 +7,73 @@ import { X } from 'lucide-react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from '@/lib/gsap'
 
-// Radar Coordinates for the 6 projects (representing active signal blips)
+// Radar Coordinates for the 8 projects (representing active signal blips)
 const PROJECTS = [
   // Outer Ring (ENGINEERING): ~0.7 radius in WebGL space
   {
     key: 'can_decoder',
     id: 'OBJ_001',
     ring: 'outer',
-    top: '15%',
-    left: '35%',
-    href: 'https://github.com/lohith-pras/can-bus-decoder',
+    top: '12%',
+    left: '32%',
+    href: 'https://github.com/lohith-pras/can_decoder',
   },
   {
     key: 'isac_drl',
     id: 'OBJ_002',
     ring: 'outer',
-    top: '82%',
-    left: '55%',
-    href: null,
+    top: '78%',
+    left: '52%',
+    href: 'https://github.com/lohith-pras/isac-drl',
   },
   {
     key: 'modulation_classifier',
     id: 'OBJ_003',
     ring: 'outer',
-    top: '50%',
-    left: '85%',
-    href: 'https://github.com/lohith-pras/rf-modulation-classifier',
+    top: '48%',
+    left: '82%',
+    href: 'https://github.com/lohith-pras/modulation-classifier',
+  },
+  {
+    key: 'career_ops',
+    id: 'OBJ_007',
+    ring: 'outer',
+    top: '25%',
+    left: '68%',
+    href: 'https://github.com/lohith-pras/career-ops',
   },
   // Inner Ring (FOR FUN): ~0.4 radius in WebGL space
   {
     key: 'sprachboot',
     id: 'OBJ_004',
     ring: 'inner',
-    top: '40%',
-    left: '40%',
-    href: null,
+    top: '38%',
+    left: '38%',
+    href: 'https://github.com/lohith-pras/sprachboot',
   },
   {
     key: 'nest',
     id: 'OBJ_005',
     ring: 'inner',
-    top: '60%',
-    left: '60%',
-    href: null,
+    top: '58%',
+    left: '58%',
+    href: 'https://github.com/lohith-pras/nest',
   },
   {
     key: 'f1_dashboard',
     id: 'OBJ_006',
     ring: 'inner',
-    top: '55%',
-    left: '32%',
-    href: null,
+    top: '52%',
+    left: '28%',
+    href: 'https://github.com/lohith-pras/f1-dashboard',
+  },
+  {
+    key: 'prompt_analysis',
+    id: 'OBJ_008',
+    ring: 'inner',
+    top: '68%',
+    left: '72%',
+    href: 'https://github.com/lohith-pras/prompt_analysis',
   },
 ] as const
 
@@ -317,9 +333,9 @@ export function HorizontalProjects() {
         {
           scale: 1,
           opacity: 1,
-          duration: 0.6,
+          duration: 0.5,
           stagger: 0.08,
-          ease: 'back.out(1.5)',
+          ease: 'power3.out',
           delay: 0.2,
           overwrite: 'auto'
         }
@@ -533,11 +549,12 @@ export function HorizontalProjects() {
                     }`}
                   />
                 )}
-                {/* Blip Object Code Tag */}
+                {/* Blip label — project name as primary, OBJ code as secondary detail */}
                 <span
-                  className={`absolute -top-3 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200 font-mono text-[9px] text-beige bg-background px-2 py-0.5 border border-rule whitespace-nowrap z-40 pointer-events-none`}
+                  className={`absolute -top-5 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-200 font-mono text-[9px] text-beige bg-background px-2 py-0.5 border border-rule whitespace-nowrap z-40 pointer-events-none`}
                 >
-                  {p.id}
+                  {tp(`${p.key}.name`)}
+                  <span className="text-foreground/40 ml-1.5">{p.id}</span>
                 </span>
               </div>
             </button>
