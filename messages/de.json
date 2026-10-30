@@ -16,66 +16,38 @@
     "lead": "Ich erforsche intelligente Sensorik, wo 6G auf autonomes Fahren trifft.",
     "byline": "M.Sc.-Student an der FAU in Nürnberg, zuvor bei NI Dresden.",
     "email": "Schreib mir",
-    "cv": "Lebenslauf laden",
-    "table_caption": "Ingenieursarbeit",
-    "col_project": "Projekt",
-    "col_field": "Gebiet",
-    "col_result": "Ergebnis",
-    "rows": {
-      "thesis": {
-        "name": "Kognitive ISAC-Netze",
-        "field": "Konvexe Optimierung, V2X",
-        "result": "Phase 1 von 3 fertig"
-      },
-      "ni": {
-        "name": "KI-Agent für HF-Testdaten",
-        "field": "LLM-Agenten, Datenpipelines",
-        "result": "Täglich im Einsatz bei NI"
-      },
-      "drl": {
-        "name": "ISAC-DRL",
-        "field": "Reinforcement Learning, mmWave",
-        "result": "DDPG gegen eine DFT-Baseline"
-      },
-      "amc": {
-        "name": "Modulationsklassifikator",
-        "field": "Signalverarbeitung, ML",
-        "result": "83,6 % bei ≥ +6 dB SNR"
-      },
-      "vlc": {
-        "name": "V2V per sichtbarem Licht",
-        "field": "Embedded, optische Kommunikation",
-        "result": "STM32-Prototyp"
-      }
-    }
+    "cv": "Lebenslauf laden"
   },
   "thesis": {
     "heading": "Worum geht es in meiner Thesis?",
-    "answer": "Die meiste ISAC-Forschung behandelt den Radarquerschnitt als Zufallsvariable. In einem Netz aus Knoten hängt er von der Geometrie ab, also modelliere ich ihn deterministisch. So wird die Rolle jedes Knotens, Sensing oder Kommunikation, zu etwas, das der Optimierer wählen kann.",
-    "problem_label": "Problem",
-    "problem": "Gemeinsame Rollenwahl und Beamforming in einem V2X-Kreuzungsnetz mit mehreren Knoten",
-    "model_label": "Modell",
-    "model": "Deterministischer bistatischer RCS, σ(θ_b)",
-    "method_label": "Methode",
-    "method": "Konvexe Optimierung und Successive Convex Approximation",
-    "tools_label": "Werkzeuge",
-    "tools": "Python, CVXPY, MIMO-Theorie",
+    "answer": "Einige Funkknoten müssen gleichzeitig ein bewegtes Ziel per Radar verfolgen und Nutzer mit Daten versorgen, mit so wenig Leistung wie möglich. Das Ziel ist eine flache Platte, also hängt ihr Echo davon ab, wohin sie zeigt. In jedem Zeitschlitz entscheidet ein PPO-Agent allein aus der Schätzung des Trackers, welche Knoten senden, wie viel Leistung jeder Strahl bekommt und wohin der Sensing-Strahl zeigt.",
+    "lesson_1": "Die Platte kostet etwa 3 W mehr als eine Kugel: Der Agent bezahlt mit Leistung dafür, nicht genau zu wissen, wohin sie zeigt.",
+    "lesson_2": "Ein versteckter Seeding-Fehler ließ „verschiedene“ Läufe Trainingsdaten teilen. Ich habe jeden Vergleich auf identischen Trajektorien neu aufgebaut.",
+    "requirements_label": "Anforderungen",
+    "requirements": "Positionsgenauigkeit innerhalb von 0,5 m (Cramér-Rao-Schranke) und Nutzer-SINR von mindestens 10 dB, in jedem Zeitschlitz",
+    "setup_label": "Aufbau",
+    "setup": "4 Knoten auf einem 120-m-Ring, 12-Element-Arrays bei 28 GHz, 2 feste Nutzer, ein bewegtes Plattenziel",
+    "physics_label": "Physik",
+    "physics": "Platten-RCS aus geometrischer Optik, bistatische CRB, Coordinated-Turn-EKF, Multi-Knoten-MRT-Downlink",
+    "learning_label": "Lernen",
+    "learning": "PPO in Stable-Baselines3, verglichen mit TRPO, A2C, SQN, BDQ und rekurrentem PPO",
+    "result_label": "Ergebnis",
+    "result": "Beide Anforderungen in 97,7 % der Zeitschlitze bei 4,2 W im Mittel, bei 8 W Budget, auf 500 ungesehenen Trajektorien. Eine Zufallsstrategie schafft 2,6 %.",
     "where_label": "Wo",
-    "where": "IDC-Thesis an der FAU Erlangen-Nürnberg",
+    "where": "Projektarbeit an der FAU, Lehrstuhl von Prof. Robert Schober (IDC)",
     "status_label": "Stand",
-    "status": "Literaturrecherche und Formulierung fertig, konvexer Solver in Arbeit",
-    "phase": "1 von 3"
+    "status": "Bericht in der finalen Fassung, Abgabe am 23. November 2026"
   },
   "ni": {
     "heading": "Was habe ich bei NI Dresden gebaut?",
-    "lead": "Ein Werkzeug, mit dem Fertigungsingenieure Produktionstestdaten ohne SQL oder Python abfragen.",
-    "fig_speed": "schneller nach dem Wechsel von pandas zu Polars",
-    "fig_rows": "Zeilen pro Datensatz, als Parquet gecacht",
-    "fig_types": "Messtypen, nach Fehlermustern gerankt",
+    "lead": "Werkzeuge, mit denen Testingenieure herausfinden, warum HF-Messgeräte in der Produktionsprüfung durchfallen, heute Teil des KI-Debug-Assistenten des Teams.",
+    "fig_speed": "für den Abruf der Fehlerdaten, vorher über 10 Minuten",
+    "fig_rows": "Korrekturmaßnahmen pro neuem Fehler, aus den ähnlichsten früheren Fällen",
+    "fig_types": "Anomalien, isoliert von einem Sigma-Band-Klassifikator mit fünf Klassen",
     "how_label": "So funktioniert es",
-    "how": "Ingenieure fragen etwa „Zeig mir die Yield für VST-Kanal 4 letzte Woche“ und bekommen Tabellen und Plotly-Charts zurück. Ein LLM-Agent-Skill leitet jede Frage an eine Python-Pipeline; ein 1σ/3σ-Klassifikator trennt echte Fehler von Grenzfällen und Rauschen.",
+    "how": "Ich habe einen Fehlersignatur-Matcher von einem fest kodierten Test auf einem CSV-Auszug auf jeden Test und Parameter des gesamten Messdatensatzes verallgemeinert und seine Abfrageschicht mit Batch-Verarbeitung und parallelen Workern neu gebaut. Beide Werkzeuge laufen als Agent-Skills mit Guardrails und End-to-End-Tests, genutzt von Testingenieuren am Standort Malaysia.",
     "wrong_label": "Was schiefging",
-    "wrong": "Ich habe die Kosten wiederholter Metadaten-Abfragen unterschätzt. Stabil, aber zu langsam für ein Gespräch.",
+    "wrong": "Die erste Version war stabil, aber viel zu langsam für ein Gespräch: Jede Frage ging zurück an die Produktionsdatenbank.",
     "change_label": "Was ich ändern würde",
     "change": "Schwere Verarbeitung vom ersten Tag an hinter einen Cache legen. Dauert eine Antwort 30 Sekunden, fragt niemand mehr."
   },
@@ -177,5 +149,50 @@
     "heading": "Diese Seite ist nicht auf der Karte.",
     "body": "Der Link ist kaputt oder die Seite ist umgezogen.",
     "home": "Zurück zum Anfang"
+  },
+  "work": {
+    "label": "Ingenieursarbeit",
+    "sensing": "Sensing",
+    "comms": "Kommunikation",
+    "thesis": {
+      "name": "Kognitives ISAC mit Deep RL",
+      "where": "Projektarbeit an der FAU, Abgabe am 23. Nov. 2026",
+      "fig1": "97,7 %",
+      "fig1_label": "der Zeitschlitze erfüllen beide Anforderungen",
+      "fig2": "4,2 W",
+      "fig2_label": "mittlere Leistung, bei 8 W Budget",
+      "diagram": "Vier Funkknoten auf einem Ring. Einer sendet einen Sensing-Strahl auf ein flaches Plattenziel; das Echo erreicht einen anderen Knoten, während zwei Knoten zwei Nutzer versorgen.",
+      "tx": "Tx",
+      "target": "Plattenziel",
+      "user": "Nutzer",
+      "track": "EKF-Spur"
+    },
+    "ni": {
+      "name": "Agenten für Fehleranalyse",
+      "where": "Praktikum bei NI Dresden",
+      "fig": "< 1 min",
+      "fig_label": "Datenabruf, vorher über 10",
+      "step1": "Neuer Fehler",
+      "step2": "Ähnlichste frühere Fehler",
+      "step3": "Top 5 Lösungen"
+    },
+    "deltax": {
+      "name": "Sicherheits-ECU für ein E-Zweirad",
+      "where": "Praktikum bei Delta X Automotive",
+      "fig": "2",
+      "fig_label": "Prototypfahrzeuge",
+      "locked": "Gesperrt",
+      "unlocked": "Entsperrt",
+      "finger": "Fingerabdruck",
+      "stand": "Seitenständer unten",
+      "diagram": "Zustandsautomat der Sperre: ein gültiger Fingerabdruck führt von Gesperrt zu Entsperrt, ein ausgeklappter Seitenständer erzwingt Gesperrt."
+    },
+    "amc": {
+      "name": "Modulationsklassifikator",
+      "where": "Open Source",
+      "fig": "83,6 %",
+      "fig_label": "ab 6 dB SNR",
+      "diagram": "Konstellationsdiagramme von QPSK und 16-QAM, zwei der elf Modulationsarten, die der Klassifikator trennt."
+    }
   }
 }

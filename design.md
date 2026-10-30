@@ -20,8 +20,10 @@ Almanac). Shared floor rules: [`src/app/base.css`](src/app/base.css). Page rules
   printed sheet `--color-sheet` oklch(93.5% 0.008 245).
 - Ink: blue-black `--color-ink` oklch(16% 0.020 245), `--color-ink-2`, `--color-muted`.
 - Rules: `--rule-hair` 1px in `--color-rule`, `--rule-bar` 2px in `--color-rule-2`.
-- Accent: chart magenta `--color-accent` oklch(45% 0.180 350). Under 5% of any
-  screen: the primary button, link underlines, the one row the page points at.
+- Full palette, two signal colours with fixed meanings: magenta `--color-accent`
+  oklch(45% 0.180 350) for sensing and radar, teal `--color-teal` oklch(48% 0.090 195)
+  for communication. Light steps (`-light`) on the ink tile, washes (`-wash`) behind
+  small marks. The primary button is magenta.
 
 ## Type
 - Display: Hanken Grotesk 600, sentence case, -0.02em (hero name -0.035em).
@@ -38,8 +40,15 @@ paper step. Two bands a page at most: the NI band on `--color-paper-2` and the
 contact band on `--color-ink`.
 
 ## Motion
-Nothing moves except state: a row tint and an underline on hover, a 1px press on
-buttons. No reveals, no scroll effects, no loaders.
+State changes (tile and row tints, underlines, a 1px button press), plus one reveal:
+diagram strokes trace in once on load (CSS, off under reduced motion). No scroll
+effects, no loaders.
+
+## Diagrams
+The engineering tiles in the hero each draw their project's real mechanism
+(`src/components/diagrams.tsx`): the ISAC node ring, the ECU lock state machine,
+QPSK and 16-QAM constellations. Shapes stand for parts of a system, never for
+measured data.
 
 ## Voice
 Declarative and exact: cite the figure, the unit, the place. Section heads are
@@ -47,4 +56,4 @@ questions of six words or so. No eyebrows, no hype adjectives, no dashes.
 
 ## Never
 Invented metrics, quotes or logos; photographs captioned as places they do not
-show; mono or tracked caps on labels; a second accent colour.
+show; mono or tracked caps on labels; a third signal colour, or magenta and teal swapping meanings.

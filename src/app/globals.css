@@ -1,7 +1,8 @@
 /* Hallmark · shape: Conversational FAQ (draw e2b922) · genre: editorial · theme: Almanac (deal 1/3, seed portfolio-electronics-engineer-researching-b421·d7783118·2026-10-30·r0) · redesign: full · job: hire
- * hero: Index · nav: floating pill · footer: colophon (swapped from index columns: one page, no sitemap) · imagery: none (the old road photos were stand-ins; the user's own come later) ·signature: the work set as a printed reference table, the thesis row marked in magenta
- * axes: mid/grotesk-sans/chromatic-magenta · posture: restrained · contrast: pass · fold: pass · v2.0.0 */
+ * hero: Index · nav: floating pill · footer: colophon (swapped from index columns: one page, no sitemap) · imagery: none (the old road photos were stand-ins; the user's own come later) ·signature: the engineering work as tiles, each drawing its own mechanism, the thesis ring of radio nodes leading on ink
+ * axes: mid/grotesk-sans/chromatic-magenta · posture: full palette (magenta = sensing signal, teal = communication signal, ink = the lead tile and contact band, slate = paper) · contrast: pass · fold: pass · v2.0.0 */
 /* Hallmark · pre-emit critique: P4 H4 E4 S5 R5 V4 · weakest: P, a CV-shaped page has little to argue; each section is a question a recruiter asks, answered with the user's own figures */
+/* Hallmark · waive 44c · the tile grid spans all twelve columns under the name block · an Index hero stacks the engineering tiles beneath the name as the page's lead, so its centre sits below the text by design */
 /* Hallmark · dropped #about, /life, https://github.com/lohith-pras/portfolio_v2, {activeProject.href}, onClick={toggleLocale} · the user approved folding /life into one page (/life now redirects to #life), the repo now lives at lohith-pras/portfolio, and the language switch is a plain link */
 /* Hallmark · dropped onBlur={() => setHoveredKey(null)}, onClick={() => { setPanelOpen(false) setSelectedKey(null) }}, onClick={() => { setSelectedKey(p.key) setPanelOpen(true) }}, onFocus={() => { setHoveredKey(p.key) setSelectedKey(p.key) setPanelOpen(true) }}, onMouseEnter={() => { setHoveredKey(p.key) setSelectedKey(p.key) setPanelOpen(true) }}, onMouseLeave={() => setHoveredKey(null)} · the hover radar is replaced by always-visible project tables the user approved */
 /* Hallmark · dropped onMouseDown={handleMouseDown}, onMouseLeave={handleMouseLeaveOrUp}, onMouseMove={handleMouseMove}, onMouseUp={handleMouseLeaveOrUp} · the drag filmstrip on /life is replaced by a static grid of the three road photos */
@@ -46,7 +47,6 @@ a:active { color: var(--color-ink-2); }
 .table td:first-child { font-weight: 500; color: var(--color-ink); }
 .table tbody tr { transition: background-color var(--dur-short) var(--ease-out); }
 .table tbody tr:hover { background: color-mix(in oklab, var(--color-paper-2) 45%, transparent); }
-.table .is-marked td, .table .is-marked a { color: var(--color-accent); }
 
 /* ── Nav: floating pill ─────────────────────────────────── */
 .nav { position: fixed; inset: var(--space-md) 0 auto; z-index: var(--z-sticky-nav); display: flex; justify-content: center; padding-inline: var(--space-md); pointer-events: none; }
@@ -64,7 +64,74 @@ a:active { color: var(--color-ink-2); }
 .hero__head { grid-column: 1 / 9; display: grid; gap: var(--space-sm); }
 .hero__head h1 { max-width: none; font-size: var(--text-display-s); letter-spacing: -0.035em; line-height: 0.95; }
 .hero__actions { grid-column: 9 / 13; display: flex; flex-wrap: wrap; gap: var(--space-sm); justify-content: flex-end; }
-.hero__index { grid-column: 1 / 13; margin: 0; padding: var(--space-lg) var(--space-xl) var(--space-md); background: var(--color-sheet); border-top: var(--rule-bar) solid var(--color-ink); }
+
+/* Engineering work: a bento of tiles, each with a diagram of its mechanism */
+.bento { grid-column: 1 / 13; display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); grid-template-rows: repeat(3, minmax(0, auto)); gap: var(--space-xs); margin: 0; padding: 0; list-style: none; }
+.tile { grid-column: 8 / 13; min-width: 0; }
+.tile--lead { grid-column: 1 / 8; grid-row: 1 / 4; }
+.tile__link { display: grid; align-content: start; gap: var(--space-2xs); height: 100%; padding: var(--space-sm) var(--space-lg) var(--space-md); background: var(--color-sheet); border-top: var(--rule-bar) solid var(--color-ink); color: var(--color-ink-2); text-decoration: none; transition: background-color var(--dur-short) var(--ease-out); }
+a.tile__link:hover { background: var(--color-accent-wash); }
+.tile__name { max-width: none; font-size: var(--text-lg); line-height: 1.2; }
+.tile__where { font-size: var(--text-sm); color: var(--color-muted); }
+.tile__fig { margin-top: var(--space-2xs); font-size: var(--text-sm); color: var(--color-muted); }
+.tile__fig .num { font-size: var(--text-lg); font-weight: 500; color: var(--color-ink); }
+.tile .diagram { width: 100%; max-height: 64px; margin-block: var(--space-2xs); }
+.tile .diagram--lock { max-height: 88px; }
+
+.tile--lead .tile__link { grid-template-columns: minmax(0, 2fr) minmax(0, 3fr); gap: var(--space-lg); align-items: center; align-content: center; padding: var(--space-xl); background: var(--color-ink); border-top-color: var(--color-accent-light); color: var(--color-paper-3); }
+.tile--lead a.tile__link:hover { background: var(--color-ink-2); }
+.tile--lead .tile__text { display: grid; gap: var(--space-xs); align-content: start; }
+.tile--lead .tile__name { font-size: var(--text-2xl); color: var(--color-sheet); }
+.tile--lead .tile__where { color: var(--color-paper-3); }
+.tile--lead .diagram { max-height: none; }
+.tile__figs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-md); margin: var(--space-md) 0 0; padding-top: var(--space-md); border-top: var(--rule-hair) solid var(--color-muted); }
+.tile__figs dt { font-size: var(--text-3xl); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--color-sheet); }
+.tile__figs div:first-child dt { color: var(--color-accent-light); }
+.tile__figs dd { margin: var(--space-2xs) 0 0; font-size: var(--text-sm); color: var(--color-paper-3); }
+.legend { display: flex; gap: var(--space-md); margin-top: var(--space-xs); font-size: var(--text-sm); }
+.legend span { display: inline-flex; align-items: center; gap: var(--space-xs); }
+.legend span::before { content: ""; width: var(--space-md); height: var(--rule-bar); }
+.legend__sense { color: var(--color-accent-light); }
+.legend__sense::before { background: var(--color-accent-light); }
+.legend__comm { color: var(--color-teal-light); }
+.legend__comm::before { background: var(--color-teal-light); }
+
+.flow { display: flex; flex-wrap: wrap; gap: var(--space-xs); margin: var(--space-xs) 0 0; padding: 0; list-style: none; font-size: var(--text-sm); }
+.flow li { padding: var(--space-2xs) var(--space-xs); border: var(--rule-hair) solid var(--color-rule-2); color: var(--color-ink); }
+.flow li:nth-child(2) { background: var(--color-teal-wash); border-color: var(--color-teal); }
+.flow li:last-child { background: var(--color-accent-wash); border-color: var(--color-accent); }
+
+/* Diagram strokes and fills, all from tokens */
+.diagram text { font: 500 11px/1 var(--font-body); }
+.d-ring { fill: none; stroke: var(--color-muted); stroke-width: 1; stroke-dasharray: 2 5; }
+.d-track { fill: none; stroke: var(--color-paper-3); stroke-width: 1.5; stroke-dasharray: 1 5; stroke-linecap: round; }
+.d-beam { fill: var(--color-accent-light); fill-opacity: 0.28; stroke: var(--color-accent-light); stroke-width: 1; }
+.d-echo { stroke: var(--color-accent-light); stroke-width: 2; }
+.d-echo--weak { stroke-width: 1; stroke-dasharray: 3 4; opacity: 0.6; }
+.d-comm { stroke: var(--color-teal-light); stroke-width: 2; }
+.d-plate { fill: var(--color-sheet); }
+.d-node { fill: var(--color-ink); stroke: var(--color-paper-3); stroke-width: 1.5; }
+.d-node--tx { fill: var(--color-accent-light); stroke: var(--color-accent-light); }
+.d-user { fill: var(--color-teal-light); }
+.d-label { fill: var(--color-sheet); }
+.d-label--comm { fill: var(--color-teal-light); }
+.d-label--muted { fill: var(--color-paper-3); }
+.d-state { fill: none; stroke: var(--color-ink); stroke-width: 1.5; }
+.d-state--locked { fill: var(--color-accent-wash); stroke: var(--color-accent); }
+.d-edge { fill: none; stroke: var(--color-teal); stroke-width: 1.5; }
+.d-edge--back { stroke: var(--color-accent); }
+.d-head { fill: var(--color-teal); }
+.d-head--back { fill: var(--color-accent); }
+.tile:not(.tile--lead) .d-label { fill: var(--color-ink-2); }
+.tile:not(.tile--lead) .d-label--strong { fill: var(--color-ink); }
+.tile:not(.tile--lead) .d-label--accent { fill: var(--color-accent); }
+.d-axis { stroke: var(--color-rule-2); stroke-width: 1; }
+.d-sym { fill: var(--color-teal); }
+.d-sym--qpsk { fill: var(--color-accent); }
+
+/* The one reveal: diagram strokes trace in on load; visible without script */
+.draw { stroke-dasharray: 1; animation: trace var(--dur-long) var(--ease-out) both; animation-delay: calc(300ms + var(--i, 0) * 120ms); }
+@keyframes trace { from { stroke-dashoffset: 1; } to { stroke-dashoffset: 0; } }
 
 /* ── Thesis: head beside rows ───────────────────────────── */
 .facts { grid-column: 7 / 13; margin: 0; }
@@ -73,6 +140,7 @@ a:active { color: var(--color-ink-2); }
 .facts dt { font-size: var(--text-sm); color: var(--color-muted); }
 .facts dd { margin: 0; color: var(--color-ink); }
 .facts .num { color: var(--color-accent); }
+.head .aside { padding-left: var(--space-md); border-left: var(--rule-bar) solid var(--color-teal); font-size: var(--text-sm); color: var(--color-ink-2); }
 
 /* ── NI: a paper band with figures ──────────────────────── */
 .band { background: var(--color-paper-2); padding-block: var(--section-gap-s); }
@@ -141,10 +209,11 @@ a:active { color: var(--color-ink-2); }
 
 /* ── Responsive ─────────────────────────────────────────── */
 @media (max-width: 60rem) {
+  .tile, .tile--lead { grid-column: 1 / -1; grid-row: auto; }
+  .tile--lead .tile__link { grid-template-columns: minmax(0, 1fr); padding: var(--space-lg); }
   .head, .band .head, .band .lead, .band--ink .head, .facts, .channels, .hero__head, .hero__actions, .lost .head { grid-column: 1 / -1; }
   .facts, .channels, .band .lead { margin-top: var(--space-xl); }
   .hero__actions { justify-content: flex-start; }
-  .hero__index { padding-inline: var(--space-md); overflow-x: auto; }
   .stats, .notes, .now { grid-template-columns: minmax(0, 1fr); }
   .stats > div { padding: var(--space-md) 0; border-left: 0; border-top: var(--rule-hair) solid var(--color-rule); }
   .stats > div:first-child { border-top: 0; }
@@ -156,12 +225,11 @@ a:active { color: var(--color-ink-2); }
   .index thead { display: none; }
   .index tr { display: grid; padding-block: var(--space-sm); border-top: var(--rule-hair) solid var(--color-rule); }
   .index td { padding: var(--space-3xs) 0; border-top: 0; }
-  .hero__index thead { display: none; }
-  .hero__index tr { display: grid; padding-block: var(--space-sm); border-top: var(--rule-hair) solid var(--color-rule); }
-  .hero__index td { padding: var(--space-3xs) 0; border-top: 0; }
   .facts > div, .channels > div { grid-template-columns: minmax(0, 1fr); gap: var(--space-2xs); }
 }
 @media (prefers-reduced-motion: reduce) {
+  .draw { animation: none; }
+  .tile__link { transition: none; }
   .btn, .table tbody tr, a { transition: none; }
   .btn:active { transform: none; }
 }

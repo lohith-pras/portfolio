@@ -1,16 +1,8 @@
 import { getTranslations } from 'next-intl/server'
 import { ContactForm } from '@/components/ContactForm'
+import { IsacDiagram, LockDiagram, ConstellationDiagram } from '@/components/diagrams'
 
 const GH = 'https://github.com/lohith-pras'
-
-// The engineering index in the hero. The thesis row is the one the page points at.
-const HERO_ROWS = [
-  { key: 'thesis', href: '#thesis', marked: true },
-  { key: 'ni', href: '#ni' },
-  { key: 'drl', href: `${GH}/isac-drl` },
-  { key: 'amc', href: `${GH}/modulation-classifier` },
-  { key: 'vlc' },
-] as const
 
 export async function Hero() {
   const t = await getTranslations('hero')
@@ -30,53 +22,91 @@ export async function Hero() {
             {t('cv')}
           </a>
         </div>
-        <figure className="hero__index">
-          <table className="table">
-            <caption>{t('table_caption')}</caption>
-            <thead>
-              <tr>
-                <th scope="col">{t('col_project')}</th>
-                <th scope="col">{t('col_field')}</th>
-                <th scope="col">{t('col_result')}</th>
-              </tr>
-            </thead>
-            <tbody>
-              {HERO_ROWS.map((row) => {
-                const name = t(`rows.${row.key}.name`)
-                const external = 'href' in row && row.href.startsWith('http')
-                return (
-                  <tr key={row.key} className={'marked' in row ? 'is-marked' : undefined}>
-                    <td>
-                      {'href' in row ? (
-                        <a href={row.href} {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}>
-                          {name}
-                        </a>
-                      ) : (
-                        name
-                      )}
-                    </td>
-                    <td>{t(`rows.${row.key}.field`)}</td>
-                    <td>{t(`rows.${row.key}.result`)}</td>
-                  </tr>
-                )
-              })}
-            </tbody>
-          </table>
-        </figure>
+        <Work />
       </div>
     </section>
   )
 }
 
+// The engineering work as tiles, each showing a diagram of how the project works.
+// Only facts from the CV and the thesis summary appear here.
+async function Work() {
+  const t = await getTranslations('work')
+  const labels = (ns: string, keys: string[]) => Object.fromEntries(keys.map((k) => [k, t(`${ns}.${k}`)]))
+  return (
+    <ul className="bento" aria-label={t('label')}>
+      <li className="tile tile--lead">
+        <a href="#thesis" className="tile__link">
+          <div className="tile__text">
+            <h2 className="tile__name">{t('thesis.name')}</h2>
+            <p className="tile__where">{t('thesis.where')}</p>
+            <dl className="tile__figs">
+              <div>
+                <dt className="num">{t('thesis.fig1')}</dt>
+                <dd>{t('thesis.fig1_label')}</dd>
+              </div>
+              <div>
+                <dt className="num">{t('thesis.fig2')}</dt>
+                <dd>{t('thesis.fig2_label')}</dd>
+              </div>
+            </dl>
+            <p className="legend">
+              <span className="legend__sense">{t('sensing')}</span>
+              <span className="legend__comm">{t('comms')}</span>
+            </p>
+          </div>
+          <IsacDiagram l={labels('thesis', ['diagram', 'tx', 'target', 'user', 'track'])} />
+        </a>
+      </li>
+      <li className="tile">
+        <a href="#ni" className="tile__link">
+          <h2 className="tile__name">{t('ni.name')}</h2>
+          <p className="tile__where">{t('ni.where')}</p>
+          <ol className="flow">
+            <li>{t('ni.step1')}</li>
+            <li>{t('ni.step2')}</li>
+            <li>{t('ni.step3')}</li>
+          </ol>
+          <p className="tile__fig">
+            <span className="num">{t('ni.fig')}</span> {t('ni.fig_label')}
+          </p>
+        </a>
+      </li>
+      <li className="tile">
+        <div className="tile__link">
+          <h2 className="tile__name">{t('deltax.name')}</h2>
+          <p className="tile__where">{t('deltax.where')}</p>
+          <LockDiagram l={labels('deltax', ['diagram', 'locked', 'unlocked', 'finger', 'stand'])} />
+          <p className="tile__fig">
+            <span className="num">{t('deltax.fig')}</span> {t('deltax.fig_label')}
+          </p>
+        </div>
+      </li>
+      <li className="tile">
+        <a href={`${GH}/modulation-classifier`} target="_blank" rel="noopener noreferrer" className="tile__link">
+          <h2 className="tile__name">{t('amc.name')}</h2>
+          <p className="tile__where">{t('amc.where')}</p>
+          <ConstellationDiagram l={labels('amc', ['diagram'])} />
+          <p className="tile__fig">
+            <span className="num">{t('amc.fig')}</span> {t('amc.fig_label')}
+          </p>
+        </a>
+      </li>
+    </ul>
+  )
+}
+
 export async function Thesis() {
   const t = await getTranslations('thesis')
-  const rows = ['problem', 'model', 'method', 'tools', 'where'] as const
+  const rows = ['requirements', 'setup', 'physics', 'learning', 'result', 'where', 'status'] as const
   return (
     <section id="thesis" className="section section--l">
       <div className="container grid">
         <div className="head">
           <h2>{t('heading')}</h2>
           <p>{t('answer')}</p>
+          <p className="aside">{t('lesson_1')}</p>
+          <p className="aside">{t('lesson_2')}</p>
         </div>
         <dl className="facts">
           {rows.map((key) => (
@@ -85,23 +115,17 @@ export async function Thesis() {
               <dd>{t(key)}</dd>
             </div>
           ))}
-          <div>
-            <dt>{t('status_label')}</dt>
-            <dd>
-              <span className="num">{t('phase')}</span>. {t('status')}
-            </dd>
-          </div>
         </dl>
       </div>
     </section>
   )
 }
 
-// Figures are the user's own numbers from the NI Dresden write-up.
+// Figures from the CV's NI Dresden entry.
 const NI_FIGURES = [
-  { value: '5-10×', key: 'fig_speed' },
-  { value: '100k+', key: 'fig_rows' },
-  { value: '30-40', key: 'fig_types' },
+  { value: '< 1 min', key: 'fig_speed' },
+  { value: 'Top 5', key: 'fig_rows' },
+  { value: '> 6σ', key: 'fig_types' },
 ] as const
 
 export async function Ni() {

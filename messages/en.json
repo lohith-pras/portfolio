@@ -16,66 +16,38 @@
     "lead": "I research intelligent sensing where 6G meets autonomous driving.",
     "byline": "M.Sc. student at FAU in Nürnberg, previously at NI Dresden.",
     "email": "Email me",
-    "cv": "Download my CV",
-    "table_caption": "Engineering work",
-    "col_project": "Project",
-    "col_field": "Field",
-    "col_result": "Result",
-    "rows": {
-      "thesis": {
-        "name": "Cognitive ISAC networks",
-        "field": "Convex optimisation, V2X",
-        "result": "Phase 1 of 3 done"
-      },
-      "ni": {
-        "name": "AI agent for RF test data",
-        "field": "LLM agents, data pipelines",
-        "result": "In daily use at NI"
-      },
-      "drl": {
-        "name": "ISAC-DRL",
-        "field": "Reinforcement learning, mmWave",
-        "result": "DDPG against a DFT baseline"
-      },
-      "amc": {
-        "name": "Modulation classifier",
-        "field": "Signal processing, ML",
-        "result": "83.6 % at ≥ +6 dB SNR"
-      },
-      "vlc": {
-        "name": "Visible light V2V link",
-        "field": "Embedded, optical comms",
-        "result": "STM32 prototype"
-      }
-    }
+    "cv": "Download my CV"
   },
   "thesis": {
     "heading": "What is my thesis about?",
-    "answer": "Most ISAC research treats radar cross-section as a random variable. In a network of nodes it depends on geometry, so I model it deterministically. That turns each node’s role, sensing or talking, into something the optimiser can choose.",
-    "problem_label": "Problem",
-    "problem": "Joint node-role selection and beamforming in a multi-node V2X intersection network",
-    "model_label": "Model",
-    "model": "Deterministic bistatic RCS, σ(θ_b)",
-    "method_label": "Method",
-    "method": "Convex optimisation and successive convex approximation",
-    "tools_label": "Tools",
-    "tools": "Python, CVXPY, MIMO theory",
+    "answer": "A few radio nodes have to track a moving target by radar and serve users with data at the same time, on as little power as possible. The target is a flat plate, so its echo depends on which way it faces. Every time slot, a PPO agent decides which nodes transmit, how much power each beam gets and where the sensing beam points, from the tracker’s estimate alone.",
+    "lesson_1": "The plate costs about 3 W more than a sphere: the agent pays in power for not knowing exactly which way it faces.",
+    "lesson_2": "A hidden seeding bug made “different” runs share training data. I rebuilt every comparison on matched trajectories.",
+    "requirements_label": "Requirements",
+    "requirements": "Position accuracy within 0.5 m (Cramér-Rao bound) and user SINR of at least 10 dB, in every slot",
+    "setup_label": "Setup",
+    "setup": "4 nodes on a 120 m ring, 12-element arrays at 28 GHz, 2 static users, one moving plate target",
+    "physics_label": "Physics",
+    "physics": "Plate RCS from geometrical optics, bistatic CRB, coordinated-turn EKF, multi-node MRT downlink",
+    "learning_label": "Learning",
+    "learning": "PPO in Stable-Baselines3, compared against TRPO, A2C, SQN, BDQ and recurrent PPO",
+    "result_label": "Result",
+    "result": "Both requirements met in 97.7 % of slots at 4.2 W average, of an 8 W budget, on 500 unseen trajectories. A random policy manages 2.6 %.",
     "where_label": "Where",
-    "where": "IDC thesis at FAU Erlangen-Nürnberg",
+    "where": "Project thesis at FAU, Prof. Robert Schober’s group (IDC)",
     "status_label": "Status",
-    "status": "Literature review and formulation done, convex solver in progress",
-    "phase": "1 of 3"
+    "status": "Report in final draft, submission on 23 November 2026"
   },
   "ni": {
     "heading": "What did I ship at NI Dresden?",
-    "lead": "A tool that lets manufacturing engineers query production test data without SQL or Python.",
-    "fig_speed": "faster after moving from pandas to Polars",
-    "fig_rows": "rows per dataset, cached as Parquet",
-    "fig_types": "measurement types ranked for failure patterns",
+    "lead": "Tools that help test engineers find why RF instruments fail production tests, now part of the team’s AI debug assistant.",
+    "fig_speed": "to retrieve failure data, down from over 10 minutes",
+    "fig_rows": "corrective actions returned for each new failure, from the closest past matches",
+    "fig_types": "anomalies isolated by a five-class sigma-band classifier",
     "how_label": "How it works",
-    "how": "Engineers ask things like “show me the yield for VST channel 4 last week” and get tables and Plotly charts back. An LLM agent skill routes each question to a Python pipeline; a 1σ/3σ classifier splits real failures from marginal cases and noise.",
+    "how": "I generalised a failure-signature matcher from one hard-coded test on a CSV extract to any test and parameter in the full measurement set, then rebuilt its query layer with batch processing and parallel workers. Both tools ship as agent skills with guardrails and end-to-end tests, used by test engineers at the Malaysia site.",
     "wrong_label": "What went wrong",
-    "wrong": "I underestimated the cost of repeated metadata queries. It was stable, but too slow for a conversation.",
+    "wrong": "The first version was stable but far too slow to sit behind a conversation: every question went back to the production database.",
     "change_label": "What I’d change",
     "change": "Put heavy processing behind a cache from day one. If an answer takes 30 seconds, people stop asking."
   },
@@ -177,5 +149,50 @@
     "heading": "This page isn’t on the map.",
     "body": "The link is broken or the page moved.",
     "home": "Back to the start"
+  },
+  "work": {
+    "label": "Engineering work",
+    "sensing": "sensing",
+    "comms": "communication",
+    "thesis": {
+      "name": "Cognitive ISAC with deep RL",
+      "where": "Project thesis at FAU, submitting 23 Nov 2026",
+      "fig1": "97.7 %",
+      "fig1_label": "of slots meet both requirements",
+      "fig2": "4.2 W",
+      "fig2_label": "average power, of an 8 W budget",
+      "diagram": "Four radio nodes on a ring. One transmits a sensing beam at a flat plate target; the echo reaches another node, while two nodes serve two users.",
+      "tx": "Tx",
+      "target": "plate target",
+      "user": "user",
+      "track": "EKF track"
+    },
+    "ni": {
+      "name": "Failure analysis agents",
+      "where": "Internship at NI Dresden",
+      "fig": "< 1 min",
+      "fig_label": "data retrieval, down from over 10",
+      "step1": "New failure",
+      "step2": "Nearest past failures",
+      "step3": "Top 5 fixes"
+    },
+    "deltax": {
+      "name": "Security ECU for an electric two-wheeler",
+      "where": "Internship at Delta X Automotive",
+      "fig": "2",
+      "fig_label": "prototype vehicles",
+      "locked": "Locked",
+      "unlocked": "Unlocked",
+      "finger": "fingerprint",
+      "stand": "side stand down",
+      "diagram": "Lock state machine: a valid fingerprint moves Locked to Unlocked, putting the side stand down forces Locked."
+    },
+    "amc": {
+      "name": "Modulation classifier",
+      "where": "Open source",
+      "fig": "83.6 %",
+      "fig_label": "at 6 dB SNR and above",
+      "diagram": "Constellation diagrams of QPSK and 16-QAM, two of the eleven modulation types the classifier separates."
+    }
   }
 }

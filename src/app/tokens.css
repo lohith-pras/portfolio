@@ -14,6 +14,10 @@
   --color-rule: oklch(73% 0.013 240); --color-rule-2: oklch(32% 0.018 240);
   --color-accent: oklch(45% 0.180 350); --color-accent-2: oklch(37% 0.160 350); --color-accent-ink: oklch(97% 0.006 245); --color-focus: oklch(46% 0.190 350);
   --color-sheet: oklch(93.5% 0.008 245);
+  /* Full palette (2026-10-30): magenta = sensing, teal = communication. Light steps for the ink tile. */
+  --color-teal: oklch(48% 0.090 195); --color-teal-2: oklch(40% 0.080 195);
+  --color-accent-light: oklch(74% 0.140 350); --color-teal-light: oklch(78% 0.090 190);
+  --color-accent-wash: oklch(90% 0.035 350); --color-teal-wash: oklch(91% 0.030 195);
   --font-display: var(--font-hanken), "Hanken Grotesk", ui-sans-serif, system-ui, sans-serif;
   --font-body: var(--font-newsreader), "Newsreader", ui-serif, Georgia, serif;
   --font-outlier: var(--font-plex-mono), "IBM Plex Mono", ui-monospace, monospace;
