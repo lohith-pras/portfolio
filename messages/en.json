@@ -56,38 +56,50 @@
     "can_decoder": {
       "name": "CAN_DECODER",
       "problem": "EMBEDDED SYSTEMS",
-      "tech": "RUST · CLI · CAN-BUS",
-      "description": "Rust CLI tool for decoding CAN bus logs. Signals embedded/automotive engineering depth. Parses DBC files and applies scaling factors to extract real-world vehicle telemetry (speed, steering angle, battery temp) in microsecond resolution. Built for high-performance automotive testing data ingestion pipelines."
+      "tech": "RUST · CLI · CAN-BUS · DBC",
+      "description": "Rust CLI tool that parses candump-style CAN bus logs and DBC signal definitions, then decodes raw payloads into named, scaled physical values — speed, steering angle, battery temp — at microsecond resolution. Built for high-performance automotive test-data ingestion. Milestone 1 (log parser) shipped; DBC parser and bit-extraction pipeline in progress."
     },
     "isac_drl": {
       "name": "ISAC-DRL",
       "problem": "DRL RESEARCH",
-      "tech": "PYTHON · PYTORCH · ISAC",
-      "description": "ISAC + Deep Reinforcement Learning research-grade work. High-performance sensing and communication. Formulates geometry-dependent bistatic radar cross-sections (RCS) to dynamically optimize beamforming vectors and role assignment, achieving a 15% increase in throughput under strict sensing constraints."
+      "tech": "PYTHON · PYTORCH · SB3 · CVXPY · GYMNASIUM",
+      "description": "Deep reinforcement learning for beamforming in mmWave ISAC systems. A DDPG agent learns to steer a MIMO beamformer to balance communication throughput against sensing accuracy — no closed-form solution. Built on Saleh-Valenzuela clustered mmWave channel model with 3GPP Rel-16 NR-V2X mobility. Includes classical DFT steering-vector baseline, Pareto-curve evaluation, and a Gymnasium environment wrapping the full channel + MIMO stack."
     },
     "modulation_classifier": {
       "name": "MODULATION-CLASSIFIER",
       "problem": "SIGNAL ANALYSIS",
-      "tech": "RF · ML · DSP",
-      "description": "Signals/RF modulation classification using ML. Real-time spectral analysis. Feature-based machine learning classifier identifying 11 modulation types (including BPSK, QAM16, GFSK) from raw IQ waveform samples. Extracts higher-order moments and spectral features, achieving 83.6% accuracy on clean signals and improving baseline robustness."
+      "tech": "PYTHON · SCIKIT-LEARN · NUMPY · DSP",
+      "description": "Automatic Modulation Classification on the RML2016.10a benchmark (220k samples, 11 modulation types, 20 SNR levels). Extracts 16 statistical features per I/Q window — amplitude, phase, instantaneous frequency, FFT power, and higher-order cumulants — then trains a Random Forest (100 trees). Hit 83.6% accuracy at high SNR (≥+6 dB) and 51.3% pooled across all noise levels, up from a 47.7% baseline. No neural nets — just signal processing and scikit-learn."
     },
     "sprachboot": {
       "name": "SPRACHBOOT",
       "problem": "CREATIVE/LANG",
-      "tech": "EDUCATION · GERMAN · LIFE",
-      "description": "Learning German while living in Nürnberg. A creative linguistic experiment tracking German vocabulary acquisition and cultural integration. Documents localized idioms, technical terms, and regional dialects through an interactive journaling schema."
+      "tech": "FASTAPI · REACT · OPENROUTER · CHROMADB · DOCKER",
+      "description": "AI-powered German conversational fluency trainer. Practice speaking through realistic conversations — the app corrects grammar, explains errors in context, and adapts to your level. Local-first: conversations never leave your machine. Multi-arch Docker images published via GitHub Actions. Powered by Llama and DeepSeek through OpenRouter, with optional DeepL translation and ChromaDB for context."
     },
     "nest": {
       "name": "NEST",
       "problem": "HABITAT DESIGN",
-      "tech": "ARCHITECTURE · MINIMALISM",
-      "description": "Personal habitat project. Minimalist living space exploration. A spatial design project exploring high-density, modular micro-housing. Utilizes minimalist principles to maximize utility, airflow, and natural light within a 22-square-meter footprint, featuring transforming furniture layouts and integrated IoT environmental sensors."
+      "tech": "REACT 19 · VITE · SUPABASE · GSAP",
+      "description": "Shared living management app for roommates. Tracks expenses, groceries, chores, and a shared calendar in one place. Built as a real-world React 19 + Supabase app with GSAP and Framer Motion animation. Deployed on Vercel — actively used by two people daily."
     },
     "f1_dashboard": {
       "name": "F1-DASHBOARD",
       "problem": "TELEMETRY DASHBOARD",
-      "tech": "FASTF1 · DASH · TELEMETRY",
-      "description": "Live race data analysis using fastf1. Performance telemetry visualization. Real-time Formula 1 telemetry visualizer. Compares cornering speeds, throttle profiles, and braking points between drivers. Extracts overlay telemetry to analyze aerodynamic efficiency and tyre degradation curves across race weekends."
+      "tech": "FASTF1 · FASTAPI · HTML/CSS/JS · GITHUB ACTIONS",
+      "description": "Personal Formula 1 pit wall — dark-themed, live-updating standings, season calendar, countdown to next GP, and a full-screen Live/Replay overlay powered by FastF1. Static dashboard hydrates from standings.json committed by a daily GitHub Actions cron. On race weekends, a local FastAPI + FastF1 server streams real-time telemetry on localhost:8765. Degrades gracefully at every layer."
+    },
+    "career_ops": {
+      "name": "CAREER-OPS",
+      "problem": "AI JOB SEARCH",
+      "tech": "JAVASCRIPT · CLAUDE CODE · GO · PDF GEN",
+      "description": "AI-powered job search system built on Claude Code. 14 skill modes, Go dashboard, PDF generation, batch processing. 740+ job listings evaluated, 100+ personalized CVs generated, 1 dream role landed. Featured in WIRED and Business Insider. Open source, multi-language README (15 languages), Discord community. A fork — originally built by santifer.io, I contributed and adapted it for my own search."
+    },
+    "prompt_analysis": {
+      "name": "PROMPT-ANALYSIS",
+      "problem": "LLM ANALYTICS",
+      "tech": "PYTHON · DUCKDB · ANTHROPIC SDK · HTML",
+      "description": "Analyses exported Claude, Gemini, and ChatGPT conversation logs and generates a single interactive HTML dashboard with stats on prompting behaviour — filler word frequency, prompt length distribution, constraint patterns, and more. Uses DuckDB for fast in-process SQL on the logs, with an optional AI-generated summary of your prompting habits. Self-contained output, no server needed."
     },
     "ni_agent": {
       "name": "Production AI Agent for RF Analytics",

@@ -15,8 +15,7 @@ export function PageTransition({ children }: { children: ReactNode }) {
   useGSAP(
     () => {
       if (reduce || !ref.current) return
-      // Animate y (transform) and opacity for GPU accelerated transition.
-      // Safe to use transform now that the complex 3D city scene canvas is retired.
+      // Transform and opacity avoid layout reflow during the route transition.
       gsap.from(ref.current, { opacity: 0, y: 10, duration: 0.25, ease: 'power2.out' })
     },
     { dependencies: [pathname] },

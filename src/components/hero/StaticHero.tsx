@@ -67,6 +67,24 @@ export function StaticHero() {
       gsap.to('.hero-name', { y: -340, ease: 'none', scrollTrigger: st })
       gsap.to('.hero-ui', { y: -260, opacity: 0, ease: 'none', scrollTrigger: st })
 
+      // Subtle cursor parallax — name gently follows pointer (max 10px) for a "living" hero.
+      // Disabled on touch devices (no mousemove) and under reduced motion.
+      const nameEl = root.querySelector('.hero-name') as HTMLElement | null
+      const onCursor = (e: MouseEvent) => {
+        if (!nameEl) return
+        const cx = window.innerWidth / 2
+        const cy = window.innerHeight / 2
+        const dx = ((e.clientX - cx) / cx) * 10
+        const dy = ((e.clientY - cy) / cy) * 10
+        gsap.to(nameEl, { x: dx, y: dy, duration: 0.8, ease: 'power2.out', overwrite: 'auto' })
+      }
+      const onCursorLeave = () => {
+        if (!nameEl) return
+        gsap.to(nameEl, { x: 0, y: 0, duration: 0.8, ease: 'power3.out', overwrite: 'auto' })
+      }
+      window.addEventListener('mousemove', onCursor)
+      window.addEventListener('mouseleave', onCursorLeave)
+
       // Magnetic hover effect for CTA buttons
       const buttons = gsap.utils.toArray<HTMLElement>('.hero-ui a')
       const handlers: { btn: HTMLElement; move: (e: MouseEvent) => void; leave: () => void }[] = []
@@ -80,7 +98,7 @@ export function StaticHero() {
         }
 
         const onLeave = () => {
-          gsap.to(btn, { x: 0, y: 0, duration: 0.6, ease: 'elastic.out(1.1, 0.4)', overwrite: 'auto' })
+          gsap.to(btn, { x: 0, y: 0, duration: 0.5, ease: 'power3.out', overwrite: 'auto' })
         }
 
         btn.addEventListener('mousemove', onMove)
@@ -91,6 +109,8 @@ export function StaticHero() {
       return () => {
         if (fallback) clearTimeout(fallback)
         window.removeEventListener('intro-complete', reveal)
+        window.removeEventListener('mousemove', onCursor)
+        window.removeEventListener('mouseleave', onCursorLeave)
         handlers.forEach(({ btn, move, leave }) => {
           btn.removeEventListener('mousemove', move)
           btn.removeEventListener('mouseleave', leave)
@@ -112,8 +132,8 @@ export function StaticHero() {
           {t('eyebrow')}
         </span>
 
-        {/* Hero name — Oswald condensed, mix-blends cleanly on rich black */}
-        <h1 className="hero-name font-display font-bold uppercase leading-[0.82] tracking-[-0.04em] text-beige text-[clamp(4rem,12vw,8rem)]">
+        {/* Hero name — Oswald condensed, tightened tracking & line-height for spring-loaded impact */}
+        <h1 className="hero-name font-display font-bold uppercase leading-[0.8] tracking-[-0.06em] text-beige text-[clamp(4rem,13vw,9rem)]">
           <span className="block overflow-hidden">
             <span className="hero-name-line block">{firstName}</span>
           </span>

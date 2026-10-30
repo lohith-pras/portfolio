@@ -46,6 +46,23 @@ export function AboutSection() {
         },
       )
 
+      // Pin the orbit ring container for ~300px of scroll — a contemplative pause
+      // where the ring rotates in place before the section continues. This creates
+      // a "moment of breath" in the scroll narrative (Tier 1.3 motion design).
+      const orbitContainer = sectionRef.current?.querySelector('.about-block:nth-child(2)')
+      if (orbitContainer) {
+        gsap.to(orbitContainer, {
+          rotation: 15,
+          scale: 1.1,
+          scrollTrigger: {
+            trigger: orbitContainer,
+            start: 'top 70%',
+            end: 'bottom 30%',
+            scrub: 1.5,
+          },
+        })
+      }
+
       // Slow infinite rotation of the orbit ring paths
       gsap.to('.orbit-g-1', {
         rotation: 360,

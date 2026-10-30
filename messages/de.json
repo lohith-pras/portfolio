@@ -56,38 +56,50 @@
     "can_decoder": {
       "name": "CAN_DECODER",
       "problem": "EMBEDDED SYSTEMS",
-      "tech": "RUST · CLI · CAN-BUS",
-      "description": "Rust-basiertes Kommandozeilen-Tool zur Dekodierung von Roh-Controller-Area-Network (CAN) Bus-Logs. Parst DBC-Dateien und wendet Skalierungsfaktoren an, um reale Fahrzeugtelemetrie (Geschwindigkeit, Lenkwinkel, Batterietemperatur) in Mikrosekundenauflösung zu extrahieren. Entwickelt für hochleistungsfähige Daten-Pipelines im Automobilbereich."
+      "tech": "RUST · CLI · CAN-BUS · DBC",
+      "description": "Rust-Kommandozeilen-Tool, das candump-style CAN-Bus-Logs und DBC-Signaldefinitionen parst und Roh-Payloads in benannte, skalierte physikalische Werte dekodiert — Geschwindigkeit, Lenkwinkel, Batterietemperatur — in Mikrosekundenauflösung. Gebaut für hochleistungsfähige Automotive-Daten-Pipelines. Meilenstein 1 (Log-Parser) geliefert; DBC-Parser und Bit-Extraktion in Arbeit."
     },
     "isac_drl": {
       "name": "ISAC-DRL",
       "problem": "DRL RESEARCH",
-      "tech": "PYTHON · PYTORCH · ISAC",
-      "description": "Forschungssimulation, die Deep Reinforcement Learning (DRL) auf die Knotenauswahl in integrierten Sensor- und Kommunikationsnetzwerken (ISAC) anwendet. Modelliert geometrieabhängige bistatische Radarquerschnitte (RCS), um Beamforming-Vektoren und Rollenzuweisung dynamisch zu optimieren und einen Durchsatzgewinn von 15 % unter strengen Sensing-Beschränkungen zu erzielen."
+      "tech": "PYTHON · PYTORCH · SB3 · CVXPY · GYMNASIUM",
+      "description": "Deep Reinforcement Learning für Beamforming in mmWave-ISAC-Systemen. Ein DDPG-Agent lernt, einen MIMO-Beamformer zu steuern und Durchsatz gegen Sensing-Genauigkeit auszubalancieren — keine geschlossene Lösung. Basiert auf Saleh-Valenzuela-geclustertem mmWave-Kanalmodell mit 3GPP-Rel-16-NR-V2X-Mobilität. Enthält klassische DFT-Baseline, Pareto-Kurven-Evaluierung und eine Gymnasium-Umgebung, die den gesamten Kanal- und MIMO-Stack kapselt."
     },
     "modulation_classifier": {
       "name": "MODULATION-CLASSIFIER",
       "problem": "SIGNAL ANALYSIS",
-      "tech": "RF · ML · DSP",
-      "description": "Klassifizierung von Signal-/HF-Modulationen mittels ML. Spektralanalyse in Echtzeit. Feature-basierter ML-Klassifikator zur Identifizierung von 11 Modulationstypen (einschließlich BPSK, QAM16, GFSK) aus rohen IQ-Wellenform-Samples. Extrahiert statistische Momente höherer Ordnung und spektrale Merkmale, erreicht 83,6 % Genauigkeit auf klaren Signalen und verbessert die Baseline-Robustheit."
+      "tech": "PYTHON · SCIKIT-LEARN · NUMPY · DSP",
+      "description": "Automatische Modulationsklassifikation auf dem RML2016.10a-Benchmark (220k Samples, 11 Modulationstypen, 20 SNR-Level). Extrahiert 16 statistische Features pro I/Q-Fenster — Amplitude, Phase, instantane Frequenz, FFT-Leistung und Kumulanten höherer Ordnung — und trainiert einen Random Forest (100 Bäume). 83,6% Genauigkeit bei hohem SNR (≥+6 dB) und 51,3% gepoolt über alle Rauschpegel, gegenüber 47,7% Baseline. Keine neuronalen Netze — nur Signalverarbeitung und scikit-learn."
     },
     "sprachboot": {
       "name": "SPRACHBOOT",
       "problem": "CREATIVE/LANG",
-      "tech": "EDUCATION · GERMAN · LIFE",
-      "description": "Deutsch lernen während des Lebens in Nürnberg. Ein kreatives Sprachexperiment zur Erfassung des deutschen Wortschatzes und der kulturellen Integration. Dokumentiert lokale Redewendungen, Fachbegriffe und regionale Dialekte durch ein interaktives Tagebuch-Schema."
+      "tech": "FASTAPI · REACT · OPENROUTER · CHROMADB · DOCKER",
+      "description": "KI-gestützter Konversationsfluency-Trainer für Deutsch. Übe Sprechen durch realistische Gespräche — die App korrigiert Grammatik, erklärt Fehler im Kontext und passt sich an dein Niveau an. Local-first: Konversationen verlassen nie dein Gerät. Multi-Arch-Docker-Images via GitHub Actions. Angetrieben von Llama und DeepSeek über OpenRouter, mit optionaler DeepL-Übersetzung und ChromaDB für Kontext."
     },
     "nest": {
       "name": "NEST",
       "problem": "HABITAT DESIGN",
-      "tech": "ARCHITECTURE · MINIMALISM",
-      "description": "Persönliches Habitat-Projekt. Erkundung minimalistischer Wohnräume. Ein Raumdesignprojekt zur Untersuchung von modularem Kleinstwohnraum mit hoher Dichte. Nutzt minimalistische Prinzipien zur Maximierung von Nutzen, Luftzirkulation und natürlichem Licht auf einer Fläche von 22 Quadratmetern mit transformierbaren Möbeln und integrierten IoT-Umgebungssensoren."
+      "tech": "REACT 19 · VITE · SUPABASE · GSAP",
+      "description": "Shared-Living-Management-App für Mitbewohner. Verfolgt Ausgaben, Einkäufe, Putzdienste und einen geteilten Kalender an einem Ort. Gebaut als echte React-19- + Supabase-App mit GSAP- und Framer-Motion-Animation. Auf Vercel deployt — wird täglich von zwei Personen aktiv genutzt."
     },
     "f1_dashboard": {
       "name": "F1-DASHBOARD",
       "problem": "TELEMETRY DASHBOARD",
-      "tech": "FASTF1 · DASH · TELEMETRY",
-      "description": "Live-Rennanalysen mit fastf1. Visualisierung von Performance-Telemetrie. Echtzeit-Formel-1-Telemetrie-Visualisierer. Vergleicht Kurvengeschwindigkeiten, Drosselklappenprofile und Bremspunkte zwischen Fahrern. Extrahiert Telemetriedaten zur Analyse der aerodynamischen Effizienz und Reifenverschleißkurven."
+      "tech": "FASTF1 · FASTAPI · HTML/CSS/JS · GITHUB ACTIONS",
+      "description": "Persönliche Formel-1-Pit-Wall — dunkles Theme, Live-Stände, Saisonkalender, Countdown zum nächsten GP und ein Full-Screen-Live/Replay-Overlay mit FastF1. Statisches Dashboard hydratisiert aus standings.json, das von einem täglichen GitHub-Actions-Cron committet wird. An Rennwochenenden streamt ein lokaler FastAPI- + FastF1-Server Echtzeit-Telemetrie auf localhost:8765. Degradiert gracevoll auf jeder Ebene."
+    },
+    "career_ops": {
+      "name": "CAREER-OPS",
+      "problem": "AI JOB SEARCH",
+      "tech": "JAVASCRIPT · CLAUDE CODE · GO · PDF GEN",
+      "description": "KI-gestütztes Jobsuch-System, gebaut auf Claude Code. 14 Skill-Modi, Go-Dashboard, PDF-Generierung, Batch-Verarbeitung. 740+ Job-Anzeigen evaluiert, 100+ personalisierte CVs generiert, 1 Traumrolle erhalten. Vorgestellt in WIRED und Business Insider. Open Source, Multi-Language-README (15 Sprachen), Discord-Community. Ein Fork — ursprünglich von santifer.io gebaut, ich habe beigetragen und für meine eigene Suche angepasst."
+    },
+    "prompt_analysis": {
+      "name": "PROMPT-ANALYSIS",
+      "problem": "LLM ANALYTICS",
+      "tech": "PYTHON · DUCKDB · ANTHROPIC SDK · HTML",
+      "description": "Analysiert exportierte Claude-, Gemini- und ChatGPT-Conversation-Logs und generiert ein einzelnes interaktives HTML-Dashboard mit Statistiken zum Prompting-Verhalten — Füllwort-Frequenz, Prompt-Längenverteilung, Constraint-Muster und mehr. Nutzt DuckDB für schnelles In-Process-SQL auf den Logs, mit einer optionalen KI-generierten Zusammenfassung deiner Prompting-Gewohnheiten. Self-Contained-Output, kein Server nötig."
     },
     "ni_agent": {
       "name": "Produktions-AI-Agent für RF-Analytik",

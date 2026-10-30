@@ -10,7 +10,7 @@ not a SaaS template.
 
 ## Macrostructure family
 - Marketing / home page: **Marquee Hero → Manifesto → Index → Ledger**
-  (3D city hero · oversized positioning statement · sticky-stack work index ·
+  (typographic hero · oversized positioning statement · interactive work index ·
   quiet capability ledger). Variation knobs: hero dock copy, manifesto accent
   placement, work card voice.
 - Content pages (e.g. `/life`): **Long Document** — single-column editorial,
@@ -76,7 +76,7 @@ for supporting beats (ledger). Use named tokens, never raw values.
 - Secondary: same shell, lower contrast border.
 
 ## Per-page allowances
-- Home MAY use the 3D city enrichment (Tier-D library + customisation, R3F).
+- Home MAY use a static typographic hero with restrained motion.
 - Content pages: typography only (plus existing place-scroll / waving-flag motifs).
 
 ## What pages MUST share
