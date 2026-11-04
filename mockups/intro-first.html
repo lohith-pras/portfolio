@@ -1,0 +1,187 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lohith · intro first</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Inter:wght@400;500&family=JetBrains+Mono:wght@400&family=Caveat:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #17140f; --panel: #211d17; --ink: #f1ebdd; --dim: #a39a88; --line: #f1ebdd24;
+    --red: #e2603f; --blue: #8fb3d9; --gold: #e3b45a;
+    --serif: Newsreader, Georgia, serif; --sans: Inter, system-ui, sans-serif; --mono: 'JetBrains Mono', monospace; --hand: Caveat, cursive;
+    --ease: cubic-bezier(.22, 1, .36, 1);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.6 var(--sans);
+         background-image: radial-gradient(var(--line) 1px, transparent 1.2px); background-size: 24px 24px; }
+  a { color: inherit; }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 48px); }
+
+  nav { display: flex; justify-content: space-between; align-items: baseline; padding: 28px 0 14px; border-bottom: 1px solid var(--line); font-size: 14px; color: var(--dim); }
+  nav i { font: italic 400 26px var(--serif); color: var(--ink); }
+  nav .links { display: flex; gap: 24px; }
+  nav a { text-decoration: none; }
+  nav a:hover { color: var(--ink); }
+
+  /* 1 · hello */
+  .hello { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, .75fr); gap: 56px; align-items: center; min-height: calc(100vh - 80px); padding: 48px 0; }
+  .meta { font: 400 13px var(--mono); color: var(--dim); display: flex; flex-wrap: wrap; gap: 8px 18px; }
+  .meta b { color: #6fd08c; font-weight: 400; }
+  h1 { font: 400 clamp(64px, 10vw, 140px)/.9 var(--serif); letter-spacing: -.03em; margin: 18px 0 26px; }
+  h1 i { color: var(--red); }
+  .lead { font-size: clamp(19px, 2vw, 23px); line-height: 1.5; max-width: 30ch; margin: 0; }
+  .lead em { font-style: normal; color: var(--gold); }
+  .cta { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+  .cta a { text-decoration: none; padding: 9px 15px; border: 1px solid var(--line); border-radius: 4px; font-size: 15px; transition: background .2s, border-color .2s; }
+  .cta a:hover { border-color: var(--ink); }
+  .cta a.hot { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+
+  .polaroid { position: relative; justify-self: center; width: min(340px, 100%); background: #f4efe3; padding: 14px 14px 56px; transform: rotate(2.5deg); box-shadow: 0 30px 60px -20px #000c; transition: transform .5s var(--ease); }
+  .polaroid:hover { transform: rotate(0deg) scale(1.02); }
+  .polaroid .ph { aspect-ratio: 4/5; background: linear-gradient(160deg, #3b342a, #1e1a14); display: grid; place-items: center; color: #a39a8899; font: 400 12px var(--mono); text-align: center; }
+  .polaroid span { position: absolute; left: 0; right: 0; bottom: 14px; text-align: center; font: 500 26px var(--hand); color: #24211c; }
+  .note { position: absolute; font: 500 26px/1 var(--hand); color: var(--red); white-space: nowrap; }
+
+  /* 2 · three things */
+  section { padding: 120px 0 0; }
+  .kicker { font: 400 13px var(--mono); color: var(--dim); letter-spacing: .06em; }
+  h2 { font: 400 clamp(40px, 5.5vw, 68px)/1 var(--serif); letter-spacing: -.02em; margin: 12px 0 44px; }
+  h2 i { color: var(--red); }
+  .things { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .thing { background: var(--panel); border: 1px solid var(--line); padding: 26px; display: flex; flex-direction: column; gap: 14px; min-height: 340px; position: relative; overflow: hidden; transition: transform .4s var(--ease), border-color .3s; }
+  .thing:hover { transform: translateY(-4px); border-color: #f1ebdd55; }
+  .thing .tag { font: 400 12px var(--mono); color: var(--c); letter-spacing: .08em; text-transform: uppercase; }
+  .thing h3 { font: 400 32px/1.05 var(--serif); margin: 0; }
+  .thing p { margin: 0; color: var(--dim); font-size: 16px; }
+  .thing .viz { margin-top: auto; }
+  .thing svg { width: 100%; height: 80px; display: block; }
+  .cities { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; margin-top: auto; }
+  .cities figure { margin: 0; text-align: center; font: 400 11px var(--mono); color: var(--dim); }
+  .cities img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 4px; background: #2a251d; display: block; margin-bottom: 6px; }
+  .score { display: flex; justify-content: space-between; align-items: end; font: 400 13px var(--mono); color: var(--dim); border-top: 1px dashed var(--line); padding-top: 12px; }
+  .score b { font: 400 44px/1 var(--serif); color: var(--ink); }
+
+  /* 3 · then the work */
+  .work { display: grid; gap: 0; border-top: 1px solid var(--line); }
+  .row { display: grid; grid-template-columns: 70px minmax(0, 1fr) minmax(0, 1.2fr) 40px; gap: 24px; align-items: baseline; padding: 26px 0; border-bottom: 1px solid var(--line); text-decoration: none; transition: padding .3s var(--ease), background .3s; }
+  .row:hover { padding-left: 12px; background: #f1ebdd08; }
+  .row .n { font: 400 13px var(--mono); color: var(--dim); }
+  .row h3 { font: 400 30px/1.1 var(--serif); margin: 0; }
+  .row p { margin: 0; color: var(--dim); font-size: 16px; }
+  .row .arr { font: 400 20px var(--mono); color: var(--dim); text-align: right; }
+  .row:hover .arr { color: var(--red); }
+
+  footer { padding: 140px 0 64px; display: flex; justify-content: space-between; align-items: end; flex-wrap: wrap; gap: 24px; }
+  footer h2 { margin: 0; }
+
+  .rv { opacity: 0; transform: translateY(24px); transition: opacity .8s var(--ease), transform .8s var(--ease); }
+  .rv.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; transition: none; } * { transition: none !important; } }
+
+  @media (max-width: 860px) {
+    nav .links { display: none; }
+    .hello { grid-template-columns: 1fr; min-height: 0; gap: 64px; }
+    .note { display: none; }
+    .things { grid-template-columns: 1fr; }
+    .thing { min-height: 0; }
+    .row { grid-template-columns: 40px minmax(0, 1fr); }
+    .row p { grid-column: 2; }
+    .row .arr { display: none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav><i>Lohith.</i><span class="links"><a href="#me">me</a><a href="#work">work</a><a href="#hi">say hi</a></span><a href="#">CV ↗</a></nav>
+
+  <!-- 1 · who I am, nothing technical yet -->
+  <header class="hello">
+    <div>
+      <div class="meta"><span>nürnberg · <span id="clock">--:--</span></span><span>from bengaluru</span><span><b>●</b> open to roles</span></div>
+      <h1>Hi, I'm <i>Lohith</i>.</h1>
+      <p class="lead">An engineer from Bengaluru, now in Germany. I like things that move fast: <em>radio signals</em>, race cars, and RCB chases.</p>
+      <div class="cta"><a class="hot" href="#hi">Say hi</a><a href="#me">Get to know me ↓</a></div>
+    </div>
+    <div style="position:relative">
+      <div class="polaroid"><div class="ph">your photo<br>goes here</div><span>nürnberg, 2026</span></div>
+      <div class="note" style="left:-70px;top:30px;transform:rotate(-8deg)">that's me →</div>
+    </div>
+  </header>
+
+  <!-- 2 · the human part -->
+  <section id="me">
+    <div class="kicker rv">01 · three things about me</div>
+    <h2 class="rv">Before the work, <i>the person</i>.</h2>
+    <div class="things">
+      <article class="thing rv" style="--c:var(--red)">
+        <div class="tag">Sundays are booked</div>
+        <h3>F1, every race weekend.</h3>
+        <p>I liked it so much I built my own pit wall: live telemetry, standings and the calendar.</p>
+        <div class="viz">
+          <svg viewBox="0 0 300 80" preserveAspectRatio="none" aria-hidden="true"><polyline id="speed" fill="none" stroke="#e2603f" stroke-width="2"/></svg>
+          <div class="score"><span>speed trace · lap 1</span><span id="kph">— km/h</span></div>
+        </div>
+      </article>
+      <article class="thing rv" style="--c:var(--gold)">
+        <div class="tag">Bengaluru, always</div>
+        <h3>RCB, through every season.</h3>
+        <p>Grew up on Chinnaswamy nights. Still watching from Germany, at strange hours.</p>
+        <div class="score viz"><span>matches watched<br>at 4 am</span><b>too many</b></div>
+      </article>
+      <article class="thing rv" style="--c:var(--blue)">
+        <div class="tag">Three cities so far</div>
+        <h3>Home has moved twice.</h3>
+        <p>Grew up in Bengaluru, interned in Dresden, studying in Nürnberg.</p>
+        <div class="cities">
+          <figure><img src="../public/bengaluru.png" alt="">bengaluru</figure>
+          <figure><img src="../public/dresden.png" alt="">dresden</figure>
+          <figure><img src="../public/nurnberg.png" alt="">nürnberg</figure>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- 3 · only now the details -->
+  <section id="work">
+    <div class="kicker rv">02 · what I actually do</div>
+    <h2 class="rv">Now, <i>the work</i>.</h2>
+    <div class="work">
+      <a class="row rv" href="#"><span class="n">now</span><h3>Master's thesis at FAU</h3><p>Teaching radios to track a moving target and serve data at the same time.</p><span class="arr">→</span></a>
+      <a class="row rv" href="#"><span class="n">2025</span><h3>NI Dresden</h3><p>Tools that find why RF instruments fail their production tests.</p><span class="arr">→</span></a>
+      <a class="row rv" href="#"><span class="n">×6</span><h3>Things I build for fun</h3><p>A CAN decoder, a German tutor, a flat-share app, my F1 pit wall…</p><span class="arr">→</span></a>
+    </div>
+  </section>
+
+  <footer id="hi">
+    <h2 class="rv">Say <i>hi</i>.</h2>
+    <div class="cta"><a class="hot" href="#">Email me</a><a href="#">LinkedIn</a><a href="#">GitHub</a></div>
+  </footer>
+</div>
+
+<script>
+  const clock = document.getElementById('clock');
+  const tick = () => clock.textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' });
+  tick(); setInterval(tick, 30000);
+
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .15 });
+  document.querySelectorAll('.rv').forEach((el, i) => { el.style.transitionDelay = (i % 3) * 80 + 'ms'; io.observe(el); });
+
+  // fake lap speed trace: straights, braking, corners
+  const sp = Array.from({ length: 150 }, (_, i) => 200 + 110 * Math.sin(i / 9) * Math.sin(i / 23) + (i % 37 < 4 ? -120 : 0));
+  const line = document.getElementById('speed'), kph = document.getElementById('kph');
+  line.setAttribute('points', sp.map((v, i) => `${i * 2},${80 - (v - 40) / 320 * 76}`).join(' '));
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    const len = line.getTotalLength(); line.style.strokeDasharray = len; line.style.strokeDashoffset = len;
+    new IntersectionObserver(([e], o) => {
+      if (!e.isIntersecting) return; o.disconnect();
+      let i = 0; const run = () => { line.style.strokeDashoffset = len * (1 - i / sp.length); kph.textContent = Math.round(sp[i]) + ' km/h'; if (++i < sp.length) requestAnimationFrame(run); };
+      run();
+    }, { threshold: .5 }).observe(line);
+  } else kph.textContent = Math.round(Math.max(...sp)) + ' km/h top';
+</script>
+</body>
+</html>

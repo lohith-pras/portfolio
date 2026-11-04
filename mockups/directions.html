@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Three directions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;700&family=JetBrains+Mono:wght@400;600&family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&family=Caveat:wght@500&family=Inter:wght@400;500&family=Barlow+Condensed:ital,wght@0,600;0,800;1,800&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body { background: #111; font-family: Inter, system-ui, sans-serif; }
+  .switch { position: fixed; z-index: 50; left: 50%; bottom: 20px; transform: translateX(-50%); display: flex; gap: 4px; padding: 4px; background: #000c; border: 1px solid #fff2; border-radius: 999px; backdrop-filter: blur(8px); }
+  .switch button { all: unset; cursor: pointer; padding: 8px 14px; border-radius: 999px; color: #bbb; font: 500 13px Inter, sans-serif; white-space: nowrap; }
+  .switch button[aria-pressed="true"] { background: #fff; color: #111; }
+  .dir { display: none; min-height: 100vh; }
+  .dir.on { display: block; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+
+  /* ---------- A · Spectrum ---------- */
+  #a { --bg: #0b0d0c; --ink: #ebe5d3; --dim: #8a8677; --amp: #ffb000; background: var(--bg); color: var(--ink); position: relative; overflow: hidden; }
+  #a .hero { min-height: 100vh; display: grid; grid-template-columns: 1fr 120px; padding: 32px clamp(16px, 5vw, 72px); position: relative; }
+  #a nav { grid-column: 1 / -1; display: flex; justify-content: space-between; font: 400 12px 'JetBrains Mono'; color: var(--dim); text-transform: uppercase; letter-spacing: .12em; }
+  #a nav b { color: var(--amp); font-weight: 600; }
+  #a .main { align-self: center; position: relative; z-index: 2; }
+  #a .tag { font: 400 13px 'JetBrains Mono'; color: var(--amp); letter-spacing: .1em; }
+  #a h1 { font: 700 clamp(72px, 15vw, 220px)/.85 Oswald, sans-serif; text-transform: uppercase; margin: 16px 0 24px; letter-spacing: -.01em; }
+  #a h1 span { display: block; color: transparent; -webkit-text-stroke: 1.5px var(--ink); }
+  #a .lead { max-width: 30ch; font-size: clamp(18px, 2vw, 24px); line-height: 1.35; }
+  #a .lead em { font-style: normal; color: var(--amp); }
+  #a .wave { position: absolute; inset: auto 0 0 0; width: 100%; height: 22vh; z-index: 1; opacity: .9; }
+  #a .main { padding-bottom: 18vh; }
+  #a .dial { border-left: 1px solid #ffffff1f; display: flex; flex-direction: column; justify-content: center; align-items: flex-end; gap: 6px; font: 400 11px 'JetBrains Mono'; color: var(--dim); position: relative; z-index: 2; }
+  #a .dial .tick { width: 14px; height: 1px; background: #ffffff33; }
+  #a .dial .tick.big { width: 28px; background: #ffffff66; }
+  #a .dial .read { color: var(--amp); font-size: 22px; margin: 10px 0 2px; }
+  #a .ch { padding: 96px clamp(16px, 5vw, 72px); border-top: 1px solid #ffffff1a; display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.3fr); gap: 48px; }
+  #a .ch h2 { font: 500 clamp(40px, 6vw, 80px)/.95 Oswald; text-transform: uppercase; margin: 12px 0 0; }
+  #a .stats { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px; background: #ffffff1a; border: 1px solid #ffffff1a; }
+  #a .stat { background: var(--bg); padding: 20px; }
+  #a .stat b { display: block; font: 500 44px Oswald; color: var(--amp); }
+  #a .stat small { color: var(--dim); font-size: 13px; line-height: 1.4; display: block; }
+  #a .ch p { color: var(--dim); line-height: 1.6; grid-column: 2; margin: 0; }
+
+  /* ---------- B · Lab notebook ---------- */
+  #b { --paper: #f3efe4; --ink: #24211c; --dim: #6d675b; --red: #c2452d; --blue: #2f5d8a; background: var(--paper); color: var(--ink);
+       background-image: radial-gradient(#24211c22 1px, transparent 1.2px); background-size: 22px 22px; }
+  #b .wrap { max-width: 1080px; margin: 0 auto; padding: 32px clamp(16px, 5vw, 48px) 120px; }
+  #b nav { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 14px; border-bottom: 1px solid #24211c33; font-size: 14px; color: var(--dim); }
+  #b nav i { font: italic 400 24px Newsreader, serif; color: var(--ink); }
+  #b nav span { display: flex; gap: 22px; }
+  #b .hero { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 48px; padding: 80px 0 56px; align-items: center; }
+  #b .date { font: 400 13px 'JetBrains Mono'; color: var(--dim); }
+  #b h1 { font: 400 clamp(52px, 7.5vw, 104px)/.95 Newsreader, serif; letter-spacing: -.025em; margin: 14px 0 22px; }
+  #b h1 i { color: var(--red); }
+  #b .lead { font-size: 19px; line-height: 1.55; max-width: 34ch; }
+  #b .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 26px; }
+  #b .chips a { border: 1px solid #24211c40; padding: 7px 12px; border-radius: 4px; font-size: 14px; color: var(--ink); text-decoration: none; background: #fffdf6; }
+  #b .chips a.hot { background: var(--ink); color: var(--paper); }
+  #b figure { margin: 0; position: relative; background: #fffdf6; border: 1px solid #24211c33; padding: 18px; transform: rotate(1.2deg); box-shadow: 6px 6px 0 #24211c14; }
+  #b figure svg { width: 100%; height: auto; display: block; }
+  #b figcaption { font: 400 12px 'JetBrains Mono'; color: var(--dim); margin-top: 8px; }
+  #b .note { position: absolute; font: 500 24px/1.05 Caveat, cursive; color: var(--red); }
+  #b .ask { border-top: 1px solid #24211c33; padding-top: 36px; }
+  #b .ask h2 { font: italic 400 36px Newsreader; margin: 0 0 18px; }
+  #b details { border-bottom: 1px dashed #24211c40; padding: 14px 0; font-size: 17px; }
+  #b summary { cursor: pointer; list-style: none; display: flex; justify-content: space-between; }
+  #b summary::after { content: '+'; font-family: 'JetBrains Mono'; color: var(--dim); }
+  #b details[open] summary::after { content: '−'; }
+  #b details p { color: var(--dim); margin: 10px 0 0; line-height: 1.6; max-width: 62ch; }
+
+  /* ---------- C · Telemetry ---------- */
+  #c { --bg: #0e1015; --panel: #151821; --ink: #f2f3f5; --dim: #7c8293; --purple: #b46bff; --green: #2fd67b; --yellow: #ffd23f; --red: #ff4d4d; background: var(--bg); color: var(--ink); }
+  #c .shell { display: grid; grid-template-columns: 260px minmax(0, 1fr); min-height: 100vh; }
+  #c aside { border-right: 1px solid #ffffff14; padding: 28px 18px; position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; gap: 18px; }
+  #c .lap { font: 800 italic 15px 'Barlow Condensed'; letter-spacing: .08em; color: var(--dim); text-transform: uppercase; }
+  #c .lap b { color: var(--ink); font-size: 26px; }
+  #c .tower { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; }
+  #c .tower li { display: grid; grid-template-columns: 26px 4px 1fr auto; gap: 10px; align-items: center; background: var(--panel); padding: 9px 10px; font: 600 16px 'Barlow Condensed'; text-transform: uppercase; letter-spacing: .04em; }
+  #c .tower li i { width: 4px; height: 18px; background: var(--c, var(--dim)); }
+  #c .tower li em { font: 400 12px 'JetBrains Mono'; color: var(--dim); font-style: normal; }
+  #c .tower li.cur { background: #fff; color: #0e1015; }
+  #c .tower li.cur em { color: #0e1015; }
+  #c .legend { margin-top: auto; font: 400 11px 'JetBrains Mono'; color: var(--dim); line-height: 1.8; }
+  #c .legend span { display: inline-block; width: 8px; height: 8px; margin-right: 6px; }
+  #c main { padding: 28px clamp(16px, 4vw, 56px); }
+  #c .top { display: flex; justify-content: space-between; font: 400 12px 'JetBrains Mono'; color: var(--dim); text-transform: uppercase; letter-spacing: .1em; }
+  #c .top b { color: var(--green); }
+  #c h1 { font: 800 italic clamp(64px, 11vw, 168px)/.82 'Barlow Condensed', sans-serif; text-transform: uppercase; margin: 64px 0 20px; letter-spacing: -.01em; }
+  #c h1 span { color: var(--purple); }
+  #c .lead { font-size: clamp(18px, 1.8vw, 22px); max-width: 40ch; line-height: 1.4; color: #cfd3dc; }
+  #c .trace { margin-top: 48px; background: var(--panel); border: 1px solid #ffffff10; padding: 16px 18px 10px; }
+  #c .trace header { display: flex; justify-content: space-between; font: 400 11px 'JetBrains Mono'; color: var(--dim); text-transform: uppercase; margin-bottom: 8px; }
+  #c .trace svg { width: 100%; height: 160px; display: block; }
+  #c .sectors { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 2px; margin-top: 2px; }
+  #c .sector { background: var(--panel); padding: 16px 18px; border-top: 3px solid var(--c); }
+  #c .sector small { font: 400 11px 'JetBrains Mono'; color: var(--dim); text-transform: uppercase; }
+  #c .sector b { display: block; font: 800 italic 40px 'Barlow Condensed'; margin: 4px 0; }
+  #c .sector p { margin: 0; font-size: 14px; color: var(--dim); line-height: 1.45; }
+
+  @media (max-width: 760px) {
+    #a .hero { grid-template-columns: 1fr; }
+    #a .dial { display: none; }
+    #a nav span:nth-child(2) { display: none; }
+    #a .ch { grid-template-columns: 1fr; gap: 24px; }
+    #a .ch p { grid-column: 1; }
+    #a .stats { grid-template-columns: 1fr; }
+    #b .hero { grid-template-columns: 1fr; padding-top: 48px; }
+    #b nav span { display: none; }
+    #b .note { display: none; }
+    #c .shell { grid-template-columns: 1fr; }
+    #c aside { position: static; height: auto; border-right: 0; border-bottom: 1px solid #ffffff14; }
+    #c .legend { display: none; }
+    #c .sectors { grid-template-columns: 1fr; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; } }
+</style>
+</head>
+<body>
+
+<div class="switch" role="group" aria-label="Direction">
+  <button data-to="a" aria-pressed="true">A · Spectrum</button>
+  <button data-to="b" aria-pressed="false">B · Lab notebook</button>
+  <button data-to="c" aria-pressed="false">C · Telemetry</button>
+</div>
+
+<!-- A · SPECTRUM -->
+<section class="dir on" id="a">
+  <div class="hero">
+    <nav><b>● on air</b><span>thesis · work · fun · life · contact</span><span>nürnberg 21:40</span></nav>
+    <div class="main">
+      <div class="tag">CH 01 · TUNING IN</div>
+      <h1>Lohith<span>Prasanna</span></h1>
+      <p class="lead">I research <em>intelligent sensing</em> where 6G meets autonomous driving.</p>
+    </div>
+    <div class="dial" aria-hidden="true">
+      <div class="tick"></div><div class="tick"></div><div class="tick big"></div><div class="tick"></div><div class="tick"></div>
+      <div class="read">28.000</div><div>GHZ</div>
+      <div class="tick"></div><div class="tick"></div><div class="tick big"></div><div class="tick"></div><div class="tick"></div>
+      <div style="margin-top:14px">CH 01 / 05</div>
+    </div>
+    <svg class="wave" viewBox="0 0 1000 300" preserveAspectRatio="none" aria-hidden="true"><g id="bars"></g><polyline id="trace" fill="none" stroke="#ffb000" stroke-width="1.5"/></svg>
+  </div>
+  <div class="ch">
+    <div><div class="tag mono">CH 02 · 28 GHZ · THESIS</div><h2>Radar and data from the same radios</h2></div>
+    <div class="stats">
+      <div class="stat"><b>97.7%</b><small>of slots meet both sensing and data targets</small></div>
+      <div class="stat"><b>4.2 W</b><small>average, of an 8 W budget</small></div>
+      <div class="stat"><b>2.6%</b><small>what a random policy manages</small></div>
+    </div>
+    <p>Scroll = turn the dial. Each section is a channel that comes in from static. The right-edge readout is the navigation.</p>
+  </div>
+</section>
+
+<!-- B · LAB NOTEBOOK -->
+<section class="dir" id="b">
+  <div class="wrap">
+    <nav><i>Lohith.</i><span><a>thesis</a><a>work</a><a>fun</a><a>life</a></span><a>CV ↗</a></nav>
+    <div class="hero">
+      <div>
+        <div class="date">entry 26 · nürnberg · 4 nov 2026</div>
+        <h1>I teach radios to <i>see</i>.</h1>
+        <p class="lead">M.Sc. at FAU. I research sensing where 6G meets autonomous driving. Before that I shipped RF debug tools at NI Dresden.</p>
+        <div class="chips"><a class="hot" href="#">Email me</a><a href="#">CV</a><a href="#">GitHub</a><a href="#">Before you hire me ↓</a></div>
+      </div>
+      <figure>
+        <svg viewBox="0 0 400 300" aria-label="Four radio nodes on a ring tracking a plate target">
+          <circle cx="200" cy="150" r="110" fill="none" stroke="#24211c" stroke-dasharray="3 5"/>
+          <g fill="#24211c"><rect x="194" y="34" width="12" height="12"/><rect x="304" y="144" width="12" height="12"/><rect x="194" y="254" width="12" height="12"/><rect x="84" y="144" width="12" height="12"/></g>
+          <g stroke="#2f5d8a" stroke-width="1.2" opacity=".7"><line x1="200" y1="46" x2="236" y2="128"/><line x1="304" y1="150" x2="244" y2="134"/><line x1="96" y1="150" x2="230" y2="134"/></g>
+          <rect x="226" y="122" width="26" height="8" fill="#c2452d" transform="rotate(-25 239 126)"/>
+          <path d="M150 210 q40 -30 85 -80" fill="none" stroke="#c2452d" stroke-dasharray="4 4"/>
+        </svg>
+        <figcaption>fig. 1 · 4 nodes, 28 GHz, one moving plate</figcaption>
+        <div class="note" style="right:-30px;top:-34px;transform:rotate(6deg)">the plate costs<br>~3 W more ↓</div>
+        <div class="note" style="left:-46px;bottom:-30px;transform:rotate(-5deg)">97.7% of slots ✓</div>
+      </figure>
+    </div>
+    <div class="ask">
+      <h2>before you hire me</h2>
+      <details open><summary>What am I best at?</summary><p>Taking a messy RF or ML problem and turning it into a tool someone actually uses on Monday.</p></details>
+      <details><summary>What do I still get wrong?</summary><p>Caching late. If an answer takes 30 seconds, people stop asking.</p></details>
+      <details><summary>Why the F1 dashboard?</summary><p>Because I wanted my own pit wall.</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- C · TELEMETRY -->
+<section class="dir" id="c">
+  <div class="shell">
+    <aside>
+      <div class="lap">Lap <b>26</b> / 26 · 2026</div>
+      <ol class="tower">
+        <li class="cur"><span>P1</span><i style="--c:var(--purple)"></i>Thesis<em>live</em></li>
+        <li><span>P2</span><i style="--c:var(--green)"></i>NI Dresden<em>+1 yr</em></li>
+        <li><span>P3</span><i style="--c:var(--yellow)"></i>Side builds<em>×6</em></li>
+        <li><span>P4</span><i style="--c:var(--dim)"></i>Places<em>3 cities</em></li>
+        <li><span>P5</span><i style="--c:var(--red)"></i>Pit lane<em>contact</em></li>
+      </ol>
+      <div class="legend"><div><span style="background:var(--purple)"></span>personal best</div><div><span style="background:var(--green)"></span>shipped</div><div><span style="background:var(--yellow)"></span>in progress</div></div>
+    </aside>
+    <main>
+      <div class="top"><span>Lohith Tarikere Prasanna</span><span><b>●</b> track status: open to roles</span></div>
+      <h1>Sensing<br><span>at speed.</span></h1>
+      <p class="lead">I research how radios can sense the road and serve data at the same time, for the cars that will drive themselves.</p>
+      <div class="trace">
+        <header><span>Telemetry · power per slot (W)</span><span>budget 8 W</span></header>
+        <svg viewBox="0 0 1000 160" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="0" y1="20" x2="1000" y2="20" stroke="#ff4d4d" stroke-dasharray="6 6" opacity=".6"/>
+          <polyline id="tele" fill="none" stroke="#b46bff" stroke-width="2"/>
+        </svg>
+      </div>
+      <div class="sectors">
+        <div class="sector" style="--c:var(--purple)"><small>Sector 1 · reliability</small><b>97.7%</b><p>slots meeting both targets</p></div>
+        <div class="sector" style="--c:var(--green)"><small>Sector 2 · power</small><b>4.2 W</b><p>average of an 8 W budget</p></div>
+        <div class="sector" style="--c:var(--yellow)"><small>Sector 3 · baseline</small><b>+95.1</b><p>points over random policy</p></div>
+      </div>
+    </main>
+  </div>
+</section>
+
+<script>
+  const btns = document.querySelectorAll('.switch button');
+  const show = id => {
+    document.querySelectorAll('.dir').forEach(d => d.classList.toggle('on', d.id === id));
+    btns.forEach(b => b.setAttribute('aria-pressed', b.dataset.to === id));
+    try { localStorage.setItem('dir', id); } catch {}
+  };
+  btns.forEach(b => b.onclick = () => show(b.dataset.to));
+  addEventListener('keydown', e => ({ 1: 'a', 2: 'b', 3: 'c' })[e.key] && show(({ 1: 'a', 2: 'b', 3: 'c' })[e.key]));
+  try { const s = localStorage.getItem('dir'); if (s) show(s); } catch {}
+
+  // A: spectrum bars + trace, C: power trace
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const bars = document.getElementById('bars'), trace = document.getElementById('trace'), tele = document.getElementById('tele');
+  const N = 80;
+  for (let i = 0; i < N; i++) bars.insertAdjacentHTML('beforeend', `<rect x="${i * 12.5}" width="8" fill="#ffb000" opacity=".18"/>`);
+  const rects = bars.children;
+  const tpts = Array.from({ length: 120 }, (_, i) => `${i * 8.4},${70 + 35 * Math.sin(i / 6) + 18 * Math.sin(i / 2.3) + (i % 17 === 0 ? -30 : 0)}`).join(' ');
+  tele.setAttribute('points', tpts);
+  let t = 0;
+  const frame = () => {
+    t += 0.03;
+    let pts = '';
+    for (let i = 0; i < N; i++) {
+      const peak = Math.exp(-((i - 40) ** 2) / 30) * 220;
+      const v = 20 + peak * (0.85 + 0.15 * Math.sin(t * 3)) + 30 * Math.abs(Math.sin(i * 1.7 + t * 2)) * Math.random();
+      rects[i].setAttribute('y', 300 - v); rects[i].setAttribute('height', v);
+      pts += `${i * 12.5 + 4},${300 - v - 6} `;
+    }
+    trace.setAttribute('points', pts);
+    if (!reduce) setTimeout(() => requestAnimationFrame(frame), 70);
+  };
+  frame();
+</script>
+</body>
+</html>
