@@ -38,31 +38,17 @@
   .nav ul a { text-decoration: none; text-transform: uppercase; letter-spacing: .02em; }
   .nav .right { display: flex; gap: 18px; align-items: center; }
 
-  /* corner labels (archive ref) */
-  .corner { position: fixed; z-index: 0; font: 400 10px/1.5 var(--mono); color: var(--faint); text-transform: uppercase; pointer-events: none; }
-  .corner.bl { left: var(--pad); bottom: 16px; }
-  .corner.br2 { right: var(--pad); bottom: 16px; text-align: right; }
-
-  /* layer gauge (skydive altimeter ref) */
-  .gauge { position: fixed; z-index: 15; right: var(--pad); top: 50%; transform: translateY(-50%); display: grid; gap: 14px; font: 400 10px var(--mono); color: var(--faint); text-transform: uppercase; text-align: right; }
-  .gauge div { display: flex; gap: 10px; align-items: center; justify-content: flex-end; transition: color .3s; }
-  .gauge div::after { content: ''; width: 16px; height: 1px; background: currentColor; transition: width .3s var(--ease), background .3s; }
-  .gauge.off { opacity: 0; } .gauge { transition: opacity .3s; }
-  .gauge div.on { color: var(--ink); }
-  .gauge div.on::after { width: 34px; background: var(--acc); }
-  .gauge small { color: var(--faint); font-size: 9px; margin-bottom: 4px; }
-
-  /* 1 · hero: quiet on purpose, one line and the name */
-  .hero { min-height: 100vh; display: grid; grid-template-rows: 1fr auto auto; padding-top: 72px; position: relative; overflow: hidden; }
-  .h-mid { align-self: end; margin-bottom: 4vw; display: flex; justify-content: space-between; align-items: flex-end; gap: 32px; padding: 0 var(--pad); }
-  .h-mid p { margin: 0; font: 300 clamp(20px, 1.9vw, 26px)/1.35 var(--sans); letter-spacing: -.015em; max-width: 26ch; color: var(--dim); }
-  .h-mid p b { font-weight: 300; color: var(--ink); }
-  .h-cue { font: 400 12px var(--mono); color: var(--dim); text-transform: uppercase; text-decoration: none; display: flex; gap: 10px; align-items: center; white-space: nowrap; }
-  .h-cue i { width: 1px; height: 36px; background: linear-gradient(var(--acc), transparent); animation: cue 2.4s var(--ease) infinite; transform-origin: top; }
-  @keyframes cue { 0% { transform: scaleY(0); } 60% { transform: scaleY(1); } 100% { transform: scaleY(1); opacity: 0; } }
-  .word { font: 500 23.4vw/.78 var(--sans); letter-spacing: -.055em; text-transform: uppercase; margin: 0; padding: 0 0 0 1.2vw; white-space: nowrap; user-select: none; }
-  .word span { color: var(--acc); }
-  .h-meta { position: absolute; top: 88px; left: var(--pad); display: flex; flex-wrap: wrap; gap: 8px 16px; }
+  /* 1 · hero: the full name once, what I build, where I am now */
+  .hero { min-height: 100vh; display: flex; flex-direction: column; justify-content: flex-end; padding: 120px var(--pad) 12vh; max-width: 1440px; margin: 0 auto; }
+  .hero h1 { font: 400 clamp(52px, 8.4vw, 132px)/.95 var(--sans); letter-spacing: -.045em; margin: 0 0 32px; }
+  .hero h1 span { color: var(--dim); }
+  .h-line { margin: 0 0 22px; font: 300 clamp(22px, 2.2vw, 32px)/1.25 var(--sans); letter-spacing: -.02em; color: var(--dim); }
+  .h-line b { font-weight: 300; color: var(--ink); }
+  .roll { display: inline-grid; vertical-align: bottom; overflow: hidden; height: 1.25em; transition: width .8s var(--ease); }
+  .roll span { grid-area: 1 / 1; white-space: nowrap; color: var(--ink); transition: transform .8s var(--ease), opacity .6s; }
+  .roll span:not(.on) { transform: translateY(100%); opacity: 0; }
+  .roll span.out { transform: translateY(-100%); opacity: 0; }
+  .h-now { font: 400 13px var(--mono); color: var(--dim); }
 
   /* section scaffolding */
   section { padding: 150px 0 0; position: relative; }
@@ -195,13 +181,9 @@
   .rv.in { opacity: 1; transform: none; }
   @media (prefers-reduced-motion: reduce) { .panel { clip-path: none; } .panel > .slides, .rail { opacity: 1; } html { scroll-behavior: auto; } .rv { opacity: 1; transform: none; } * { transition: none !important; } }
 
-  @media (min-width: 1101px) { .wrap { padding-right: max(var(--pad), 150px); } }
-  @media (max-width: 1100px) { .gauge { display: none; } }
   @media (max-width: 860px) {
-    .nav ul, .corner { display: none; }
-    .hero .top { grid-template-columns: 1fr; padding-top: 24px; }
-    .desk { height: 400px; max-width: 360px; width: 100%; margin: 0 auto; }
-    .sheet { width: 210px; left: 0; } .plot { width: 230px; } .polar { width: 160px; right: 6%; }
+    .nav ul { display: none; }
+    .roll { display: grid; height: 2.5em; width: auto !important; align-items: start; } .roll span { white-space: normal; }
     .about { grid-template-columns: 90px minmax(0, 1fr); gap: 18px; } .about .me { width: 90px; }
     .works { height: auto !important; }
     .stage { position: relative; height: auto; overflow: visible; }
@@ -231,23 +213,12 @@
   <div class="right"><a href="#" class="mono" style="text-decoration:none">DE</a><a class="btn" href="#">CV ↓</a></div>
 </header>
 
-<div class="corner bl">Lohith T. Prasanna<br>Portfolio · 2026</div>
-<div class="corner br2">49.45° N, 11.08° E<br>Nürnberg</div>
-
-<nav class="gauge off" aria-label="Layer this section is about">
-  <small>layer</small>
-  <div data-g="4">Hardware</div><div data-g="3">Models</div><div data-g="2">Signal</div><div data-g="1">RF</div>
-</nav>
-
 <!-- 1 · HERO: quiet; one sentence and the name -->
-<div class="hero" id="top" data-layers="">
-  <div class="h-meta"><span class="br"><span class="dot"></span>now: <b>physical AI, Fraunhofer</b></span><span class="br">nürnberg: <b id="clock">--:--</b></span></div>
-  <div class="h-mid">
-    <p><b>Electronics and comms engineer.</b> I take sensing and AI from the signal down to the silicon it runs on.</p>
-    <a class="h-cue" href="#about"><i></i>scroll</a>
-  </div>
-  <p class="word" aria-hidden="true">Lohith<span>.</span></p>
-</div>
+<header class="hero" id="top">
+  <h1>Lohith <span>Tarikere Prasanna</span></h1>
+  <p class="h-line"><b>Electronics and comms engineer.</b><br>I build <span class="roll"><span class="on">radar networks that choose which radios sense</span><span>vision models that run on neuromorphic chips</span><span>tools that find why RF instruments fail</span><span>firmware that keeps an electric two-wheeler locked</span></span></p>
+  <p class="h-now"><span class="dot"></span>Now at Fraunhofer, working on physical AI · Nürnberg <span id="clock">--:--</span></p>
+</header>
 
 <div class="wrap">
 
@@ -351,6 +322,19 @@ let cur = -1;
 const NS = 'http://www.w3.org/2000/svg';
 const el = (tag, attrs, parent) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); parent && parent.appendChild(n); return n; };
 const txt = (s, attrs, parent) => { const t = el('text', attrs, parent); t.textContent = s; return t; };
+
+// hero line: "I build …" rolls through things I actually built
+(() => {
+  const roll = document.querySelector('.roll'), words = [...roll.children];
+  let i = 0;
+  const fit = () => { roll.style.width = words[i].scrollWidth + 'px'; };
+  document.fonts.ready.then(fit);
+  if (reduce) return;
+  setInterval(() => {
+    const prev = i; words[prev].classList.replace('on', 'out'); setTimeout(() => words[prev].classList.remove('out'), 800);
+    i = (i + 1) % words.length; words[i].classList.add('on'); fit();
+  }, 2800);
+})();
 
 // clock
 const clock = document.getElementById('clock');
@@ -500,30 +484,6 @@ if (!reduce) { addEventListener('scroll', () => { if (!ticking) { ticking = true
   el('line', { x1, y1: y1 + 20, x2: x1, y2: y2 - 20, stroke: 'var(--d-line)', 'stroke-dasharray': '3 4' }, s);
 })();
 
-// layer gauge follows the section in view
-const gauge = document.querySelectorAll('.gauge div');
-const gWrap = document.querySelector('.gauge');
-const setG = on => { gWrap.classList.toggle('off', !on.join('')); gauge.forEach(g => g.classList.toggle('on', on.includes(g.dataset.g))); };
-// gauge follows whatever is at the vertical centre: the active project inside the work stage, else the section
-const layered = [...document.querySelectorAll('section[data-layers], .hero')];
-function updG() {
-  const y = innerHeight / 2, w = document.querySelector('.works').getBoundingClientRect();
-  if (w.top < y && w.bottom > y && cur >= 0) return setG(slides[cur].dataset.layers.split(','));
-  const sec = layered.find(n => { const r = n.getBoundingClientRect(); return r.top < y && r.bottom > y; });
-  setG(sec ? sec.dataset.layers.split(',') : ['']);
-}
-addEventListener('scroll', () => requestAnimationFrame(updG), { passive: true }); updG();
-
-// reveal
-const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .1 });
-document.querySelectorAll('.rv').forEach(n => io.observe(n));
-
-// theme switcher (mockup only); remembered per browser
-const sw = document.querySelectorAll('.picker button');
-const setTheme = t => { document.documentElement.dataset.theme = t; sw.forEach(x => x.setAttribute('aria-pressed', x.dataset.t === t)); try { localStorage.setItem('ltp-theme', t); } catch {} };
-sw.forEach(b => b.onclick = () => setTheme(b.dataset.t));
-addEventListener('keydown', e => { if (e.key === 't' && !e.metaKey && !e.ctrlKey) { const ts = [...sw].map(x => x.dataset.t), i = ts.indexOf(document.documentElement.dataset.theme || 'slate'); setTheme(ts[(i + 1) % ts.length]); } });
-try { const t = localStorage.getItem('ltp-theme'); if (t) setTheme(t); } catch {}
 </script>
 </body>
 </html>

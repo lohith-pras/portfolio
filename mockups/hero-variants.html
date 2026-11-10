@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hero variants</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500&family=Geist+Mono:wght@400;500&family=Doto:wght@700;900&display=swap" rel="stylesheet">
+<style>
+  :root { --bg: #000; --ink: #f2eae3; --dim: #9a948f; --faint: #3a3735; --line: #ffffff17; --acc: #ff073a; --card: #21304e;
+          --sans: Geist, system-ui, sans-serif; --mono: 'Geist Mono', monospace; --dot: Doto, monospace; --pad: clamp(16px, 4vw, 56px); --ease: cubic-bezier(.22, 1, .36, 1); }
+  *, *::before, *::after { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 var(--sans); }
+  .nav { position: absolute; inset: 0 0 auto 0; z-index: 5; display: flex; justify-content: space-between; align-items: center; padding: 18px var(--pad); font-size: 14px; }
+  .nav ul { display: flex; gap: 28px; list-style: none; margin: 0; padding: 0; text-transform: uppercase; }
+  .btn { display: inline-block; padding: 10px 18px; border: 1px solid #ffffff55; text-decoration: none; color: inherit; font-size: 14px; }
+  .br { font: 400 12px var(--mono); color: var(--dim); white-space: nowrap; }
+  .br::before { content: '[ '; color: var(--faint); } .br::after { content: ' ]'; color: var(--faint); }
+  .br b { color: var(--ink); font-weight: 400; }
+  .dot { display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--acc); margin-right: 6px; vertical-align: 1px; }
+  .v { display: none; position: relative; min-height: 100vh; overflow: hidden; }
+  .v.on { display: block; }
+  .switch { position: fixed; z-index: 9; left: 50%; bottom: 14px; transform: translateX(-50%); display: flex; gap: 4px; padding: 5px; background: #111d; border: 1px solid #ffffff22; border-radius: 999px; }
+  .switch button { all: unset; cursor: pointer; padding: 7px 14px; border-radius: 999px; font: 400 12px var(--mono); color: #999; }
+  .switch button[aria-pressed="true"] { background: #ffffff1f; color: #fff; }
+
+  /* A · current: sentence + giant name */
+  #A { display: none; grid-template-rows: 1fr auto; padding-top: 72px; }
+  #A.on { display: grid; }
+  #A .meta { position: absolute; top: 88px; left: var(--pad); display: flex; gap: 16px; }
+  #A .mid { align-self: end; margin: 0 var(--pad) 4vw; display: flex; justify-content: space-between; align-items: flex-end; }
+  #A .mid p { margin: 0; font: 300 clamp(20px, 1.9vw, 26px)/1.35 var(--sans); max-width: 26ch; color: var(--dim); }
+  #A .mid p b { font-weight: 300; color: var(--ink); }
+  #A .word { font: 500 23.4vw/.78 var(--sans); letter-spacing: -.055em; text-transform: uppercase; margin: 0 0 0 1.2vw; white-space: nowrap; }
+  #A .word span { color: var(--acc); }
+
+  /* B · the layers, spoken: one line that cycles through what you work on */
+  #B { display: none; padding: 0 var(--pad); }
+  #B.on { display: grid; place-content: center; }
+  #B .name { font: 400 14px var(--mono); color: var(--dim); text-transform: uppercase; letter-spacing: .04em; margin-bottom: 26px; }
+  #B h1 { font: 300 clamp(44px, 7.4vw, 116px)/1 var(--sans); letter-spacing: -.045em; margin: 0; }
+  #B h1 .roll { display: inline-grid; height: 1.05em; overflow: hidden; vertical-align: bottom; }
+  #B h1 .roll span { grid-area: 1 / 1; transition: transform .8s var(--ease), opacity .6s; color: var(--ink); }
+  #B h1 .roll span:not(.on) { transform: translateY(100%); opacity: 0; }
+  #B h1 .roll span.out { transform: translateY(-100%); opacity: 0; }
+  #B h1 em { font-style: normal; color: var(--dim); }
+  #B .steps { display: flex; gap: 6px; margin-top: 40px; }
+  #B .steps i { display: block; height: 2px; width: 46px; background: var(--faint); transition: background .4s; }
+  #B .steps i.on { background: var(--acc); }
+  #B .foot { position: absolute; left: var(--pad); right: var(--pad); bottom: 70px; display: flex; justify-content: space-between; align-items: flex-end; gap: 20px; flex-wrap: wrap; }
+
+  /* C · the name as a dot-matrix display that resolves out of noise, like a signal locking */
+  #C { display: none; grid-template-rows: 1fr auto auto; padding: 72px 0 0; }
+  #C.on { display: grid; }
+  #C canvas { width: 100%; height: 100%; display: block; }
+  #C .stage { position: relative; min-height: 0; }
+  #C .row { display: flex; justify-content: space-between; align-items: flex-end; gap: 24px; padding: 0 var(--pad) 70px; flex-wrap: wrap; }
+  #C .row p { margin: 0; font: 300 clamp(20px, 1.9vw, 26px)/1.35 var(--sans); max-width: 28ch; color: var(--dim); }
+  #C .row p b { font-weight: 300; color: var(--ink); }
+  #C .read { display: grid; gap: 6px; justify-items: end; }
+  @media (max-width: 760px) { .nav ul { display: none; } #A .mid { flex-direction: column; align-items: flex-start; gap: 20px; } }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<!-- A -->
+<section class="v on" id="A">
+  <div class="nav"><b>LTP</b><ul><li>About</li><li>Range</li><li>Work</li><li>Builds</li><li>Life</li><li>Contact</li></ul><a class="btn">CV ↓</a></div>
+  <div class="meta"><span class="br"><span class="dot"></span>now: <b>physical AI, Fraunhofer</b></span><span class="br">nürnberg: <b class="clock">--:--</b></span></div>
+  <div class="mid"><p><b>Electronics and comms engineer.</b> I take sensing and AI from the signal down to the silicon it runs on.</p><span class="br">scroll</span></div>
+  <p class="word">Lohith<span>.</span></p>
+</section>
+
+<!-- B -->
+<section class="v" id="B">
+  <div class="nav"><b>LTP</b><ul><li>About</li><li>Range</li><li>Work</li><li>Builds</li><li>Life</li><li>Contact</li></ul><a class="btn">CV ↓</a></div>
+  <div>
+    <div class="name">Lohith Tarikere Prasanna · electronics &amp; comms engineer</div>
+    <h1>I work on the<br><span class="roll"><span class="on">radio</span><span>signal</span><span>model</span><span>chip</span></span><em> layer.</em></h1>
+    <div class="steps"><i class="on"></i><i></i><i></i><i></i></div>
+  </div>
+  <div class="foot"><span class="br"><span class="dot"></span>now: <b>spiking networks on neuromorphic hardware, Fraunhofer</b></span><span class="br">nürnberg: <b class="clock">--:--</b></span></div>
+</section>
+
+<!-- C -->
+<section class="v" id="C">
+  <div class="nav"><b>LTP</b><ul><li>About</li><li>Range</li><li>Work</li><li>Builds</li><li>Life</li><li>Contact</li></ul><a class="btn">CV ↓</a></div>
+  <div class="stage"><canvas id="cv" aria-label="Lohith"></canvas></div>
+  <div class="row">
+    <p><b>Lohith Tarikere Prasanna.</b> Electronics and comms engineer, taking sensing and AI from the signal down to the silicon it runs on.</p>
+    <div class="read"><span class="br"><span class="dot"></span>now: <b>physical AI, Fraunhofer</b></span><span class="br">snr: <b id="snr">0.0 dB</b></span></div>
+  </div>
+</section>
+
+<div class="switch" role="group" aria-label="Hero variant">
+  <button data-v="A" aria-pressed="true">A · current</button>
+  <button data-v="B" aria-pressed="false">B · layers, spoken</button>
+  <button data-v="C" aria-pressed="false">C · signal locks</button>
+</div>
+
+<script>
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const tick = () => document.querySelectorAll('.clock').forEach(c => c.textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' }));
+tick(); setInterval(tick, 30000);
+
+const btns = document.querySelectorAll('.switch button');
+const show = v => { document.querySelectorAll('.v').forEach(s => s.classList.toggle('on', s.id === v)); btns.forEach(b => b.setAttribute('aria-pressed', b.dataset.v === v)); if (v === 'B') fit(); if (v === 'C') startC(); };
+btns.forEach(b => b.onclick = () => show(b.dataset.v));
+addEventListener('keydown', e => ({ 1: 'A', 2: 'B', 3: 'C' })[e.key] && show(({ 1: 'A', 2: 'B', 3: 'C' })[e.key]));
+
+// B · the layer word rolls RF → signal → model → chip, matching the range map rows
+const words = [...document.querySelectorAll('#B .roll span')], steps = [...document.querySelectorAll('#B .steps i')];
+let w = 0;
+if (!reduce) setInterval(() => {
+  words[w].classList.remove('on'); words[w].classList.add('out');
+  const prev = w; setTimeout(() => words[prev].classList.remove('out'), 800);
+  w = (w + 1) % words.length; words[w].classList.add('on');
+  steps.forEach((s, i) => s.classList.toggle('on', i === w));
+  fit();
+}, 2200);
+// the roll box follows the visible word's width, so "layer." always sits one space after it
+const roll = document.querySelector('#B .roll');
+function fit() { roll.style.width = words[w].scrollWidth + 'px'; }
+roll.style.transition = 'width .8s cubic-bezier(.22, 1, .36, 1)'; words.forEach(s => s.style.whiteSpace = 'nowrap'); fit();
+
+// C · render "LOHITH" into a dot grid; dots start as noise and settle as the SNR rises
+let started = false;
+function startC() {
+  if (started) return; started = true;
+  const cv = document.getElementById('cv'), ctx = cv.getContext('2d'), snr = document.getElementById('snr');
+  let dots = [], W, H, step;
+  function build() {
+    const r = cv.getBoundingClientRect(), dpr = devicePixelRatio || 1;
+    W = cv.width = r.width * dpr; H = cv.height = r.height * dpr;
+    step = Math.max(6, Math.round(W / 180));
+    const off = document.createElement('canvas'); off.width = W; off.height = H;
+    const o = off.getContext('2d'); o.fillStyle = '#fff'; o.textBaseline = 'middle';
+    let fs = H * .9; o.font = `500 ${fs}px Geist, sans-serif`;
+    const tw = o.measureText('LOHITH').width; fs *= Math.min(1, (W * .96) / tw); o.font = `500 ${fs}px Geist, sans-serif`;
+    o.fillText('LOHITH', W * .02, H * .55);
+    const img = o.getImageData(0, 0, W, H).data;
+    dots = [];
+    for (let y = step / 2; y < H; y += step) for (let x = step / 2; x < W; x += step) {
+      const on = img[(Math.floor(y) * W + Math.floor(x)) * 4 + 3] > 128;
+      if (on || Math.random() < .05) dots.push({ x, y, on, j: Math.random() * Math.PI * 2 });
+    }
+  }
+  build(); addEventListener('resize', build);
+  const t0 = performance.now();
+  function frame(now) {
+    const t = reduce ? 1 : Math.min(1, (now - t0) / 2600), e = 1 - Math.pow(1 - t, 3);
+    ctx.clearRect(0, 0, W, H);
+    for (const d of dots) {
+      const noise = (1 - e) * step * 3;
+      const x = d.x + Math.cos(d.j + now / 300) * noise, y = d.y + Math.sin(d.j * 1.3 + now / 260) * noise;
+      ctx.fillStyle = d.on ? `rgba(242,234,227,${.25 + .75 * e})` : `rgba(242,234,227,${.35 * (1 - e) + .06})`;
+      ctx.beginPath(); ctx.arc(x, y, step * (d.on ? .36 : .2), 0, 7); ctx.fill();
+    }
+    snr.textContent = (e * 24).toFixed(1) + ' dB';
+    if (t < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
+</script>
+</body>
+</html>
