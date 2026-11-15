@@ -1,0 +1,429 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lohith Tarikere Prasanna</title>
+<!--
+  v6 · show the work, don't list it
+  Idea: everything I work on is about sensing. The hero is the name itself; the direction is still being chosen.
+  Below it, each piece of work is something you play with for ten seconds, not a paragraph to read.
+  Type: Big Shoulders Display for the name and the exhibit titles, set huge and broken across the grid.
+        Instrument Serif italic for my own voice. JetBrains Mono for the small facts.
+  Colour: an event camera's palette. Near-black, cool white, and two signals: ON spikes in red,
+          OFF spikes in blue. Red marks what senses or acts, blue what communicates or settles.
+          Hard edges, no radius, ink rules.
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Big+Shoulders+Display:wght@100..900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #0c0c0e; --panel: #151518; --ink: #e8e8ec; --ink-2: #c2c2c8; --mute: #85858f;
+    --hot: #ff4d4d; --hot-ink: #0c0c0e; --cold: #4f8cff; --cold-ink: #0c0c0e;
+    --ink-rgb: 232 232 236; --hot-rgb: 255 77 77; --cold-rgb: 79 140 255; --photo: grayscale(1) contrast(1.1);
+    --rule: rgb(var(--ink-rgb) / .14);
+    --display: 'Big Shoulders Display', Impact, sans-serif; --serif: 'Instrument Serif', Georgia, serif; --mono: 'JetBrains Mono', ui-monospace, monospace;
+    --pad: clamp(16px, 3vw, 40px); --ease: cubic-bezier(.22, 1, .36, 1);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); transition: background-color .4s var(--ease), color .4s var(--ease); color: var(--ink); font: 16px/1.5 var(--mono); overflow-x: hidden; }
+  a { color: inherit; }
+  :focus-visible { outline: 2px solid var(--hot); outline-offset: 3px; }
+  .meta { font: 400 12px/1.5 var(--mono); color: var(--mute); }
+  .voice { font: italic 400 clamp(22px, 2.2vw, 34px)/1.15 var(--serif); }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  .pill { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 20px; border: 1.5px solid var(--ink); background: transparent; font: 500 13px/1 var(--mono); text-decoration: none; transition: background-color .2s var(--ease), color .2s var(--ease); }
+  .pill:hover { background: var(--ink); color: var(--paper); }
+  .pill:active { transform: scale(.98); }
+  .pill--hot { background: var(--hot); border-color: var(--hot); color: var(--hot-ink); }
+  .pill:not(.pill--hot):hover { background: var(--cold); border-color: var(--cold); color: var(--cold-ink); }
+  .pill--hot:hover { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+
+  /* ── hero: the name, broken across the page ── */
+  #top { --n: clamp(120px, 38vw, 680px); position: relative; height: 100svh; min-height: 640px; overflow: hidden; }
+  .bar { position: absolute; inset: 0 0 auto; z-index: 3; display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; height: 56px; padding: 0 var(--pad); border-bottom: 1px solid var(--rule); }
+  .bar nav { justify-self: end; display: flex; gap: 20px; }
+  .bar a { text-decoration: none; } .bar nav a:hover { color: var(--cold); }
+  .name { position: absolute; inset: 0; z-index: 2; margin: 0; display: flex; align-items: center; justify-content: center; font: 900 var(--n)/.78 var(--display); letter-spacing: -.02em; text-transform: uppercase; pointer-events: none; }
+  .name span { white-space: nowrap; }
+  .name i { font-style: normal; transition: font-variation-settings .35s var(--ease); }
+  .foot { position: absolute; z-index: 3; inset: auto 0 0; display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 16px; height: 64px; padding: 0 var(--pad); border-top: 1px solid var(--rule); }
+  .foot .actions { justify-self: end; display: flex; gap: 8px; }
+  .now::before { content: ''; display: inline-block; width: 8px; height: 8px; background: var(--hot); margin-right: 8px; vertical-align: 0; }
+
+  /* ── exhibits: one thing to play with per piece of work ── */
+  .intro { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; padding: 160px var(--pad) 96px; border-bottom: 1.5px solid var(--ink); }
+  .intro h2 { grid-column: 1 / 9; margin: 0; font: 800 clamp(64px, 9vw, 150px)/.85 var(--display); text-transform: uppercase; letter-spacing: -.01em; }
+  .intro p { grid-column: 9 / 13; align-self: end; margin: 0; }
+  .ex { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; padding: 64px var(--pad); border-bottom: 1.5px solid var(--ink); min-height: 88svh; align-content: center; }
+  .ex__no { grid-column: 1 / 2; font: 500 13px var(--mono); color: var(--hot); }
+  .ex:nth-of-type(even) .ex__no { color: var(--cold); }
+  .ex__text { grid-column: 2 / 6; display: grid; gap: 24px; align-content: start; }
+  .ex__text h3 { margin: 0; font: 800 clamp(56px, 6.4vw, 112px)/.86 var(--display); text-transform: uppercase; }
+  .ex__text .voice { margin: 0; max-width: 22ch; }
+  .ex__text dl { display: grid; grid-template-columns: auto 1fr; gap: 4px 16px; margin: 0; }
+  .ex__text dt { color: var(--mute); font-size: 12px; } .ex__text dd { margin: 0; font-size: 12px; }
+  .ex__stage { grid-column: 7 / 13; position: relative; background: var(--panel); border: 1.5px solid var(--ink); min-height: 520px; display: grid; }
+  .ex:nth-of-type(even) .ex__text { grid-column: 8 / 12; grid-row: 1; }
+  .ex:nth-of-type(even) .ex__no { grid-column: 12 / 13; grid-row: 1; justify-self: end; }
+  .ex:nth-of-type(even) .ex__stage { grid-column: 1 / 7; grid-row: 1; }
+  .hint { position: absolute; left: 16px; top: 12px; }
+  .ctrl { position: absolute; left: 16px; right: 16px; bottom: 16px; display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .seg button { min-height: 36px; padding: 0 12px; border: 1.5px solid var(--ink); background: transparent; font-size: 12px; margin-right: -1.5px; }
+  .seg button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+
+  /* 01 lock */
+  .lock { place-self: center; display: grid; justify-items: center; gap: 24px; }
+  .lock__state { font: 900 clamp(72px, 9vw, 150px)/.8 var(--display); text-transform: uppercase; transition: color .2s; }
+  .lock.open .lock__state { color: var(--hot); }
+  .finger { position: relative; width: 112px; height: 112px; border: 0; background: transparent; padding: 0; touch-action: none; }
+  .finger svg { width: 100%; height: 100%; display: block; }
+  .finger .ring { fill: none; stroke: var(--hot); stroke-width: 4; stroke-dasharray: 327; stroke-dashoffset: 327; transform: rotate(-90deg); transform-origin: 56px 56px; }
+  .finger .print { fill: none; stroke: var(--ink); stroke-width: 1.6; stroke-linecap: round; }
+
+  /* 02 race */
+  .race { align-self: center; display: grid; gap: 40px; padding: 48px 32px 96px; }
+  .lane { display: grid; gap: 8px; }
+  .lane__top { display: flex; justify-content: space-between; align-items: baseline; }
+  .lane__top b { font: 800 clamp(40px, 4.6vw, 72px)/1 var(--display); font-variant-numeric: tabular-nums; }
+  .track { height: 20px; border: 1.5px solid var(--ink); }
+  .fill { height: 100%; width: 0; background: var(--ink); }
+  .lane .fill { background: var(--cold); }
+  .lane.fast .fill { background: var(--hot); }
+
+  canvas.play { width: 100%; height: 100%; display: block; }
+  .cap { position: absolute; right: 16px; top: 12px; text-align: right; }
+  .big-ro { position: absolute; right: 16px; top: 32px; font: 800 48px/1 var(--display); }
+
+  /* 06 next */
+  .next { padding: 96px var(--pad); background: var(--hot); border-bottom: 1.5px solid var(--ink); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; }
+  .next h3 { grid-column: 1 / 10; margin: 0; font: 900 clamp(64px, 10vw, 180px)/.82 var(--display); text-transform: uppercase; }
+  .next .side { grid-column: 10 / 13; align-self: end; display: grid; gap: 24px; }
+  .next, .next .meta { color: var(--hot-ink); }
+  .next .pill { border-color: var(--hot-ink); }
+  .next .pill:hover { background: var(--hot-ink); color: var(--hot); }
+  .next .pill { justify-self: start; }
+
+  .also { padding: 64px var(--pad); border-bottom: 1.5px solid var(--ink); display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 24px; }
+  .also .meta { grid-column: 1 / 3; }
+  .also p { grid-column: 3 / 13; margin: 0; font: italic 400 clamp(28px, 3.6vw, 56px)/1.1 var(--serif); }
+  .also a { text-decoration: none; background-image: linear-gradient(var(--hot), var(--hot)); background-size: 100% 2px; background-position: 0 92%; background-repeat: no-repeat; }
+  .also a:nth-of-type(even) { background-image: linear-gradient(var(--cold), var(--cold)); }
+  .also a:hover { color: var(--hot); } .also a:nth-of-type(even):hover { color: var(--cold); }
+  .also small { font: 400 13px var(--mono); color: var(--mute); vertical-align: super; margin-left: 4px; }
+
+  footer { padding: 64px var(--pad) 32px; }
+  footer .hello { display: block; font: 900 clamp(96px, 19vw, 330px)/.8 var(--display); text-transform: uppercase; text-decoration: none; letter-spacing: -.02em; }
+  footer .hello:hover { color: var(--hot); }
+  footer .hello { transition: color .2s var(--ease); }
+  footer .row { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 16px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--rule); }
+  footer .row a { text-decoration: none; margin-right: 20px; } footer .row a:hover { color: var(--cold); }
+
+  @media (max-width: 860px) {
+    .bar { grid-template-columns: 1fr auto; } .bar .mid { display: none; }
+    #top { --n: 38vw; }
+    .foot { grid-template-columns: 1fr; height: auto; padding: 16px var(--pad); gap: 12px; }
+    .foot .actions { justify-self: start; }
+    .intro, .ex, .next, .also { grid-template-columns: minmax(0, 1fr); }
+    .intro > *, .ex > *, .next > *, .also > * { grid-column: 1 / -1 !important; grid-row: auto !important; }
+    .intro { padding-top: 96px; }
+    .next h3 { font-size: 52px; }
+    .ex { min-height: 0; padding-block: 48px; }
+    .ex__stage { min-height: 400px; }
+  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition: none !important; } }
+</style>
+</head>
+<body>
+
+<section id="top" aria-label="Intro">
+  <div class="bar meta">
+    <span>Lohith Tarikere Prasanna</span>
+    <span class="mid">Nürnberg · 49.45° N 11.08° E</span>
+    <nav><a href="#work">Work</a><a href="#hello">Contact</a><a href="../public/Lohith_Prasanna_Resume.pdf">CV</a></nav>
+  </div>
+  <h1 class="name" aria-label="Lohith"><span aria-hidden="true"><i>L</i><i>o</i><i>h</i><i>i</i><i>t</i><i>h</i></span></h1>
+  <div class="foot meta">
+    <span class="now">Now at Fraunhofer, putting vision models on neuromorphic chips</span>
+    <span class="actions"><a class="pill pill--hot" href="mailto:lnlohith3@gmail.com">Say hello</a><a class="pill" href="https://www.linkedin.com/in/loh-pras" target="_blank" rel="noopener noreferrer">LinkedIn</a></span>
+  </div>
+</section>
+
+
+<section class="intro" id="work">
+  <h2>Five things I made signals do</h2>
+  <p class="voice">Each one takes ten seconds. Press, drag, slide</p>
+</section>
+
+<!-- 01 · Delta X: the lock that falls back to locked -->
+<article class="ex">
+  <span class="ex__no">01</span>
+  <div class="ex__text">
+    <h3>Always locked</h3>
+    <p class="voice">An electric scooter that only wakes for your fingerprint, and goes back to locked on its own</p>
+    <dl class="meta"><dt>Where</dt><dd>Delta X Automotive, Bengaluru</dd><dt>When</dt><dd>2022–23</dd><dt>On</dt><dd>ESP32, 2 prototype vehicles</dd></dl>
+  </div>
+  <div class="ex__stage">
+    <span class="hint meta">Hold the print</span>
+    <div class="lock" id="lock">
+      <span class="lock__state" id="lockState">Locked</span>
+      <button class="finger" id="finger" aria-label="Hold to unlock">
+        <svg viewBox="0 0 112 112" aria-hidden="true">
+          <circle class="ring" id="ring" cx="56" cy="56" r="52"/>
+          <g class="print">
+            <path d="M36 70c0-14 9-26 20-26s20 12 20 26"/><path d="M42 74c0-12 6-22 14-22s14 10 14 22"/>
+            <path d="M48 78c0-10 3-18 8-18s8 8 8 18"/><path d="M56 68v16"/><path d="M30 62c3-18 14-28 26-28s23 10 26 28"/>
+            <path d="M38 40c5-5 11-8 18-8s13 3 18 8"/>
+          </g>
+        </svg>
+      </button>
+    </div>
+    <span class="ctrl meta" id="lockNote">Let go and it locks again</span>
+  </div>
+</article>
+
+<!-- 02 · NI: ten minutes down to under one -->
+<article class="ex">
+  <span class="ex__no">02</span>
+  <div class="ex__text">
+    <h3>Ten minutes to one</h3>
+    <p class="voice">RF test data at NI that engineers can just ask questions of, fast enough to stay in the conversation</p>
+    <dl class="meta"><dt>Where</dt><dd>NI, Dresden</dd><dt>When</dt><dd>Oct 2025 – Mar 2026</dd><dt>Did</dt><dd>Faster queries, statistics, an AI layer</dd></dl>
+  </div>
+  <div class="ex__stage">
+    <span class="hint meta">One failure lookup, sped up 30×</span>
+    <div class="race" id="race">
+      <div class="lane"><div class="lane__top"><span class="meta">Before</span><b id="tBefore">0:00</b></div><div class="track"><div class="fill" id="fBefore"></div></div></div>
+      <div class="lane fast"><div class="lane__top"><span class="meta">After</span><b id="tAfter">0:00</b></div><div class="track"><div class="fill" id="fAfter"></div></div></div>
+    </div>
+    <div class="ctrl"><button class="pill" id="raceBtn">Run it again</button></div>
+  </div>
+</article>
+
+<!-- 03 · side project: modulation classifier -->
+<article class="ex">
+  <span class="ex__no">03</span>
+  <div class="ex__text">
+    <h3>Name that signal</h3>
+    <p class="voice">A model that hears a raw waveform and says how it was modulated. Turn the noise up to see why that's hard</p>
+    <dl class="meta"><dt>What</dt><dd>Side project, open source</dd><dt>Score</dt><dd>83.6% right on clean signals</dd><dt>Code</dt><dd><a href="https://github.com/lohith-pras/modulation-classifier" target="_blank" rel="noopener noreferrer">github.com/lohith-pras</a></dd></dl>
+  </div>
+  <div class="ex__stage">
+    <canvas class="play" id="iq" aria-label="Constellation diagram"></canvas>
+    <span class="hint meta">I/Q constellation</span>
+    <span class="big-ro" id="snrRo">20 dB</span>
+    <div class="ctrl">
+      <span class="seg" role="group" aria-label="Modulation"><button aria-pressed="true" data-m="qpsk">QPSK</button><button aria-pressed="false" data-m="bpsk">BPSK</button><button aria-pressed="false" data-m="qam16">16-QAM</button></span>
+      <label class="meta" style="display:flex;gap:8px;align-items:center;flex:1;min-width:180px">Noisy<input id="snr" type="range" min="0" max="20" value="20" style="flex:1;accent-color:var(--hot)" aria-label="Signal to noise ratio">Clean</label>
+    </div>
+  </div>
+</article>
+
+<!-- 04 · FAU research: sense and talk at once -->
+<article class="ex">
+  <span class="ex__no">04</span>
+  <div class="ex__text">
+    <h3>Sense and talk at once</h3>
+    <p class="voice">Radio nodes that track a moving target and serve their users with the same signal</p>
+    <dl class="meta"><dt>Where</dt><dd>FAU research project</dd><dt>When</dt><dd>2026</dd><dt>Next</dt><dd>The problem is non-convex, so a deep RL agent</dd></dl>
+  </div>
+  <div class="ex__stage">
+    <canvas class="play" id="isac" aria-label="Radio nodes sensing a target while serving two users"></canvas>
+    <span class="hint meta">Drag the target</span>
+    <span class="cap meta" id="isacRo"></span>
+  </div>
+</article>
+
+<!-- 05 · Fraunhofer: frames into spikes -->
+<article class="ex">
+  <span class="ex__no">05</span>
+  <div class="ex__text">
+    <h3>Frames into spikes</h3>
+    <p class="voice">Vision models rebuilt as spiking networks, so a tiny chip only reacts to what changes</p>
+    <dl class="meta"><dt>Where</dt><dd>Fraunhofer, now</dd><dt>On</dt><dd>AKD1500, Nicla Vision, Brainboard</dd></dl>
+  </div>
+  <div class="ex__stage">
+    <canvas class="play" id="spk" aria-label="A shape shown as a full frame or as spikes"></canvas>
+    <span class="hint meta">Same picture, two ways to see it</span>
+    <div class="ctrl"><span class="seg" role="group" aria-label="View"><button aria-pressed="false" data-v="frame">Frame</button><button aria-pressed="true" data-v="spikes">Spikes</button></span></div>
+  </div>
+</article>
+
+<section class="next">
+  <h3>Next: radar on neuromorphic chips</h3>
+  <div class="side">
+    <p class="meta">Where 04 and 05 meet. If you work on radar, spiking networks or both, I'd like to hear what you're building</p>
+    <a class="pill" href="mailto:lnlohith3@gmail.com?subject=Radar%20on%20neuromorphic%20chips">Ping me</a>
+  </div>
+</section>
+
+<section class="also">
+  <span class="meta">Also built, for fun</span>
+  <p>
+    <a href="https://github.com/lohith-pras/can_decoder" target="_blank" rel="noopener noreferrer">a CAN bus decoder</a><small>Rust</small>,
+    <a href="https://github.com/lohith-pras/sprachboot" target="_blank" rel="noopener noreferrer">a German tutor</a><small>FastAPI</small>,
+    <a href="https://github.com/lohith-pras/nest" target="_blank" rel="noopener noreferrer">an app my flat runs on</a><small>React</small>,
+    <a href="https://github.com/lohith-pras/f1-dashboard" target="_blank" rel="noopener noreferrer">my own F1 pit wall</a><small>FastF1</small>
+    and <a href="https://github.com/lohith-pras/prompt_analysis" target="_blank" rel="noopener noreferrer">a mirror for my prompting habits</a><small>DuckDB</small>
+  </p>
+</section>
+
+<footer id="hello">
+  <a class="hello" href="mailto:lnlohith3@gmail.com">Say hello</a>
+  <div class="row meta">
+    <span><a href="mailto:lnlohith3@gmail.com">lnlohith3@gmail.com</a><a href="https://www.linkedin.com/in/loh-pras" target="_blank" rel="noopener noreferrer">LinkedIn</a><a href="https://github.com/lohith-pras" target="_blank" rel="noopener noreferrer">GitHub</a><a href="../public/Lohith_Prasanna_Resume.pdf">CV</a></span>
+    <span>Open to Werkstudent roles in signal processing, ML and embedded</span>
+  </div>
+</footer>
+
+<script>
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+// canvases read the same tokens as the CSS: ON = hot, OFF = cold
+const C = {}; let HOT, INK, COLD;
+(() => { const cs = getComputedStyle(document.documentElement), rgb = k => cs.getPropertyValue(k).trim().split(/\s+/).join(','); C.ink = rgb('--ink-rgb'); C.hot = rgb('--hot-rgb'); C.cold = rgb('--cold-rgb'); HOT = `rgb(${C.hot})`; INK = `rgb(${C.ink})`; COLD = `rgb(${C.cold})`; })();
+const fitCanvas = (c) => { const r = c.getBoundingClientRect(), d = devicePixelRatio || 1; c.width = r.width * d; c.height = r.height * d; const x = c.getContext('2d'); x.setTransform(d, 0, 0, d, 0, 0); return [x, r.width, r.height]; };
+const onView = (el, fn) => new IntersectionObserver(es => es.forEach(e => e.isIntersecting && fn()), { threshold: .4 }).observe(el);
+
+// ── hero: each letter is light at rest and swells to full weight as the cursor comes near ──
+(() => {
+  const top = document.getElementById('top'), letters = [...top.querySelectorAll('.name i')];
+  let mouse = null;
+  function weights(t) {
+    letters.forEach((el, i) => {
+      let wt;
+      if (mouse) {
+        const r = el.getBoundingClientRect(), d = Math.hypot(r.left + r.width / 2 - mouse.x, r.top + r.height / 2 - mouse.y);
+        wt = 900 - 760 * Math.min(1, d / 520);
+      } else wt = 520 + 380 * Math.sin(t * 1.1 - i * .7); // at rest a slow wave runs through the name
+      el.style.fontVariationSettings = `'wght' ${wt.toFixed(0)}`;
+    });
+  }
+  const loop = now => { weights(now / 1000); requestAnimationFrame(loop); };
+  top.addEventListener('pointermove', e => { mouse = { x: e.clientX, y: e.clientY }; if (reduce) weights(0); });
+  top.addEventListener('pointerleave', () => { mouse = null; if (reduce) weights(0); });
+  reduce ? weights(0) : requestAnimationFrame(loop);
+})();
+
+// ── 01 hold to unlock; let go and it falls back to locked ──
+(() => {
+  const btn = document.getElementById('finger'), ring = document.getElementById('ring'), lock = document.getElementById('lock'), st = document.getElementById('lockState'), note = document.getElementById('lockNote');
+  const C = 327, NEED = 1100; let t0 = 0, raf = 0, open = false, timer = 0;
+  const set = k => ring.style.strokeDashoffset = C * (1 - k);
+  const relock = () => { open = false; lock.classList.remove('open'); st.textContent = 'Locked'; note.textContent = 'Let go and it locks again'; set(0); };
+  function tick(now) { const k = Math.min(1, (now - t0) / NEED); set(k); if (k < 1) raf = requestAnimationFrame(tick); else { open = true; lock.classList.add('open'); st.textContent = 'Unlocked'; note.textContent = 'Motor allowed. Locks again in 3 s'; clearTimeout(timer); timer = setTimeout(relock, 3000); } }
+  const down = () => { if (open) return; t0 = performance.now(); raf = requestAnimationFrame(tick); };
+  const up = () => { cancelAnimationFrame(raf); if (!open) set(0); };
+  btn.addEventListener('pointerdown', down); addEventListener('pointerup', up); btn.addEventListener('pointerleave', up);
+  btn.addEventListener('keydown', e => { if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); down(); } });
+  btn.addEventListener('keyup', e => { if (e.key === ' ' || e.key === 'Enter') up(); });
+})();
+
+// ── 02 the race: ten minutes against under one, at 30× speed ──
+(() => {
+  const fB = document.getElementById('fBefore'), fA = document.getElementById('fAfter'), tB = document.getElementById('tBefore'), tA = document.getElementById('tAfter');
+  const SPEED = 30, BEFORE = 600, AFTER = 55; // seconds; "after" is under a minute
+  const fmt = s => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  let raf = 0;
+  function run() {
+    cancelAnimationFrame(raf); const t0 = performance.now();
+    const step = now => {
+      const s = reduce ? BEFORE : (now - t0) / 1000 * SPEED;
+      const b = Math.min(s, BEFORE), a = Math.min(s, AFTER);
+      fB.style.width = (b / BEFORE * 100) + '%'; fA.style.width = (a / AFTER * 100) + '%';
+      tB.textContent = fmt(b); tA.textContent = a >= AFTER ? '< 1:00' : fmt(a);
+      if (s < BEFORE) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  }
+  document.getElementById('raceBtn').addEventListener('click', run);
+  let ran = false; onView(document.getElementById('race'), () => { if (!ran) { ran = true; run(); } });
+})();
+
+// ── 03 constellation: pick a modulation, slide the noise ──
+(() => {
+  const cv = document.getElementById('iq'), snr = document.getElementById('snr'), ro = document.getElementById('snrRo');
+  const SETS = { bpsk: [[-1, 0], [1, 0]], qpsk: [[-1, -1], [-1, 1], [1, -1], [1, 1]].map(([i, q]) => [i / Math.SQRT2, q / Math.SQRT2]), qam16: [] };
+  for (const i of [-3, -1, 1, 3]) for (const q of [-3, -1, 1, 3]) SETS.qam16.push([i / Math.sqrt(10), q / Math.sqrt(10)]);
+  let mod = 'qpsk', ctx, w, h;
+  const gauss = () => Math.sqrt(-2 * Math.log(Math.random() || 1e-9)) * Math.cos(2 * Math.PI * Math.random());
+  function draw() {
+    [ctx, w, h] = fitCanvas(cv);
+    const cx = w / 2, cy = h / 2 - 16, sc = Math.min(w, h) * .3, db = +snr.value, sig = Math.sqrt(.5 / Math.pow(10, db / 10));
+    ro.textContent = `${db} dB`;
+    ctx.strokeStyle = `rgba(${C.ink},.25)`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(cx - sc * 1.6, cy); ctx.lineTo(cx + sc * 1.6, cy); ctx.moveTo(cx, cy - sc * 1.6); ctx.lineTo(cx, cy + sc * 1.6); ctx.stroke();
+    const S = SETS[mod];
+    ctx.fillStyle = `rgba(${C.cold},.6)`;
+    for (let k = 0; k < 900; k++) { const [i, q] = S[k % S.length]; ctx.fillRect(cx + (i + gauss() * sig) * sc - 1.5, cy - (q + gauss() * sig) * sc - 1.5, 3, 3); }
+    ctx.fillStyle = HOT; for (const [i, q] of S) ctx.fillRect(cx + i * sc - 5, cy - q * sc - 5, 10, 10);
+  }
+  document.querySelectorAll('[data-m]').forEach(b => b.addEventListener('click', () => { mod = b.dataset.m; document.querySelectorAll('[data-m]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); draw(); }));
+  snr.addEventListener('input', draw); addEventListener('resize', draw);
+  draw();
+})();
+
+// ── 04 ISAC: four nodes, two users, one target you drag ──
+(() => {
+  const cv = document.getElementById('isac'), ro = document.getElementById('isacRo');
+  let ctx, w, h, T = null, drag = false;
+  const nodes = () => [[.18, .78], [.82, .78], [.18, .22], [.82, .22]].map(([x, y]) => [x * w, y * h]);
+  const users = () => [[.5, .86], [.08, .5]].map(([x, y]) => [x * w, y * h]);
+  function draw() {
+    [ctx, w, h] = fitCanvas(cv); if (!T) T = [w * .56, h * .42];
+    const N = nodes(), U = users();
+    // communication: each user served by its nearest node, solid ink
+    ctx.strokeStyle = COLD; ctx.lineWidth = 2;
+    for (const u of U) { const n = N.reduce((a, b) => Math.hypot(b[0] - u[0], b[1] - u[1]) < Math.hypot(a[0] - u[0], a[1] - u[1]) ? b : a); ctx.beginPath(); ctx.moveTo(n[0], n[1]); ctx.lineTo(u[0], u[1]); ctx.stroke(); }
+    // sensing: every node points a beam at the target, a wedge in orange
+    for (const n of N) {
+      const a = Math.atan2(T[1] - n[1], T[0] - n[0]), d = Math.hypot(T[0] - n[0], T[1] - n[1]);
+      ctx.fillStyle = `rgba(${C.hot},.14)`; ctx.beginPath(); ctx.moveTo(n[0], n[1]); ctx.arc(n[0], n[1], d + 18, a - .09, a + .09); ctx.closePath(); ctx.fill();
+      ctx.strokeStyle = HOT; ctx.setLineDash([4, 6]); ctx.beginPath(); ctx.moveTo(n[0], n[1]); ctx.lineTo(T[0], T[1]); ctx.stroke(); ctx.setLineDash([]);
+    }
+    ctx.fillStyle = INK; ctx.font = '500 11px JetBrains Mono, monospace';
+    N.forEach(([x, y], i) => { ctx.fillRect(x - 7, y - 7, 14, 14); ctx.fillText(`node ${i + 1}`, x + 12, y + 4); });
+    U.forEach(([x, y], i) => { ctx.fillStyle = COLD; ctx.beginPath(); ctx.arc(x, y, 7, 0, 7); ctx.fill(); ctx.fillStyle = INK; ctx.fillText(`user ${i + 1}`, x + 12, y + 4); });
+    ctx.fillStyle = HOT; ctx.save(); ctx.translate(T[0], T[1]); ctx.rotate(Math.PI / 4); ctx.fillRect(-10, -10, 20, 20); ctx.restore();
+    ctx.fillStyle = INK; ctx.fillText('target', T[0] + 16, T[1] + 4);
+    ro.textContent = `4 nodes sensing · 2 users served`;
+  }
+  const pos = e => { const r = cv.getBoundingClientRect(); return [Math.max(12, Math.min(w - 12, e.clientX - r.left)), Math.max(12, Math.min(h - 12, e.clientY - r.top))]; };
+  cv.style.touchAction = 'none'; cv.style.cursor = 'grab';
+  cv.addEventListener('pointerdown', e => { drag = true; cv.setPointerCapture(e.pointerId); T = pos(e); draw(); });
+  cv.addEventListener('pointermove', e => { if (drag) { T = pos(e); draw(); } });
+  cv.addEventListener('pointerup', () => drag = false);
+  addEventListener('resize', draw); draw();
+})();
+
+// ── 05 frame vs spikes: the same shape, drawn whole or only where it changes ──
+(() => {
+  const cv = document.getElementById('spk');
+  let ctx, w, h, edges = [], mode = 'spikes', heat, pol = [];
+  function setup() {
+    [ctx, w, h] = fitCanvas(cv);
+    const off = document.createElement('canvas'); off.width = Math.round(w); off.height = Math.round(h); const o = off.getContext('2d');
+    o.fillStyle = '#000'; o.font = `900 ${Math.round(Math.min(h * .62, w / 1.6))}px "Big Shoulders Display", Impact, sans-serif`; o.textAlign = 'center'; o.textBaseline = 'middle'; o.fillText('SEE', w / 2, h / 2);
+    const d = o.getImageData(0, 0, off.width, off.height).data, W = off.width, at = (x, y) => d[(y * W + x) * 4 + 3] > 128;
+    edges = [];
+    for (let y = 2; y < off.height - 2; y += 3) for (let x = 2; x < W - 2; x += 3) if (at(x, y) && (!at(x - 3, y) || !at(x + 3, y) || !at(x, y - 3) || !at(x, y + 3) || Math.random() < .06)) edges.push([x, y]);
+    heat = new Float32Array(edges.length); pol = edges.map(() => Math.random() < .5);
+    cv._off = off;
+  }
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    if (mode === 'frame') { ctx.globalAlpha = .9; ctx.drawImage(cv._off, 0, 0, w, h); ctx.globalAlpha = 1; return; }
+    // spikes: edge pixels fire at random, then decay; a faint ghost keeps the shape legible
+    ctx.fillStyle = `rgba(${C.ink},.08)`; for (const [x, y] of edges) ctx.fillRect(x - 1, y - 1, 2, 2);
+    for (let i = 0; i < edges.length; i++) { if (Math.random() < .03) heat[i] = 1; heat[i] *= .94; if (heat[i] > .05) { ctx.fillStyle = `rgba(${pol[i] ? C.hot : C.cold},${heat[i].toFixed(2)})`; ctx.fillRect(edges[i][0] - 2, edges[i][1] - 2, 4, 4); } }
+  }
+  document.querySelectorAll('[data-v]').forEach(b => b.addEventListener('click', () => { mode = b.dataset.v; document.querySelectorAll('[data-v]').forEach(x => x.setAttribute('aria-pressed', String(x === b))); if (reduce) draw(); }));
+  let on = false; new IntersectionObserver(([e]) => on = e.isIntersecting).observe(cv);
+  document.fonts.ready.then(() => { setup(); if (reduce) { heat.fill(.6); draw(); } });
+  addEventListener('resize', setup);
+  const loop = () => { if (on && edges.length) draw(); requestAnimationFrame(loop); };
+  if (!reduce) requestAnimationFrame(loop);
+})();
+</script>
+</body>
+</html>

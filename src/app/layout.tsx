@@ -1,59 +1,50 @@
 import type { Metadata } from 'next'
-import { Space_Mono, Plus_Jakarta_Sans, Oswald } from 'next/font/google'
-import { getLocale } from 'next-intl/server'
+import { Big_Shoulders, Instrument_Serif, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import './globals.css'
 
-// FOUND-01: Fonts loaded via next/font/google — zero external network request,
-// automatic preload, no layout shift, latin subset covers German umlauts (ä ö ü ß)
-// 3-family stack: Oswald (display/headings) + Space Mono (mono labels) + Plus Jakarta Sans (body)
+// Big Shoulders for the name and titles (variable weight drives the hero),
+// Instrument Serif italic for my own voice, JetBrains Mono for the small facts.
+const display = Big_Shoulders({ subsets: ['latin'], variable: '--font-display', display: 'swap' })
+const serif = Instrument_Serif({ weight: '400', style: ['normal', 'italic'], subsets: ['latin'], variable: '--font-serif', display: 'swap' })
+const mono = JetBrains_Mono({ weight: ['400', '500'], subsets: ['latin'], variable: '--font-mono', display: 'swap' })
 
-const spaceMono = Space_Mono({
-  weight: ['400', '700'],
-  subsets: ['latin'],
-  variable: '--font-space-mono',
-  display: 'swap',
-})
-
-// Body face — Plus Jakarta Sans. Prose, body copy, captions.
-const plusJakartaSans = Plus_Jakarta_Sans({
-  weight: ['300', '400', '500'],
-  subsets: ['latin'],
-  variable: '--font-plus-jakarta',
-  display: 'swap',
-})
-
-// Display / heading face — Oswald. Hero name + all section h2 headings.
-// Condensed grotesque — carries the "signal / instrument" brand voice.
-const oswald = Oswald({
-  weight: ['500', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-oswald',
-  display: 'swap',
-})
-
-// NOTE: Courier Prime is intentionally NOT loaded here.
-// It loads ONLY in src/app/[locale]/life/layout.tsx (Phase 7).
-// Loading it here would add 200+ kB to every non-/life route (PITFALL).
+const BASE = 'https://lohith-pras.vercel.app'
+const title = 'Lohith Tarikere Prasanna'
+const description =
+  'I research intelligent sensing at the boundary of 6G communications and autonomous driving. M.Sc. student at FAU; built production AI tools at NI Dresden and worked on embedded systems at Delta X Automotive.'
 
 export const metadata: Metadata = {
-  title: 'Lohith Tarikere Prasanna',
-  description: 'Builder with intent. AI, wireless, and mobility.',
-  keywords: ['AI', 'wireless', 'mobility', 'MIMO', 'portfolio', 'engineer'],
+  metadataBase: new URL(BASE),
+  title,
+  description,
+  openGraph: {
+    title,
+    description,
+    url: BASE,
+    siteName: title,
+    images: [{ url: '/og-image.png', width: 1200, height: 630, alt: title }],
+    locale: 'en_US',
+    type: 'website',
+  },
+  twitter: { card: 'summary_large_image', title, description, images: ['/og-image.png'] },
+  alternates: { canonical: BASE },
 }
 
-export default async function RootLayout({
-  children,
-}: {
-  children: React.ReactNode
-}) {
-  const locale = await getLocale()
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: title,
+  url: BASE,
+  jobTitle: 'M.Sc. student researching intelligent sensing for 6G and autonomous driving',
+  sameAs: ['https://github.com/lohith-pras', 'https://www.linkedin.com/in/loh-pras'],
+}
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html
-      lang={locale}
-      className={`${spaceMono.variable} ${plusJakartaSans.variable} ${oswald.variable}`}
-    >
-      <body className="bg-background text-foreground antialiased">
+    <html lang="en" className={`${display.variable} ${serif.variable} ${mono.variable}`}>
+      <body>
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
         {children}
         <Analytics />
       </body>

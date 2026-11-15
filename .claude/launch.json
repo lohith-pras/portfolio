@@ -2,28 +2,35 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "spike",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8778", "--directory", "prototypes"],
-      "port": 8778
-    },
-    {
       "name": "dev",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["dev"],
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "run",
+        "dev"
+      ],
       "port": 3000,
       "autoPort": true
     },
     {
       "name": "prod",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["exec", "next", "start", "-p", "3100"],
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "x",
+        "next",
+        "start",
+        "-p",
+        "3100"
+      ],
       "port": 3100
     },
     {
       "name": "dev-webpack",
-      "runtimeExecutable": "pnpm",
-      "runtimeArgs": ["exec", "next", "dev"],
+      "runtimeExecutable": "bun",
+      "runtimeArgs": [
+        "x",
+        "next",
+        "dev"
+      ],
       "port": 3000
     }
   ]

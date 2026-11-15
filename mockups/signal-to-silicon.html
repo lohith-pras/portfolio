@@ -1,0 +1,321 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lohith · signal to silicon</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Instrument+Serif&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #070707; --panel: #0f0f0f; --ink: #ededed; --dim: #8a8a8a; --faint: #4a4a4a; --line: #ffffff17;
+    --acc: #6e83ad;
+    --sans: Geist, system-ui, sans-serif; --serif: 'Instrument Serif', Georgia, serif; --mono: 'Geist Mono', ui-monospace, monospace;
+    --ease: cubic-bezier(.22, 1, .36, 1);
+  }
+  *, *::before, *::after { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 17px/1.6 var(--sans); }
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 clamp(16px, 5vw, 48px); }
+  .mono { font-family: var(--mono); }
+  .acc { color: var(--acc); }
+
+  nav { display: flex; justify-content: space-between; align-items: center; padding: 24px 0; font: 400 13px var(--mono); color: var(--dim); }
+  nav b { color: var(--ink); font-weight: 500; }
+  nav .links { display: flex; gap: 26px; }
+  nav a { color: inherit; text-decoration: none; }
+  nav a:hover { color: var(--ink); }
+
+  /* hero */
+  .hero { position: relative; min-height: calc(100vh - 72px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, .9fr); gap: 40px; align-items: center; padding: 40px 0 140px; }
+  .desk { position: relative; height: 520px; }
+  .art { position: absolute; color: #1b1b1b; box-shadow: 0 24px 50px -18px #000; transition: transform .5s var(--ease); }
+  .art:hover { transform: rotate(0deg) translateY(-6px) !important; z-index: 5; }
+  .sheet { width: 270px; left: 0; top: 30px; background: #ece7da; padding: 18px 20px 20px; transform: rotate(-5deg); font: 400 11px/1.7 var(--mono); }
+  .sheet h4 { margin: 0 0 10px; font: 500 13px var(--mono); letter-spacing: .04em; border-bottom: 1px solid #1b1b1b; padding-bottom: 8px; display: flex; justify-content: space-between; }
+  .sheet dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 14px; margin: 0; }
+  .sheet dd { margin: 0; text-align: right; border-bottom: 1px dotted #1b1b1b55; }
+  .sheet .stamp { margin-top: 14px; display: inline-block; border: 1.5px solid #2b5fd9; color: #2b5fd9; padding: 2px 8px; transform: rotate(-4deg); font-weight: 500; }
+  .plot { width: 330px; right: 0; top: 0; background: #dde7ea; background-image: linear-gradient(#1b1b1b14 1px, transparent 1px), linear-gradient(90deg, #1b1b1b14 1px, transparent 1px); background-size: 16px 16px; padding: 14px 16px 12px; transform: rotate(4deg); }
+  .plot small, .photo small { font: 400 10px var(--mono); letter-spacing: .06em; display: flex; justify-content: space-between; }
+  .plot svg { width: 100%; height: 150px; display: block; margin: 8px 0 4px; }
+  .photo { width: 250px; right: 40px; bottom: 0; background: #f4f2ec; padding: 12px 12px 16px; transform: rotate(-2deg); }
+  .photo .ph { aspect-ratio: 4/3; background: linear-gradient(135deg, #3a3a3a, #161616); display: grid; place-items: center; color: #9a9a9a; font: 400 11px var(--mono); text-align: center; margin-bottom: 10px; filter: grayscale(1); }
+  .raster { position: absolute; inset: auto 0 40px 0; width: 100%; height: 110px; opacity: .9; }
+  .meta { font: 400 13px var(--mono); color: var(--dim); display: flex; flex-wrap: wrap; gap: 8px 22px; }
+  .meta i { font-style: normal; display: inline-block; width: 7px; height: 7px; border-radius: 50%; background: var(--acc); margin-right: 8px; }
+  h1 { font: 400 clamp(60px, 8.4vw, 128px)/.92 var(--serif); letter-spacing: -.025em; margin: 22px 0 28px; }
+  h1 span { color: var(--dim); }
+  .lead { font-size: clamp(19px, 2vw, 24px); line-height: 1.45; max-width: 36ch; color: #cfcfcf; margin: 0; }
+  .lead b { color: var(--ink); font-weight: 500; }
+
+  section { padding: 128px 0 0; }
+  .kicker { font: 400 13px var(--mono); color: var(--dim); }
+  .kicker::before { content: '// '; color: var(--faint); }
+  h2 { font: 400 clamp(40px, 5.4vw, 72px)/1 var(--serif); letter-spacing: -.02em; margin: 12px 0 18px; }
+  .sub { color: var(--dim); max-width: 56ch; margin: 0 0 44px; }
+
+  /* the stack */
+  .stack { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 28px; }
+  .picks { display: grid; gap: 4px; align-content: start; }
+  .picks button { all: unset; cursor: pointer; padding: 14px 16px; border: 1px solid var(--line); background: var(--panel); display: grid; gap: 2px; transition: border-color .2s, background .2s; }
+  .picks button small { font: 400 11px var(--mono); color: var(--dim); }
+  .picks button span { font-weight: 500; }
+  .picks button[aria-pressed="true"] { border-color: var(--acc); background: color-mix(in srgb, var(--acc) 6%, var(--panel)); }
+  .picks button:focus-visible { outline: 2px solid var(--acc); outline-offset: 2px; }
+  .layers { display: grid; gap: 4px; }
+  .layer { display: grid; grid-template-columns: 40px 200px minmax(0, 1fr); gap: 20px; align-items: center; padding: 22px 24px; border: 1px solid var(--line); background: var(--panel); transition: border-color .35s var(--ease), opacity .35s var(--ease), transform .35s var(--ease); opacity: .35; }
+  .layer.on { opacity: 1; border-color: color-mix(in srgb, var(--acc) 60%, transparent); transform: translateX(6px); }
+  .layer .n { font: 400 12px var(--mono); color: var(--faint); }
+  .layer.on .n { color: var(--acc); }
+  .layer h3 { margin: 0; font: 500 19px var(--sans); letter-spacing: -.01em; }
+  .layer p { margin: 0; font-size: 15px; color: var(--dim); }
+  .layer.on p { color: #cfcfcf; }
+  .layer .what { display: none; }
+  .layer.on .what { display: block; }
+  .layer.on .gen { display: none; }
+
+  /* the path */
+  .path { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+  .step { padding: 22px 20px 0 0; position: relative; }
+  .step::before { content: ''; position: absolute; top: -5px; left: 0; width: 9px; height: 9px; background: var(--ink); border-radius: 50%; }
+  .step.now::before { background: var(--acc); }
+  .step.next::before { background: var(--bg); border: 1px dashed var(--dim); }
+  .step small { font: 400 12px var(--mono); color: var(--dim); }
+  .step h3 { margin: 6px 0 6px; font: 500 18px/1.25 var(--sans); }
+  .step p { margin: 0; font-size: 14px; color: var(--dim); }
+  .step.next h3 { color: var(--dim); }
+
+  /* proof = numbers, as a bento dashboard */
+  .bento { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; }
+  .bento { --t-ink: #0d0d0d; --t-dim: #6b6b68; --t-line: #0d0d0d1f; }
+  .ticker { grid-column: 1 / -1; min-height: 0; display: flex; flex-wrap: wrap; gap: 10px 36px; align-items: center; padding: 14px 4px; font: 400 11px/1.5 var(--mono); color: var(--dim); text-transform: uppercase; border-bottom: 1px solid var(--line); margin-bottom: 8px; }
+  .ticker b { display: block; color: var(--ink); font-weight: 400; }
+  .tile { min-height: 190px; background: #e7e7e4; color: var(--t-ink); border-radius: 10px; padding: 18px 20px; display: flex; flex-direction: column; gap: 10px; position: relative; }
+  .tile.w2 { grid-column: span 2; }
+  .tile .lbl { font: 400 12px var(--mono); text-transform: uppercase; letter-spacing: .04em; display: flex; flex-wrap: wrap; gap: 4px 12px; justify-content: space-between; }
+  .tile .lbl span { color: var(--t-dim); }
+  .tile .big { margin-top: auto; display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+  .tile .big b { font: 400 clamp(44px, 4.6vw, 64px)/1 var(--mono); letter-spacing: -.04em; }
+  .tile .big em { font: 400 13px var(--mono); font-style: normal; color: var(--t-dim); white-space: nowrap; }
+  .tile .foot { border-top: 1px solid var(--t-line); padding-top: 10px; font: 400 11px var(--mono); color: var(--t-dim); display: flex; justify-content: space-between; text-transform: uppercase; }
+  .tile .bar { height: 4px; background: #0d0d0d1a; }
+  .tile .bar i { display: block; height: 100%; background: var(--t-ink); }
+  .tile.live .lbl::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--acc); margin: 4px 8px 0 0; flex: none; }
+  .tile.live .lbl { justify-content: flex-start; }
+  .tile.live .lbl span { margin-left: auto; }
+  .tile.live .bar i { background: var(--acc); }
+  .tile.paper { background: #161618; color: var(--ink); border: 1px solid var(--line); text-decoration: none; }
+  .tile.paper .big em { color: var(--dim); }
+  .tile.paper .go, .tile .go { position: absolute; right: 16px; top: 16px; width: 30px; height: 30px; border-radius: 50%; display: grid; place-items: center; background: var(--ink); color: #0b0b0b; font: 400 14px var(--mono); }
+  .tile.note p { margin: auto 0 0; font: 400 clamp(22px, 2.2vw, 30px)/1.15 var(--serif); }
+  .tile.note small { font: 400 11px var(--mono); color: var(--t-dim); text-transform: uppercase; }
+  .bars { display: grid; gap: 8px; margin-top: auto; font: 400 11px var(--mono); color: var(--t-dim); text-transform: uppercase; }
+  .bars div { display: grid; grid-template-columns: 70px minmax(0, 1fr) 52px; gap: 10px; align-items: center; }
+  .bars i { height: 22px; background: #0d0d0d40; display: block; }
+  .bars .hi i { background: var(--acc); }
+  .bars .hi { color: var(--t-ink); }
+  .ring { margin: auto; position: relative; width: min(150px, 100%); aspect-ratio: 1; }
+  .ring svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+  .ring div { position: absolute; inset: 0; display: grid; place-content: center; text-align: center; }
+  .ring b { font: 400 38px/1 var(--mono); letter-spacing: -.04em; }
+  .ring small { font: 400 10px var(--mono); color: var(--t-dim); text-transform: uppercase; margin-top: 6px; }
+
+  /* off the clock */
+  .off { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  .off div { border: 1px solid var(--line); padding: 22px 24px; }
+  .off small { font: 400 11px var(--mono); color: var(--dim); }
+  .off p { margin: 6px 0 0; }
+
+  footer { padding: 150px 0 60px; display: flex; flex-wrap: wrap; gap: 24px; justify-content: space-between; align-items: end; }
+  footer h2 { margin: 0; }
+  .cta { display: flex; gap: 8px; flex-wrap: wrap; }
+  .cta a { color: var(--ink); text-decoration: none; padding: 10px 16px; border: 1px solid var(--line); font: 400 14px var(--mono); }
+  .cta a.hot { background: var(--acc); color: #000; border-color: var(--acc); }
+
+  /* accent picker (mockup only) */
+  .picker { position: fixed; right: 16px; bottom: 16px; z-index: 9; display: flex; gap: 6px; padding: 8px; background: #000d; border: 1px solid var(--line); border-radius: 999px; align-items: center; font: 400 11px var(--mono); color: var(--dim); }
+  .picker span { padding: 0 6px; }
+  .picker button { all: unset; cursor: pointer; width: 22px; height: 22px; border-radius: 50%; background: var(--c); outline: 2px solid transparent; outline-offset: 2px; }
+  .picker button[aria-pressed="true"] { outline-color: var(--ink); }
+
+  .rv { opacity: 0; transform: translateY(20px); transition: opacity .7s var(--ease), transform .7s var(--ease); }
+  .rv.in { opacity: 1; transform: none; }
+  @media (prefers-reduced-motion: reduce) { .rv { opacity: 1; transform: none; } * { transition: none !important; } }
+
+  @media (max-width: 860px) {
+    nav .links { display: none; }
+    .hero { grid-template-columns: 1fr; }
+    .raster { display: none; }
+    .desk { height: 470px; max-width: 360px; width: 100%; margin: 0 auto; }
+    .sheet { width: 220px; } .plot { width: 250px; } .photo { width: 200px; right: 10px; }
+    .stack { grid-template-columns: 1fr; }
+    .picks { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .layer { grid-template-columns: 28px minmax(0, 1fr); gap: 6px 12px; padding: 16px; }
+    .layer p { grid-column: 2; }
+    .layer.on { transform: none; }
+    .path { grid-template-columns: 1fr; border-top: 0; border-left: 1px solid var(--line); }
+    .step { padding: 0 0 26px 22px; }
+    .step::before { top: 6px; left: -5px; }
+    .bento { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 6px; gap: 6px; }
+    .tile.w2 { grid-column: 1 / -1; }
+    .tile { padding: 14px; }
+    .tile .lbl span, .tile .foot span:first-child { display: none; }
+    .tile .big { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .off { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav><b>lohith.tp</b><span class="links"><a href="#stack">stack</a><a href="#path">path</a><a href="#proof">numbers</a><a href="#hi">contact</a></span><a href="#">cv ↗</a></nav>
+
+  <header class="hero">
+    <div>
+    <div class="meta"><span><i></i>now · physical AI at Fraunhofer</span><span>m.sc. · FAU Nürnberg</span><span>nürnberg <span id="clock">--:--</span></span></div>
+    <h1>From signal <span>to silicon.</span></h1>
+    <p class="lead">I'm Lohith, an electronics and comms engineer. I take <b>sensing and AI models</b> and make them run on <b>real hardware</b>, then measure what it costs in watts and milliseconds.</p>
+    </div>
+    <div class="desk" aria-label="Work artifacts">
+      <div class="art plot"><small><span>FIG 3 · POWER PER SLOT</span><span>W</span></small><svg viewBox="0 0 300 150" preserveAspectRatio="none"><line x1="0" y1="20" x2="300" y2="20" stroke="#1b1b1b" stroke-dasharray="4 3" stroke-width=".8"/><text x="4" y="15" font-size="9" font-family="monospace" fill="#1b1b1b">budget 8 W</text><polyline id="pw" fill="none" stroke="#1b1b1b" stroke-width="1.3"/></svg><small><span>500 unseen trajectories</span><span>avg 4.2 W</span></small></div>
+      <div class="art sheet"><h4><span>BENCHMARK</span><span>AKD1500</span></h4><dl><dt>model</dt><dd>—</dd><dt>input</dt><dd>—</dd><dt>latency</dt><dd>— ms</dd><dt>energy</dt><dd>— mJ/inf</dd><dt>accuracy</dt><dd>— %</dd><dt>vs. GPU</dt><dd>—</dd></dl><span class="stamp">IN PROGRESS</span></div>
+      <div class="art photo"><div class="ph">lab bench photo<br>(your board here)</div><small><span>FRAUNHOFER</span><span>2026</span></small></div>
+    </div>
+    <svg class="raster" viewBox="0 0 1000 110" preserveAspectRatio="none" aria-hidden="true"><g id="spikes"></g></svg>
+  </header>
+
+  <!-- the signature section: one stack, every project lights up its layers -->
+  <section id="stack">
+    <div class="kicker rv">the stack</div>
+    <h2 class="rv">Most people own one layer. I work across four.</h2>
+    <p class="sub rv">Pick a project to see which layers it touched.</p>
+    <div class="stack rv">
+      <div class="picks" role="group" aria-label="Projects">
+        <button data-l="4" aria-pressed="false"><small>Delta X Automotive</small><span>Security ECU</span></button>
+        <button data-l="1,2,3" aria-pressed="false"><small>NI Dresden</small><span>RF test data</span></button>
+        <button data-l="2,3" aria-pressed="false"><small>Side project</small><span>RF modulation classifier</span></button>
+        <button data-l="1,2,3" aria-pressed="false"><small>FAU thesis</small><span>ISAC · radar + MIMO</span></button>
+        <button data-l="3,4" aria-pressed="true"><small>Fraunhofer · now</small><span>SNNs on neuromorphic chips</span></button>
+      </div>
+      <div class="layers">
+        <div class="layer" data-n="1"><span class="n">L1</span><h3>RF & radio</h3><p class="gen">Antennas, arrays, channels, RF measurements.</p><p class="what" id="w1"></p></div>
+        <div class="layer" data-n="2"><span class="n">L2</span><h3>Signal processing</h3><p class="gen">Radar, MIMO, estimation and tracking.</p><p class="what" id="w2"></p></div>
+        <div class="layer" data-n="3"><span class="n">L3</span><h3>Models</h3><p class="gen">Spiking nets, vision models, reinforcement learning.</p><p class="what" id="w3"></p></div>
+        <div class="layer" data-n="4"><span class="n">L4</span><h3>Hardware</h3><p class="gen">Microcontrollers, firmware, neuromorphic processors.</p><p class="what" id="w4"></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="path">
+    <div class="kicker rv">the path</div>
+    <h2 class="rv">Each step went one layer further.</h2>
+    <p class="sub rv">Not a pivot each time. The same question from a new angle: how do you sense the world on a tight budget?</p>
+    <div class="path rv">
+      <div class="step"><small>start</small><h3>Embedded systems</h3><p>A fingerprint immobiliser ECU for an electric two-wheeler at Delta X.</p></div>
+      <div class="step"><small>2025</small><h3>RF data</h3><p>Failure analysis for RF instruments at NI Dresden.</p></div>
+      <div class="step"><small>2026</small><h3>Radar + MIMO</h3><p>ISAC thesis: sense and communicate with the same radios.</p></div>
+      <div class="step now"><small>now</small><h3>Neuromorphic</h3><p>Deploying and benchmarking SNNs on BrainChip AKD1500.</p></div>
+      <div class="step next"><small>next</small><h3>ISAC on neuromorphic chips</h3><p>Where the two threads meet.</p></div>
+    </div>
+  </section>
+
+  <!-- a developer shows code, a designer shows mockups: this shows measurements -->
+  <section id="proof">
+    <div class="kicker rv">the numbers</div>
+    <h2 class="rv">What I show instead of mockups.</h2>
+    <p class="sub rv">Every project here was judged by a measurement, not a demo.</p>
+    <div class="bento rv">
+      <div class="ticker">
+        <span>carrier<b>28 GHz</b></span><span>array<b>12 el × 4 nodes</b></span><span>position<b>≤ 0.5 m</b></span><span>user sinr<b>≥ 10 dB</b></span><span>test set<b>500 trajectories</b></span><span>chip<b>BrainChip AKD1500</b></span>
+      </div>
+
+      <div class="tile live"><div class="lbl">Now · Fraunhofer<span>AKD1500</span></div><div class="big"><b>—</b><em>mJ / inference</em></div><div class="bar"><i style="width:40%"></i></div><div class="foot"><span>SNN vision models</span><span>in progress</span></div></div>
+      <div class="tile"><div class="lbl">Slots meeting both targets<span>thesis</span></div><div class="big"><b>97.7</b><em>/ 100 %</em></div><div class="bar"><i style="width:97.7%"></i></div></div>
+      <div class="tile w2"><div class="lbl">Success rate by policy<span>500 unseen runs</span></div>
+        <div class="bars">
+          <div class="hi"><span>PPO (mine)</span><i style="width:97.7%"></i><span>97.7 %</span></div>
+          <div><span>Random</span><i style="width:2.6%"></i><span>2.6 %</span></div>
+        </div>
+      </div>
+
+      <div class="tile"><div class="lbl">Avg power<span>thesis</span></div><div class="ring"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" fill="none" stroke="#0d0d0d1a" stroke-width="5"/><circle cx="50" cy="50" r="44" fill="none" stroke="var(--acc)" stroke-width="5" pathLength="100" stroke-dasharray="52.5 100"/></svg><div><b>4.2</b><small>of 8 W budget</small></div></div></div>
+      <div class="tile"><div class="lbl">Failure data retrieval<span>NI</span></div><div class="big"><b>&lt;1</b><em>/ 10+ min</em></div><div class="foot"><span>before</span><span>after: batch + parallel</span></div></div>
+      <div class="tile note w2"><small>Lesson · thesis</small><p>A flat plate costs about 3 W more than a sphere. The agent pays in power for not knowing which way the target faces.</p></div>
+
+      <div class="tile"><div class="lbl">Anomaly classes<span>NI</span></div><div class="big"><b>5</b><em>sigma bands</em></div></div>
+      <div class="tile"><div class="lbl">Modulation classifier<span>RF</span></div><div class="big"><b>83.6</b><em>/ 100 % at ≥ 6 dB</em></div><div class="bar"><i style="width:83.6%"></i></div></div>
+      <a class="tile paper w2" href="#"><span class="go">↗</span><div class="lbl">Side builds</div><div class="big"><b>06</b><em>CAN decoder · F1 pit wall · Sprachboot …</em></div></a>
+    </div>
+  </section>
+
+  <section>
+    <div class="kicker rv">off the clock</div>
+    <div class="off rv" style="margin-top:20px">
+      <div><small>race weekends</small><p>F1. I built my own pit wall with live telemetry.</p></div>
+      <div><small>bengaluru, always</small><p>RCB, watched from Germany at strange hours.</p></div>
+      <div><small>3 cities so far</small><p>Bengaluru → Dresden → Nürnberg.</p></div>
+    </div>
+  </section>
+
+  <footer id="hi">
+    <h2 class="rv">Building something<br>close to the sensor? Say hi.</h2>
+    <div class="cta"><a class="hot" href="#">email</a><a href="#">linkedin</a><a href="#">github</a></div>
+  </footer>
+</div>
+
+<div class="picker" role="group" aria-label="Accent colour">
+  <span>accent</span>
+  <button style="--c:#6e83ad" aria-label="Slate blue" aria-pressed="true"></button>
+  <button style="--c:#5f8f8c" aria-label="Steel teal" aria-pressed="false"></button>
+  <button style="--c:#8c84b8" aria-label="Dusk violet" aria-pressed="false"></button>
+  <button style="--c:#c4473a" aria-label="Brick red" aria-pressed="false"></button>
+  <button style="--c:#d8d6ce" aria-label="Bone, no colour" aria-pressed="false"></button>
+</div>
+
+<script>
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const clock = document.getElementById('clock');
+  const tick = () => clock.textContent = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/Berlin', hour: '2-digit', minute: '2-digit' });
+  tick(); setInterval(tick, 30000);
+
+  // what each project did at each layer
+  const WHAT = {
+    'Security ECU': { 4: 'ESP32 immobiliser: fingerprint auth, fail-locked state machine, relay + SSR in complementary states. On two prototype vehicles.' },
+    'RF test data': { 1: 'Production test data from an RF instrument line.', 2: 'Failure-signature matching by distance, retrieval from 10+ min to under 1.', 3: 'Five-class sigma-band classifier, shipped as agent skills.' },
+    'RF modulation classifier': { 2: '16 features from amplitude, phase, spectrum and cumulants on raw IQ.', 3: 'Random Forest: 51.3 % over all SNRs, 83.6 % on clean signals.' },
+    'ISAC · radar + MIMO': { 1: 'Multi-node network, arrays at 28 GHz.', 2: 'Deterministic bistatic RCS, Cramér-Rao bound, joint beamforming and node selection.', 3: 'A learned policy for real-time node selection, where SCA is too slow.' },
+    'SNNs on neuromorphic chips': { 3: 'Vision models converted to spiking networks.', 4: 'Deployment and benchmarking on BrainChip AKD1500.' },
+  };
+  const picks = document.querySelectorAll('.picks button'), layers = document.querySelectorAll('.layer');
+  const pick = b => {
+    picks.forEach(p => p.setAttribute('aria-pressed', p === b));
+    const on = b.dataset.l.split(','), w = WHAT[b.querySelector('span').textContent];
+    layers.forEach(l => { const n = l.dataset.n; l.classList.toggle('on', on.includes(n)); document.getElementById('w' + n).textContent = w[n] || ''; });
+  };
+  picks.forEach(b => { b.onclick = () => pick(b); b.onmouseenter = () => pick(b); });
+  pick(document.querySelector('.picks [aria-pressed="true"]'));
+
+  // accent picker
+  const sw = document.querySelectorAll('.picker button');
+  sw.forEach(b => b.onclick = () => { document.documentElement.style.setProperty('--acc', b.style.getPropertyValue('--c')); sw.forEach(x => x.setAttribute('aria-pressed', x === b)); });
+
+  // spike raster: 8 neurons, events drift left
+  const g = document.getElementById('spikes'), ROWS = 8;
+  let ev = [];
+  const draw = () => {
+    if (Math.random() < .55) ev.push({ x: 1000, r: Math.floor(Math.random() * ROWS), burst: Math.random() < .15 });
+    ev.forEach(e => e.x -= 4); ev = ev.filter(e => e.x > 0);
+    g.innerHTML = ev.map(e => `<rect x="${e.x}" y="${e.r * 13 + 4}" width="${e.burst ? 3 : 1.5}" height="9" fill="${e.x > 960 ? 'var(--acc)' : '#3a3a3a'}"/>`).join('');
+  };
+  if (reduce) { for (let i = 0; i < 250; i++) draw(); } else { (function loop() { draw(); setTimeout(() => requestAnimationFrame(loop), 40); })(); }
+
+  const pts = Array.from({ length: 100 }, (_, i) => `${i * 3},${150 - (62 + 28 * Math.sin(i / 7) + 14 * Math.sin(i / 2.1) + (i % 23 === 0 ? 30 : 0))}`).join(' ');
+  document.getElementById('pw').setAttribute('points', pts);
+
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && (e.target.classList.add('in'), io.unobserve(e.target))), { threshold: .12 });
+  document.querySelectorAll('.rv').forEach(el => io.observe(el));
+</script>
+</body>
+</html>

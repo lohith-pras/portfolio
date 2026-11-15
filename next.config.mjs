@@ -1,16 +1,12 @@
-import createNextIntlPlugin from 'next-intl/plugin'
-
-const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts')
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  pageExtensions: ['js', 'jsx', 'ts', 'tsx'],
-  webpack: (config) => {
-    config.infrastructureLogging = {
-      level: 'error',
-    }
-    return config
+  // The site used to live at /en and /de; keep old links working.
+  async redirects() {
+    return [
+      { source: '/:locale(en|de)', destination: '/', permanent: true },
+      { source: '/:locale(en|de)/:path*', destination: '/', permanent: true },
+    ]
   },
 }
 
-export default withNextIntl(nextConfig)
+export default nextConfig
